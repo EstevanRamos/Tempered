@@ -35,3 +35,13 @@ Logs are in `.dev/`. In Claude Code on the web, `.claude/hooks/session-start.sh`
   `svelte-commerce/src/routes/proxy/gocommerce/[...path]`, because GoCommerce sends no CORS headers.
 - Store name, logo, menus and feature toggles aren't stored in GoCommerce. They come from
   `svelte-commerce/src/lib/core/connectors/default-store.json` and `svelte-commerce/kitcommerce.config.ts`.
+
+## Agent skills
+
+`.claude/skills/` holds [Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT, see
+`.claude/skills/LICENSE-mattpocock-skills`): the 25 that make up his `mattpocock-skills` plugin,
+copied at upstream commit `c55ee46` (plugin v1.2.3). They're plain files, so edit them freely.
+Claude Code loads them in every session, including cloud ones where `/plugin` isn't available.
+Run `/setup-matt-pocock-skills` once to configure them for this repo.
+
+His `code-review` skill replaces Claude Code's built-in `/code-review` in this repo.
