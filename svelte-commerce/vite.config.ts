@@ -102,9 +102,7 @@ export default defineConfig(({ command, mode }) => {
 					{
 						name: 'connector-alias',
 						setup(build) {
-							build.onResolve({ filter: /^\$connector$/ }, (args) =>
-								build.resolve(connector, { kind: args.kind, resolveDir: process.cwd() })
-							)
+							build.onResolve({ filter: /^\$connector$/ }, (args) => build.resolve(connector, { kind: args.kind, resolveDir: process.cwd() }))
 						}
 					}
 				]

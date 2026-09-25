@@ -23,7 +23,8 @@ scripts/dev.sh stop
 - GoCommerce admin panel: http://127.0.0.1:8080 (sign in `admin@example.com` / `devpassword`)
 - API docs: http://127.0.0.1:8080/docs (admin API token: `dev-token`)
 
-Logs are in `.dev/`. Override `DATABASE_URL`, `GOCOMMERCE_ADMIN_TOKEN`,
+Logs are in `.dev/`. In Claude Code on the web, `.claude/hooks/session-start.sh` runs
+`scripts/dev.sh --seed` automatically at the start of every session, so the stack is already up. Override `DATABASE_URL`, `GOCOMMERCE_ADMIN_TOKEN`,
 `GOCOMMERCE_ADMIN_EMAIL`, `GOCOMMERCE_ADMIN_PASSWORD` in the environment.
 
 ## How the storefront reaches the API

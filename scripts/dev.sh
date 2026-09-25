@@ -15,7 +15,7 @@ DB_URL="${DATABASE_URL:-postgres://gocommerce:gocommerce@127.0.0.1:5432/gocommer
 TOKEN="${GOCOMMERCE_ADMIN_TOKEN:-dev-token}"
 
 if [[ "${1:-}" == "stop" ]]; then
-  for f in "$RUN"/*.pid; do [[ -f "$f" ]] && kill "$(cat "$f")" 2>/dev/null; rm -f "$f"; done
+  for f in "$RUN"/*.pid; do [[ -f "$f" ]] && { kill "$(cat "$f")" 2>/dev/null || true; }; rm -f "$f"; done
   echo "stopped"; exit 0
 fi
 
@@ -41,7 +41,7 @@ if ! curl -sf http://127.0.0.1:8080/health >/dev/null; then
   DATABASE_URL="$DB_URL" \
   GOCOMMERCE_ADMIN_EMAIL="${GOCOMMERCE_ADMIN_EMAIL:-admin@example.com}" \
   GOCOMMERCE_ADMIN_PASSWORD="${GOCOMMERCE_ADMIN_PASSWORD:-devpassword}" \
-    nohup "$RUN/gocommerce" -addr 127.0.0.1:8080 -admin-token "$TOKEN" -media-dir "$RUN/media" \
+    setsid nohup "$RUN/gocommerce" -addr 127.0.0.1:8080 -admin-token "$TOKEN" -media-dir "$RUN/media" \
       -identity -menus -reviews -contact -newsletter -cms -faq -wishlist serve \
       > "$RUN/gocommerce.log" 2>&1 &
   echo $! > "$RUN/gocommerce.pid"
@@ -57,7 +57,7 @@ cd "$ROOT/svelte-commerce"
 [[ -f .env ]] || cp .env.example .env
 [[ -d node_modules ]] || bun install
 if ! curl -sf -o /dev/null http://127.0.0.1:3000/health; then
-  nohup node_modules/.bin/vite dev > "$RUN/storefront.log" 2>&1 &
+  setsid nohup node_modules/.bin/vite dev > "$RUN/storefront.log" 2>&1 &
   echo $! > "$RUN/storefront.pid"
   for _ in $(seq 1 60); do curl -sf -o /dev/null http://127.0.0.1:3000/health && break; sleep 1; done
 fi
