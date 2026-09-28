@@ -21,4 +21,9 @@ export * as services from './src/lib/core/connectors/active'
 // it only defers the failure to the payment step — on Vendure, `State Transition Failed: Cannot
 // transition Order to the "ArrangingPayment" state without Customer details`, with the shopper
 // stranded there.
-export default {}
+import defaults from './src/lib/core/connectors/default-store.json'
+
+// SPIKE (prototype/vendure-spike): the merge in static-store.ts is shallow, so plugins must be spread.
+export default {
+	plugins: { ...defaults.plugins, isDiscountCoupons: { active: true } }
+}

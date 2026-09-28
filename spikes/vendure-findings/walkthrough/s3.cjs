@@ -1,0 +1,12 @@
+const {chromium}=require('/home/user/Tempered/svelte-commerce/node_modules/@playwright/test');
+const {snap,OUT}=require('./lib.cjs');
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+const ctx=await b.newContext({viewport:{width:1280,height:900},storageState:OUT+'/state.json'});const pg=await ctx.newPage();const log=[];
+pg.on('pageerror',e=>log.push('pageerror: '+e.message.slice(0,200)));pg.on('console',m=>{if(m.type()==='error')log.push('console: '+m.text().slice(0,160))});
+pg.on('request',r=>{if(r.url().includes('3001/shop-api')){const q=(r.postData()||'');log.push('→ '+(q.match(/"operationName":"(\w+)"/)?.[1]||q.match(/(mutation|query)\s*\{?\s*(\w+)/)?.slice(1).join(' ')||q.slice(0,60)))}});
+await pg.goto('http://localhost:3000/checkout/cart',{waitUntil:'networkidle'});
+console.log('coupon UI on cart:',await pg.locator('text=/coupon|promo|discount/i').count());
+await pg.getByTestId('checkout-button').click();await pg.waitForLoadState('networkidle');await pg.waitForTimeout(1500);
+console.log('URL',pg.url());console.log((await snap(pg,'04-address')).join('\n'));
+console.log('--- inputs');console.log(JSON.stringify(await pg.evaluate(()=>[...document.querySelectorAll('input,select,textarea')].filter(e=>e.offsetParent).map(e=>[e.tagName,e.name,e.id,e.type,e.getAttribute('data-testid'),e.placeholder,e.required]))));
+console.log('--- log');console.log([...new Set(log)].filter(l=>!/CERT_AUTH|TUNNEL|Stripe|ipify/.test(l)).join('\n'));await b.close()})();

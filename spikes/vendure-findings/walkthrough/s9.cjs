@@ -1,0 +1,17 @@
+const {chromium}=require('/home/user/Tempered/svelte-commerce/node_modules/@playwright/test');
+const {snap,OUT}=require('./lib.cjs');
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+const ctx=await b.newContext({viewport:{width:1280,height:900}});const pg=await ctx.newPage();const log=[];
+pg.on('pageerror',e=>log.push('pageerror: '+e.message.slice(0,200)));pg.on('console',m=>{if(m.type()==='error'&&!/node_invalid_placement/.test(m.text()))log.push('console: '+m.text().slice(0,200))});
+pg.on('response',async r=>{if(r.url().includes('3001/shop-api')){try{const q=r.request().postData()||'';const t=await r.text();const op=(q.match(/\b(mutation|query)\b[^{]*\{\s*(\w+)/)||[])[2]||'?';log.push('shop-api '+op+' → '+(/errorCode|"errors"/.test(t)?t.slice(0,300):'ok'))}catch{}}});
+await pg.goto('http://localhost:3000/auth/signup',{waitUntil:'networkidle'});await pg.waitForTimeout(800);
+await pg.fill('#firstName','Ace');await pg.fill('#lastName','Spike');await pg.fill('#email','ace.spike@example.com');
+await pg.fill('#password','Tempered!2026');await pg.fill('#confirmPassword','Tempered!2026');
+await pg.getByRole('button',{name:'CREATE ACCOUNT'}).click();await pg.waitForTimeout(4000);await pg.waitForLoadState('networkidle');
+console.log('after signup URL:',pg.url());await snap(pg,'10-after-signup');
+console.log((await pg.locator('#main').last().innerText()).replace(/\n+/g,' | ').slice(0,300));
+await pg.goto('http://localhost:3000/my/orders',{waitUntil:'networkidle'});await pg.waitForTimeout(2000);
+console.log('orders URL:',pg.url());await snap(pg,'11-orders');
+console.log((await pg.locator('#main').last().innerText()).replace(/\n+/g,' | ').slice(0,600));
+await ctx.storageState({path:OUT+'/state-account.json'});
+console.log('--- log');console.log([...new Set(log)].filter(l=>!/CERT_AUTH|TUNNEL|Stripe|ipify/.test(l)).join('\n'));await b.close()})();

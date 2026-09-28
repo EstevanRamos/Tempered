@@ -1,0 +1,16 @@
+const {chromium}=require('/home/user/Tempered/svelte-commerce/node_modules/@playwright/test');
+const {snap,OUT}=require('./lib.cjs');
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+const ctx=await b.newContext({viewport:{width:1280,height:900},storageState:OUT+'/state.json'});const pg=await ctx.newPage();const log=[];
+pg.on('pageerror',e=>log.push('pageerror: '+e.message.slice(0,200)));pg.on('console',m=>{if(m.type()==='error')log.push('console: '+m.text().slice(0,160))});
+pg.on('request',r=>{if(r.url().includes('3001/shop-api')){const q=(r.postData()||'');log.push('→ '+(q.match(/"operationName":"(\w+)"/)?.[1]||(q.match(/(mutation|query)[^{]*\{\s*(\w+)/)||[]).slice(1).join(' ')))}});
+pg.on('response',async r=>{if(r.url().includes('3001/shop-api')){try{const t=await r.text();if(/errorCode|"errors"/.test(t))log.push('← ERR '+t.slice(0,300))}catch{}}});
+await pg.goto('http://localhost:3000/checkout/address',{waitUntil:'networkidle'});
+const f={firstName:'Ace',lastName:'Spike',email:'ace.spike@example.com',phone:'+15551234567',address_1:'1 Felt Row',city:'Las Vegas',state:'NV',zip:'89101'};
+for(const [k,v] of Object.entries(f)) await pg.fill('#'+k,v);
+await pg.getByTestId('checkout-button').click();await pg.waitForTimeout(4000);await pg.waitForLoadState('networkidle');
+console.log('URL',pg.url());console.log((await snap(pg,'05-payment')).join('\n'));
+console.log('--- text');console.log((await pg.locator('#main').last().innerText()).slice(0,1400));
+console.log('coupon UI:',await pg.locator('text=/coupon|promo|discount code/i').count());
+await ctx.storageState({path:OUT+'/state.json'});
+console.log('--- log');console.log([...new Set(log)].filter(l=>!/CERT_AUTH|TUNNEL|Stripe|ipify/.test(l)).join('\n'));await b.close()})();

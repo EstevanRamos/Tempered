@@ -1,0 +1,13 @@
+const {open,snap,OUT}=require('./lib.cjs');
+(async()=>{const {b,ctx,pg,log}=await open();
+await pg.goto('http://localhost:3000/products/laptop',{waitUntil:'networkidle'});
+await pg.getByTestId('variant-option').filter({hasText:'15 inch'}).click();await pg.waitForTimeout(800);
+console.log('price after variant:',await pg.locator('text=/\\$[0-9,.]+/').first().innerText());
+await pg.getByTestId('add-to-cart-button').click();await pg.waitForTimeout(2500);
+console.log('cart icon:',await pg.getByTestId('cart-icon').getAttribute('aria-label'));
+await snap(pg,'02-after-add');
+await pg.goto('http://localhost:3000/checkout/cart',{waitUntil:'networkidle'});await pg.waitForTimeout(1000);
+console.log((await snap(pg,'03-cart')).join('\n'));
+console.log('--- body text');console.log((await pg.locator('main').first().innerText()).slice(0,900));
+await ctx.storageState({path:OUT+'/state.json'});
+console.log('--- log');console.log([...new Set(log)].filter(l=>!/CERT_AUTH|TUNNEL|Stripe/.test(l)).join('\n'));await b.close()})();

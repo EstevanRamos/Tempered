@@ -1,0 +1,16 @@
+const {chromium}=require('/home/user/Tempered/svelte-commerce/node_modules/@playwright/test');
+const {snap,OUT}=require('./lib.cjs');
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+const ctx=await b.newContext({viewport:{width:1280,height:900},storageState:OUT+'/state.json'});const pg=await ctx.newPage();const log=[];
+pg.on('pageerror',e=>log.push('pageerror: '+e.message.slice(0,200)));pg.on('console',m=>{if(m.type()==='error')log.push('console: '+m.text().slice(0,160))});
+pg.on('response',async r=>{if(r.url().includes('3001/shop-api')){try{const q=r.request().postData()||'';const t=await r.text();log.push('shop-api '+(q.match(/mutation\s*\w*\s*[({]\s*(\w+)/)?.[1]||'query')+' → '+(/errorCode|"errors"/.test(t)?t.slice(0,240):'ok'))}catch{}}});
+await pg.goto('http://localhost:3000/checkout/cart',{waitUntil:'networkidle'});
+const opener=pg.getByRole('button',{name:'Apply Promo Code'});console.log('promo buttons:',await opener.count());
+await opener.first().click();await pg.waitForTimeout(800);
+await pg.getByPlaceholder('Enter your coupon code').fill('TEMPERED10');
+await pg.getByRole('button',{name:/apply|check/i}).last().click();await pg.waitForTimeout(3000);
+await snap(pg,'06-coupon');
+await pg.keyboard.press('Escape');await pg.waitForTimeout(500);
+console.log((await pg.locator('#main').last().innerText()).replace(/\n+/g,' | ').slice(0,700));
+await ctx.storageState({path:OUT+'/state.json'});
+console.log('--- log');console.log([...new Set(log)].filter(l=>!/CERT_AUTH|TUNNEL|Stripe|ipify/.test(l)).join('\n'));await b.close()})();
