@@ -29,7 +29,7 @@ Tempered's light colour scheme, reserved for editorial pages. It is not used at 
 _Avoid_: light mode
 
 **Collection**:
-A curated group of products that the Engine manages, such as Apparel or War.
+A curated group of products that the Engine manages, such as the War collection.
 _Avoid_: category (a different Engine concept), line, drop
 
 **Category**:
