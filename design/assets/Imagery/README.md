@@ -1,0 +1,1 @@
+Mood and product references taken from the first Tempered homepage concept: the crowned-elephant hero, collection tiles (apparel, war, story), the hand at the chips, and four product shots on a black seamless. Use them as placeholders and as the art-direction brief; replace with final photography before launch.

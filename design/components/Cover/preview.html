@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+<meta charset="utf-8">
+<title>Tempered</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../components.css">
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--ground); color:var(--ink); font-family:var(--font-sans); overflow:hidden; padding:0; }
+  .cover { position:relative; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:288px; }
+  .gold { fill:var(--gold); }
+  .deep { fill:var(--gold-deep); }
+  .bone { fill:var(--ink); }
+  .edge { fill:var(--line-strong); }
+  .blk { rx:var(--radius-none); }
+  .cut { fill:none; stroke:var(--ground); stroke-width:var(--hairline); }
+  .words { position:absolute; left:var(--space-8); bottom:var(--space-8); max-width:440px; }
+  .name { margin:0; font-family:var(--font-display); font-size:92px; line-height:.92; font-weight:400; letter-spacing:.06em; color:var(--ink); }
+  .tag { margin:var(--space-3) 0 0 4px; font-size:13px; line-height:20px; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      gold 144×280 slab bled off the top (the crown, the identity) · gold-deep 96×136 · ink (bone) 176×200 bled off the right edge · line-strong 48×48 — ≈35% of 960×288
+  arrangement one tall gold slab with satellites stepping down to the right, bottoms on one line space-6 above the edge, space-4 gutters
+  pattern     literal motif: the tusk crescents of the mark — five concentric hairline arcs cut in ground through the blocks (hairline token), "hairlines instead of shadows"
+  scales      sides in space-2 multiples; gutters space-4; arc pitch space-6; corners radius-none (the system is cut, not rounded)
+-->
+<rect class="gold blk" x="32" y="-16" width="144" height="280"/>
+<rect class="deep blk" x="192" y="128" width="96" height="136"/>
+<rect class="bone blk" x="304" y="64" width="192" height="200"/>
+<rect class="edge blk" x="192" y="64" width="48" height="48"/>
+<path class="cut" d="M 32 72 A 192 192 0 0 1 224 264"/>
+<path class="cut" d="M 32 96 A 168 168 0 0 1 200 264"/>
+<path class="cut" d="M 32 120 A 144 144 0 0 1 176 264"/>
+<path class="cut" d="M 304 144 A 120 120 0 0 1 424 264"/>
+<path class="cut" d="M 304 168 A 96 96 0 0 1 400 264"/>
+</svg>
+</div>
+<div class="words">
+  <h1 class="name">Tempered</h1>
+  <p class="tag">Play with purpose</p>
+</div>
+</div>
+</body>
+</html>
