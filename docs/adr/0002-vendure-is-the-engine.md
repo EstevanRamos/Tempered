@@ -13,5 +13,5 @@ The Storefront needs a free, open-source Engine that comes with its own admin, a
 ## Consequences
 
 - GPLv3's obligations apply when Vendure itself is *distributed*. Running it unmodified on our own server, with the Storefront talking to it over its API, is not distribution. That is the licence's plain reading, not legal advice; revisit it before shipping modified Vendure code to anyone.
-- No connector, Vendure's included, had been run against a live store when this was decided. A prototype of the full shopper path comes before any restyle work depends on it.
+- No connector, Vendure's included, had been run against a live store when this was decided. The spike in `docs/spikes/2026-09-vendure.md` then ran the full shopper path against Vendure with no blockers.
 - Store identity, menus and CMS content do not come from Vendure. They stay in `kitcommerce.config.ts` and the Theme's static content.
