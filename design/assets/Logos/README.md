@@ -1,0 +1,1 @@
+The Tempered logo, cut from the original artwork onto a transparent ground. `tempered-lockup.png`: gold crowned elephant over the white *Tempered* signature — Night grounds only. `tempered-mark.png`: the gold mark alone — any ground. Raster (PNG); ask for vector masters before print work.
