@@ -32,6 +32,10 @@ _Avoid_: light mode
 A curated group of products that the Engine manages, such as Apparel or War.
 _Avoid_: category (a different Engine concept), line, drop
 
+**Category**:
+A product type in the Engine's category tree, such as Tees or Hoodies. Categories drive navigation and filters.
+_Avoid_: collection, department
+
 **Story page**:
 A brand page, such as Our Story, that is not a product group. It may share a Collection's tile look.
 _Avoid_: collection, about page
