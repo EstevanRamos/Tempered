@@ -80,6 +80,7 @@
 		"test:wrapper": "./test-wrapper.js",
 		"test": "bun test:wrapper",
 		"test:ui": "bun test:wrapper --ui",
+		"test:shopper": "playwright test -c playwright.shopper.config.ts",
 		"test:unit": "vitest",
 		"test:coverage": "vitest --coverage",
 		"test:watch": "vitest --watch"
@@ -140,8 +141,8 @@
 	"dependencies": {
 		"@internationalized/date": "^3.7.0",
 		"@lucide/svelte": "^1.8.0",
-		"@misiki/gocommerce-connector": "^0.1.0",
 		"@misiki/kitcommerce-core": "^0.1.33",
+		"@misiki/vendure-connector": "2.0.40",
 		"cheerio": "^1.2.0",
 		"culori": "^4.0.2",
 		"fuse.js": "^7.1.0",

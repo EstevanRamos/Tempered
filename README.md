@@ -1,40 +1,63 @@
 # Tempered
 
-A custom storefront built on [Svelte Commerce](https://github.com/itswadesh/svelte-commerce),
-backed by the [GoCommerce](https://github.com/itswadesh/gocommerce) engine (the Go, Litekart-compatible API).
+Tempered's online shop: a custom Storefront built on [Svelte Commerce](https://github.com/itswadesh/svelte-commerce),
+running on [Vendure](https://vendure.io) as its Engine (see `docs/adr/0002-vendure-is-the-engine.md`).
 
 | Directory | What | How it's tracked |
 | --- | --- | --- |
-| `svelte-commerce/` | SvelteKit storefront, wired to GoCommerce via `@misiki/gocommerce-connector` | vendored: edit freely |
-| `gocommerce/` | Go commerce engine + admin panel, over PostgreSQL | git submodule (upstream, unmodified) |
-| `scripts/` | `dev.sh` (start everything), `seed.sh` (demo catalog) | |
+| `svelte-commerce/` | SvelteKit Storefront, wired to Vendure via `@misiki/vendure-connector` | vendored: edit freely |
+| `vendure/` | Vendure 3 server (the Engine) on PostgreSQL, with its admin dashboard | ours |
+| `design/` | Tempered's design system | ours |
+| `scripts/dev.sh` | Starts everything | |
 
 ## Run it
 
-Needs Go 1.23+, PostgreSQL 16+, Bun (or Node 22).
+Needs Node 22, Bun, PostgreSQL 16+.
 
 ```sh
-git clone --recurse-submodules <this repo>
-scripts/dev.sh --seed     # Postgres + engine on :8080 + storefront on :3000, then load demo products
+scripts/dev.sh          # Postgres + Vendure on :3001 + Storefront on :3000
 scripts/dev.sh stop
 ```
 
 - Storefront: http://127.0.0.1:3000
-- GoCommerce admin panel: http://127.0.0.1:8080 (sign in `admin@example.com` / `devpassword`)
-- API docs: http://127.0.0.1:8080/docs (admin API token: `dev-token`)
+- Vendure dashboard (the owner's admin): http://127.0.0.1:3001/dashboard, signed in as `superadmin` / `superadmin`
+- Shop API: http://127.0.0.1:3001/shop-api (GraphiQL at http://127.0.0.1:3001/graphiql/shop)
 
-Logs are in `.dev/`. In Claude Code on the web, `.claude/hooks/session-start.sh` runs
-`scripts/dev.sh --seed` automatically at the start of every session, so the stack is already up. Override `DATABASE_URL`, `GOCOMMERCE_ADMIN_TOKEN`,
-`GOCOMMERCE_ADMIN_EMAIL`, `GOCOMMERCE_ADMIN_PASSWORD` in the environment.
+On first run the script creates the `vendure` role and database, applies the migrations, loads the
+catalogue into the empty database and builds the dashboard. Logs are in `.dev/`. Override
+`DATABASE_URL` (and Vendure's `SUPERADMIN_USERNAME`, `SUPERADMIN_PASSWORD`, `COOKIE_SECRET`) in the
+environment. In Claude Code on the web, `.claude/hooks/session-start.sh` runs `scripts/dev.sh` at
+the start of every session, so the stack is already up.
 
-## How the storefront reaches the API
+## The Engine
 
-- `svelte-commerce/.env` sets `PUBLIC_GOCOMMERCE_API_URL=http://127.0.0.1:8080` (copied from `.env.example` on first run).
-- `vite.config.ts` picks the installed `@misiki/*-connector`, here the GoCommerce one.
-- Server-side loads call the engine directly. Browser calls go through
-  `svelte-commerce/src/routes/proxy/gocommerce/[...path]`, because GoCommerce sends no CORS headers.
-- Store name, logo, menus and feature toggles aren't stored in GoCommerce. They come from
-  `svelte-commerce/src/lib/core/connectors/default-store.json` and `svelte-commerce/kitcommerce.config.ts`.
+- Postgres with **migrations**, never schema auto-sync. After changing entities or custom fields,
+  run `npm run migration:generate -- <name>` in `vendure/` and commit the file it writes to
+  `vendure/src/migrations/`. The server applies pending migrations on start.
+- Email verification is off: signing up logs the shopper straight in. Account emails link to the
+  Storefront's own `/auth/verify` and `/auth/reset-password` routes (`STOREFRONT_URL`).
+- CORS reflects the Storefront's origin with credentials; anonymous telemetry is off.
+- Payments use Vendure's dummy handler until production hosting adds Stripe.
+
+## How the Storefront reaches the Engine
+
+- `svelte-commerce/.env` sets `PUBLIC_VENDURE_API_URL=http://127.0.0.1:3001`, and nothing else
+  (copied from `.env.example` on first run). Browser and server both call `<that URL>/shop-api`.
+- `vite.config.ts` picks the installed `@misiki/*-connector`, here the Vendure one.
+- Store name, logo, menus and feature toggles aren't stored in Vendure. They come from
+  `svelte-commerce/src/lib/core/connectors/default-store.json`, merged (shallowly) under
+  `svelte-commerce/kitcommerce.config.ts`.
+
+## The shopper-path test
+
+One Playwright test walks what a shopper does, against the running stack: homepage → product page
+(a variant changes the price) → add to bag → the bag survives a reload → guest checkout (address →
+shipping → review → confirm) → the confirmation shows an order number. Every change keeps it green.
+
+```sh
+cd svelte-commerce && bun run test:shopper
+# cloud sessions: PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome bun run test:shopper
+```
 
 ## Agent skills
 

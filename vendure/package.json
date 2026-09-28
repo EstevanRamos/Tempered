@@ -1,0 +1,32 @@
+{
+  "name": "tempered-vendure",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tempered's Engine: a Vendure 3 server on Postgres.",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "dev:worker": "ts-node src/index-worker.ts",
+    "build": "tsc",
+    "build:dashboard": "vite build",
+    "start": "node dist/index.js",
+    "start:worker": "node dist/index-worker.js",
+    "migration:generate": "ts-node src/migrate.ts generate",
+    "migration:run": "ts-node src/migrate.ts run",
+    "populate": "ts-node src/populate.ts"
+  },
+  "dependencies": {
+    "@vendure/asset-server-plugin": "3.7.3",
+    "@vendure/core": "3.7.3",
+    "@vendure/dashboard": "3.7.3",
+    "@vendure/email-plugin": "3.7.3",
+    "@vendure/graphiql-plugin": "3.7.3",
+    "dotenv": "16.4.7",
+    "pg": "8.13.1"
+  },
+  "devDependencies": {
+    "@vendure/create": "3.7.3",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.2",
+    "vite": "7.3.6"
+  }
+}
