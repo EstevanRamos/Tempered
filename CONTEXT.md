@@ -29,12 +29,16 @@ Tempered's light colour scheme, reserved for editorial pages. It is not used at 
 _Avoid_: light mode
 
 **Collection**:
-A curated group of products that the Engine manages, such as the War collection.
-_Avoid_: category (a different Engine concept), line, drop
+A hand-picked group of products, such as the War collection. Collections drive the homepage tiles.
+_Avoid_: drop, line, category
 
 **Category**:
-A product type in the Engine's category tree, such as Tees or Hoodies. Categories drive navigation and filters.
-_Avoid_: collection, department
+A product type, such as Tees or Hoodies. A product gets its Category from a tag, not by hand-placing it. Categories drive navigation and filters.
+_Avoid_: collection, department, type
+
+**Tag**:
+A label on a product that says which Category it belongs to, such as Category: Tees.
+_Avoid_: facet (the Engine's word), attribute
 
 **Story page**:
 A brand page, such as Our Story, that is not a product group. It may share a Collection's tile look.
