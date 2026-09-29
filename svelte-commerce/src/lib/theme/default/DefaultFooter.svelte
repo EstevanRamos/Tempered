@@ -74,7 +74,7 @@
 	const year = new Date().getFullYear()
 </script>
 
-<footer class="overflow-hidden border-t border-border bg-background" aria-label="Site footer" data-build={version}>
+<footer class="overflow-hidden bg-background" aria-label="Site footer" data-build={version}>
 	<div class="page-width grid grid-cols-1 gap-10 pt-10 text-small md:pt-12 lg:grid-cols-12 lg:gap-x-5">
 		{#if targets.available}
 			<div class="flex flex-col gap-3 lg:col-span-5">
