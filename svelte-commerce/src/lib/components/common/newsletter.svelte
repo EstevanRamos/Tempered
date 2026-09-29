@@ -7,10 +7,8 @@
 	import { page } from '$app/state'
 	import { toast } from '@misiki/kitcommerce-core'
 	import { z } from 'zod'
-	import { storeService } from '$lib/core/services'
 	import { getUserState } from '$lib/core/stores/index.js'
-	import { klaviyoIdentify, klaviyoSubscribe, resolveKlaviyoConfig } from '$lib/klaviyo'
-	import { canSubscribeToNewsletter } from './store-capabilities.js'
+	import { newsletterTargets, subscribeToNewsletter } from './newsletter-subscribe.js'
 
 	let email = $state('')
 	let subscribing = $state(false)
@@ -21,15 +19,14 @@
 	let subscribed = $state(false)
 	const errorId = 'newsletter-error'
 	const plugin = $derived(page.data.store?.plugins?.newsletter)
-	const klaviyoConfig = $derived(resolveKlaviyoConfig(page.data.store?.plugins))
 	const userState = getUserState()
 
 	// Two independent places an address can land: the storefront's own list, served by the Litekart
 	// REST API, and Klaviyo. On a backend that has neither, the form could only ever answer
 	// "Subscription failed" — asking for an address the store has nowhere to put is worse than not
 	// asking — so the block does not render at all. See store-capabilities.ts.
-	const storeListAvailable = canSubscribeToNewsletter()
-	const canSubscribe = $derived(storeListAvailable || klaviyoConfig.active)
+	const targets = $derived(newsletterTargets(page.data.store?.plugins))
+	const canSubscribe = $derived(targets.available)
 
 	// Own submit instead of the renderer's subscribeToNewsletter: that one only fires a
 	// toast and gives no success signal back, but a successful subscribe must land on
@@ -44,17 +41,7 @@
 
 		subscribing = true
 		try {
-			// Litekart's own newsletter list (existing behavior), where that API is behind this store.
-			if (storeListAvailable) {
-				await storeService.post('/api/newsletter/subscribe', {
-					email,
-					customerId: userState?.user?.userId || null
-				})
-			}
-			// Klaviyo: attach the session to a profile, then subscribe it to the configured
-			// list so flows/campaigns can email them. No-op when Klaviyo isn't configured.
-			klaviyoIdentify({ email })
-			klaviyoSubscribe(email, klaviyoConfig)
+			await subscribeToNewsletter(email, targets, userState?.user?.userId)
 			subscribed = true
 		} catch (e: any) {
 			console.error('newsletter', e)

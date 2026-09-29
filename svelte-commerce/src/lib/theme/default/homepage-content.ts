@@ -90,36 +90,68 @@ export const defaultContent: ThemeHomepageContent = {
   },
   contact: { label: "Contact", titleLead: "Contact", titleAccent: "Us", text: "", panelTitle: "Let us talk", panelText: "", addressLabel: "Address", phoneLabel: "Phone", emailLabel: "Email", hoursLabel: "Working Hours", address: "", phone: "", email: "", hours: "", cta: "Send Message" },
   defaultHome: { eyebrow: "New season picks", primaryCta: "Shop Products", secondaryCta: `Browse ${taxonomy.many}`, featuredLabel: "Featured", featuredTitle: "Popular products", emptyTitle: "No products available", emptyText: "Products will appear here when they are returned by the API." },
-  // Tempered (design/homepage): hero, tiles, featured products, manifesto, quote. The marquee and
-  // lookbook are gone; the assurances live on the product page, beside Add to bag.
+  // Tempered (the 2026-09 homepage redesign): hero, the collection spotlight, Choose your seat, The
+  // Code, the manifesto and the quote. The assurances live on the product page, beside Add to bag.
   tempered: {
     hero: {
       eyebrow: "Discipline builds freedom",
       title: "Tempered",
-      text: "Master yourself before you master the table.",
+      tagline: "Master yourself before you master the table.",
+      text: "Heavyweight luxury streetwear for poker players, high-stakes strategists and minds forged in self-control.",
       cta: "Shop now",
       href: "/products",
-      image: "/tempered/hero-elephant.webp",
-      imageAlt: "An elephant wearing a gold crown",
+      secondaryCta: "Featured collections",
+      secondaryHref: "#collections",
+      image: "/tempered/hero.webp",
+      imageSmall: "/tempered/hero-1000.webp",
+      imageAlt: "",
       values: ["Poker", "Discipline", "Character", "Purpose", "A higher standard"]
     },
-    tiles: {
-      shopAll: { title: "Shop all", cta: "Shop", image: "/tempered/tile-apparel.webp" },
-      collection: { cta: "Explore" },
-      story: { title: "Our story", subtitle: "More than a game", cta: "Learn more", href: "/our-story", image: "/tempered/tile-story.webp" }
+    collection: {
+      eyebrow: "The collection",
+      title: "Built to be worn hard",
+      text: "Heavyweight essentials, cut boxy and made to outlast the session.",
+      viewPiece: "View piece",
+      cta: "Shop this collection",
+      href: "/products",
+      notes: {
+        "classic-logo-tee": "Washed black · Heavyweight",
+        "elephant-arch-tee": "Washed black · Oversized print",
+        "war-edition-tee": "Black · Limited run",
+        "classic-joggers": "Heather grey · Fleece"
+      }
     },
-    featured: { title: "Featured collection", viewAll: "View all", viewAllHref: "/products" },
+    seats: {
+      eyebrow: "Collections",
+      title: "Choose your seat",
+      tiles: {
+        war: { subtitle: "Limited edition", image: "/tempered/seat-war.webp" },
+        tees: { subtitle: "Heavyweight cotton", image: "/tempered/seat-tees.webp" },
+        joggers: { subtitle: "Fleece essentials", image: "/tempered/seat-joggers.webp" }
+      }
+    },
+    code: {
+      eyebrow: "The code",
+      link: "Our philosophy",
+      href: "/our-story",
+      items: [
+        { numeral: "I", title: "Patience", text: "Wait for the right hand. Most of the game is folding." },
+        { numeral: "II", title: "Discipline", text: "The rules you keep when nobody is watching." },
+        { numeral: "III", title: "Character", text: "Revealed under pressure, never announced." },
+        { numeral: "IV", title: "Purpose", text: "Every chip placed for a reason." },
+        { numeral: "V", title: "Control", text: "Master yourself before you master the table." }
+      ]
+    },
     manifesto: {
       eyebrow: "A different breed",
       title: "More than a game.",
-      text: "Tempered is for those who understand that poker isn't just cards. It's a mirror. It reveals character, tests discipline and demands control. We make apparel for those committed to a higher standard.",
-      cta: "Our philosophy",
+      text: "Poker is a mirror. It reveals character, tests discipline and demands control. We make apparel for those committed to a higher standard.",
+      cta: "Our story",
       href: "/our-story",
-      image: "/tempered/story-hand.webp",
-      imageAlt: "A hand resting on a stack of poker chips",
-      values: ["Patience", "Discipline", "Self-mastery", "Control", "Freedom"]
+      image: "/tempered/breed-hand.webp",
+      imageAlt: "A hand resting on a stack of poker chips"
     },
-    quote: { text: "Master yourself before you master the table.", signoff: "Play with purpose" },
+    quote: { text: "The table doesn’t build character. It reveals it.", signoff: "Play with purpose" },
     story: {
       seoTitle: "Our story",
       seoDescription: "Tempered is poker-born apparel for people who treat the table as a discipline. More than a game: patience, control and a higher standard.",

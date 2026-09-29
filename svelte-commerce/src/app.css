@@ -149,6 +149,7 @@
 		--shadow-overlay: 0 24px 64px rgba(0, 0, 0, 0.72); /* shadow-overlay: floating sheets only */
 		--font-heading: 'Cormorant Garamond', 'Cormorant', Garamond, 'Times New Roman', serif; /* font-display */
 		--font-body: 'Hanken Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* font-sans */
+		--font-numeral: 'Bodoni Moda', Didot, 'Times New Roman', serif; /* font-numeral: outlined numerals, footer wordmark */
 		--font-primary: var(--font-body);
 		--container-max: 1440px; /* container-max */
 		--container-gutter: clamp(16px, 4vw, 32px); /* space-4 on phones to space-8 on desktop */

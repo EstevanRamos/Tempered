@@ -50,7 +50,7 @@ Night (dark) is the house theme; Bone (light) is for editorial and journal pages
 
 ## Typography
 
-Two families from Google Fonts: **Cormorant Garamond** (`--font-display`) for the voice, **Hanken Grotesk** (`--font-sans`) for everything functional. Load weights 400/500/600 and 400 italic.
+Two families from Google Fonts: **Cormorant Garamond** (`--font-display`) for the voice, **Hanken Grotesk** (`--font-sans`) for everything functional. Load weights 400/500/600 and 400 italic. A third, **Bodoni Moda** (`--font-numeral`, 400, optical size 6–96), is reserved for outlined ornament: the Roman numerals of The Code and the footer wordmark, drawn as a `gold-deep` hairline stroke with no fill. Never set words to read in it.
 
 - `display-xl` — the hero wordmark and campaign lines, 1–2 words, tracked 0.14em.
 - `display-l` — section statements ("MORE THAN A GAME.").
