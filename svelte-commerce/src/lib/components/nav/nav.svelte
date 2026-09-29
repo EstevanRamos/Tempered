@@ -132,6 +132,7 @@
 		{navModule}
 		announcement={isHomepage && !helloBarHasContent ? themeAnnouncement : ''}
 		announcementHref={themeHeader?.announcementHref || ''}
+		announcementHtml={isHomepage && helloBarHasContent ? String(navModule.helloBarPlugin?.content || '') : ''}
 	/>
 {:else}
 	<header

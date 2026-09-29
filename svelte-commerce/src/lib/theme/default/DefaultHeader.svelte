@@ -20,9 +20,11 @@
 		/** Theme-content announcement line, already resolved by the caller. */
 		announcement?: string
 		announcementHref?: string
+		/** The hello-bar plugin's content (merchant HTML), which takes the slot when it has any. */
+		announcementHtml?: string
 	}
 
-	let { navModule, announcement = '', announcementHref = '' }: Props = $props()
+	let { navModule, announcement = '', announcementHref = '', announcementHtml = '' }: Props = $props()
 
 	const store = $derived(page.data?.store)
 	const name = $derived(store?.name || 'Tempered')
@@ -55,12 +57,14 @@
 	})
 </script>
 
-{#if announcement}
+{#if announcement || announcementHtml}
 	<!-- The announcement bar, for promos: a quiet surface band, not gold (the cart count is the
 	     header's one gold element). -->
 	<div class="border-b border-border bg-card text-center">
 		<p class="page-width py-2.5 text-eyebrow uppercase text-muted-foreground">
-			{#if announcementHref}
+			{#if announcementHtml}
+				{@html announcementHtml}
+			{:else if announcementHref}
 				<a href={announcementHref} class="inline-flex min-h-6 items-center transition-colors hover:text-foreground">{announcement}</a>
 			{:else}
 				{announcement}
@@ -155,11 +159,6 @@
 							</a>
 						</li>
 					{/each}
-					<li class="border-b border-border">
-						<a href="/our-story" class="flex min-h-12 items-center text-label uppercase text-foreground transition-colors hover:text-primary" onclick={closeMenu}>
-							Our story
-						</a>
-					</li>
 				</ul>
 			</nav>
 			<div class="border-t border-border px-4 py-4">

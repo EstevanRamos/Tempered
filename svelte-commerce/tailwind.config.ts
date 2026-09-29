@@ -114,7 +114,9 @@ const config: Config = {
 				lg: 'var(--radius)',
 				md: 'max(0px, calc(var(--radius) - 2px))',
 				sm: 'max(0px, calc(var(--radius) - 4px))',
-				radius: 'var(--radius)'
+				radius: 'var(--radius)',
+				// design/tokens.json radius-hair: only badges (and the focus ring) soften a small shape.
+				hair: '2px'
 			},
 			keyframes: {
 				'accordion-down': {

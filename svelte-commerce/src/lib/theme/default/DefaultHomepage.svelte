@@ -31,7 +31,7 @@
 			href: '/products',
 			image: content.tiles.shopAll.image
 		}
-		const drops: Tile[] = collections.map((c) => ({
+		const collectionTiles: Tile[] = collections.map((c) => ({
 			title: `${c.name} collection`,
 			subtitle: c.description ?? '',
 			cta: content.tiles.collection.cta,
@@ -40,7 +40,7 @@
 		}))
 		// The story tile's subject sits left, so its text sits bottom-right.
 		const story: Tile = { ...content.tiles.story, end: true }
-		return [shopAll, ...drops, story]
+		return [shopAll, ...collectionTiles, story]
 	})
 </script>
 

@@ -201,9 +201,7 @@
 							<p class="text-lg tabular-nums tracking-[0.04em] text-foreground">{subtotal}</p>
 						{/if}
 					</div>
-					<p class="mt-1 text-xs text-muted-foreground">
-						{storeData?.currency?.includesTax ? 'Prices include tax. Shipping is chosen at checkout.' : 'Shipping and taxes calculated at checkout.'}
-					</p>
+					<p class="mt-1 text-xs text-muted-foreground">Shipping and taxes calculated at checkout.</p>
 
 					<!-- The drawer had no live region, so a screen-reader user heard nothing when a quantity
 					     change moved the subtotal. -->

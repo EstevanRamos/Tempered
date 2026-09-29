@@ -28,7 +28,7 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="tp-checkout flex min-h-screen flex-col">
+<div class="ed-checkout flex min-h-screen flex-col">
 	<!-- The minimal checkout header: the crowned mark over the tracked wordmark, and one reassurance
 	     in words. Nothing that invites the shopper back out of the flow. -->
 	<header class="border-b border-border bg-background">

@@ -13,6 +13,6 @@
 	}
 </script>
 
-<span {id} class="inline-flex h-5 items-center rounded-[2px] border px-2 text-[10px] font-medium uppercase leading-none tracking-[0.2em] {TONES[tone]} {className}">
+<span {id} class="inline-flex h-5 items-center rounded-hair border px-2 text-eyebrow uppercase leading-none tracking-[0.2em] {TONES[tone]} {className}">
 	{label}
 </span>
