@@ -58,11 +58,16 @@ test('a shopper browses, buys as a guest, then signs up and finds the order in t
 		await expect(bagButton).toBeVisible()
 	})
 
-	await test.step('the header lists the Categories; a Category page shows only its products', async () => {
+	await test.step('the header leads to Shop, Collections and Our story; a Category page shows only its products', async () => {
 		const header = page.getByRole('banner')
-		await expect(header.getByRole('link', { name: 'Tees', exact: true })).toBeVisible()
-		await expect(header.getByRole('link', { name: 'Joggers', exact: true })).toBeVisible()
-		await header.getByRole('link', { name: 'Tees', exact: true }).click()
+		for (const name of ['Shop', 'Collections', 'Our story']) {
+			await expect(header.getByRole('link', { name, exact: true })).toBeVisible()
+		}
+		await header.getByRole('link', { name: 'Collections', exact: true }).click()
+		await expect(page).toHaveURL(/#collections$/)
+		const seats = page.getByRole('region', { name: 'Choose your seat' })
+		await expect(seats.getByRole('link', { name: /^Joggers\b/ })).toBeVisible()
+		await seats.getByRole('link', { name: /^Tees\b/ }).click()
 		await expect(page).toHaveURL(/\/tees$/)
 		const main = page.locator('main')
 		for (const tee of ['Classic logo tee', 'Elephant arch tee', 'War edition tee']) {

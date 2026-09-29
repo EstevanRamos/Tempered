@@ -30,12 +30,12 @@
 	const name = $derived(store?.name || 'Tempered')
 	const userState = $derived(navModule.userState)
 	const signedIn = $derived(!!userState?.user?.role)
-	// The store's header menu (the Engine's Shop Categories plus Shop all, see catalogue-tree.ts),
-	// then the story.
-	const links = $derived<{ id?: string; link: string; name: string }[]>([
-		...(store?.menu?.find((menu: { menuId?: string }) => menu?.menuId === 'header')?.items ?? []),
+	// Three doors: everything, the homepage's Choose your seat (each drop and Category), the story.
+	const links: { link: string; name: string }[] = [
+		{ link: '/products', name: 'Shop' },
+		{ link: '/#collections', name: 'Collections' },
 		{ link: '/our-story', name: 'Our story' }
-	])
+	]
 	const isCheckout = $derived(page.url.pathname.startsWith('/checkout'))
 	const isHome = $derived(page.route?.id === '/(www)')
 	const isCurrent = (href: string) => page.url.pathname === href
