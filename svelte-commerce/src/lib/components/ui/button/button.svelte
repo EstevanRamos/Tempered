@@ -4,12 +4,10 @@
 	import { type VariantProps, tv } from 'tailwind-variants'
 
 	// Focus: no local focus style. The storefront has exactly one focus indicator, the global
-	// `:focus-visible` rule in src/app.css (2px of --ring, 2px offset). The default theme used to
-	// cancel it on buttons, because `.ed-btn-base` set `box-shadow: none` and the ring paints as a
-	// box-shadow; that rule is now scoped to `:not(:focus-visible)` so the shared ring comes
-	// through. Keep this string short: `tv()` infers it as a literal type, and the consumers that
-	// pass its output into a bits-ui prop (pagination, range-calendar) sit close enough to
-	// TypeScript's union-complexity ceiling that a few extra classes here tip them over it.
+	// `:focus-visible` rule in src/app.css (2px of --ring, 2px offset; on the default theme a 1px
+	// gold outline, 3px off). Keep this string short: `tv()` infers it as a literal type, and the
+	// consumers that pass its output into a bits-ui prop (pagination, range-calendar) sit close
+	// enough to TypeScript's union-complexity ceiling that a few extra classes here tip them over it.
 	export const buttonVariants = tv({
 		base: 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-radius text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
 		variants: {

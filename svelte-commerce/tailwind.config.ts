@@ -73,6 +73,9 @@ const config: Config = {
 				// `border-strong` is the >=3:1 control boundary that `border` is too quiet to be.
 				'primary-hover': 'hsl(var(--primary-hover) / <alpha-value>)',
 				'border-strong': 'hsl(var(--border-strong) / <alpha-value>)',
+				// Tempered's `ink-faint`: placeholders, disabled labels, legal. Only the default theme
+				// declares it; elsewhere it falls back to the muted foreground.
+				'faint-foreground': 'hsl(var(--faint-foreground, var(--muted-foreground)) / <alpha-value>)',
 				muted: {
 					DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
 					foreground: 'hsl(var(--muted-foreground) / <alpha-value>)'
@@ -106,7 +109,8 @@ const config: Config = {
 			// (buttons + inputs) read the token and everything else was fixed pixels.
 			// max(0px, …) keeps the smaller steps legal when --radius is 0.
 			borderRadius: {
-				xl: 'calc(var(--radius) + 4px)',
+				// --radius-step lets a square theme (the default, Tempered) keep rounded-xl square as well.
+				xl: 'calc(var(--radius) + var(--radius-step, 4px))',
 				lg: 'var(--radius)',
 				md: 'max(0px, calc(var(--radius) - 2px))',
 				sm: 'max(0px, calc(var(--radius) - 4px))',
@@ -142,14 +146,34 @@ const config: Config = {
 				xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
 				'z-1': '0 2px 4px rgba(0, 0, 0, 0.1)',
 				'z-2': '0 4px 8px rgba(0, 0, 0, 0.1)',
-				'z-10': '0 6px 12px rgba(0, 0, 0, 0.15)'
+				'z-10': '0 6px 12px rgba(0, 0, 0, 0.15)',
+				// The design system's one shadow, for things that float (drawers, menus, dialogs).
+				overlay: 'var(--shadow-overlay, 0 6px 12px rgba(0, 0, 0, 0.15))'
 			},
 			// Same story for `backdrop-blur-xs` (nav drawer scrim). v4 name, v3 engine.
 			backdropBlur: {
 				xs: '4px'
 			},
+			// Tempered's type scale (design/tokens.json → type). Size, leading, tracking and weight
+			// travel together; pair `display-*`, `heading`, `title` and `quote` with `font-serif`.
+			// `label` and `eyebrow` are always uppercase: add `uppercase` alongside.
 			fontSize: {
-				xxs: '10px'
+				xxs: '10px',
+				'display-xl': ['112px', { lineHeight: '104px', letterSpacing: '0.14em', fontWeight: '400' }],
+				'display-l': ['64px', { lineHeight: '68px', letterSpacing: '0.1em', fontWeight: '400' }],
+				heading: ['36px', { lineHeight: '42px', letterSpacing: '0.08em', fontWeight: '500' }],
+				title: ['24px', { lineHeight: '30px', letterSpacing: '0.06em', fontWeight: '500' }],
+				quote: ['24px', { lineHeight: '32px', fontWeight: '400' }],
+				'body-l': ['17px', { lineHeight: '28px' }],
+				body: ['15px', { lineHeight: '24px' }],
+				small: ['13px', { lineHeight: '20px' }],
+				label: ['12px', { lineHeight: '16px', letterSpacing: '0.18em', fontWeight: '500' }],
+				eyebrow: ['11px', { lineHeight: '16px', letterSpacing: '0.32em', fontWeight: '500' }],
+				price: ['14px', { lineHeight: '20px', letterSpacing: '0.04em' }]
+			},
+			// Body copy line length (design/tokens.json → layout.measure).
+			maxWidth: {
+				measure: 'var(--measure, 56ch)'
 			},
 			// One named z-index scale, backed by the --z-* properties in src/app.css so the
 			// call sites a utility cannot reach — inline styles and component <style> blocks —
