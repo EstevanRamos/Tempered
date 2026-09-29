@@ -292,6 +292,16 @@ export interface ThemeHomepageContent {
 		featured: { title: string; viewAll: string; viewAllHref: string }
 		manifesto: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string; values: string[] }
 		quote: { text: string; signoff: string }
+		/** The Our Story page (a Story page, not a product group), band by band. */
+		story: {
+			seoTitle: string
+			seoDescription: string
+			hero: { eyebrow: string; title: string; text: string; image: string; imageAlt: string }
+			chapters: Array<{ eyebrow: string; title: string; text: string[]; image: string; imageAlt: string }>
+			values: string[]
+			quote: { text: string; signoff: string }
+			close: { eyebrow: string; title: string; text: string; cta: string; href: string }
+		}
 		/** Shipping, returns and payment reassurance, shown beside Add to bag on the product page. */
 		assurances: Array<{ icon: 'truck' | 'returns' | 'shield'; title: string; text: string }>
 	}

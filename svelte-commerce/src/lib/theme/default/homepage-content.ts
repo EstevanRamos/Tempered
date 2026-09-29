@@ -120,6 +120,48 @@ export const defaultContent: ThemeHomepageContent = {
       values: ["Patience", "Discipline", "Self-mastery", "Control", "Freedom"]
     },
     quote: { text: "Master yourself before you master the table.", signoff: "Play with purpose" },
+    story: {
+      seoTitle: "Our story",
+      seoDescription: "Tempered is poker-born apparel for people who treat the table as a discipline. More than a game: patience, control and a higher standard.",
+      hero: {
+        eyebrow: "Our story",
+        title: "More than a game.",
+        text: "Poker isn't just cards. It's a mirror. It reveals character, tests discipline and demands control.",
+        image: "/tempered/hero-elephant.webp",
+        imageAlt: "An elephant wearing a gold crown"
+      },
+      chapters: [
+        {
+          eyebrow: "The table",
+          title: "Discipline builds freedom.",
+          text: [
+            "The table rewards the player who waits. Who folds without regret, holds without fear and acts only when it counts.",
+            "That is the whole idea. Master yourself, and the rest follows."
+          ],
+          image: "/tempered/story-hand.webp",
+          imageAlt: "A hand resting on a stack of poker chips"
+        },
+        {
+          eyebrow: "The fight",
+          title: "Poker is war.",
+          text: [
+            "Every hand is a battle, and the first opponent is the one in your own seat. Win that one and the table follows.",
+            "We make apparel for those committed to a higher standard: heavyweight, cut to be worn hard, marked with the crowned elephant."
+          ],
+          image: "/tempered/tile-war.webp",
+          imageAlt: "A spartan warrior in shadow"
+        }
+      ],
+      values: ["Patience", "Discipline", "Self-mastery", "Control", "Freedom"],
+      quote: { text: "Master yourself before you master the table.", signoff: "Play with purpose" },
+      close: {
+        eyebrow: "The collection",
+        title: "Wear the standard.",
+        text: "Tees, joggers and limited drops, made for the long session.",
+        cta: "Shop all",
+        href: "/products"
+      }
+    },
     // Beside Add to bag on the product page, where the shopper decides. Keep them true to what
     // checkout does: shipping is Standard or Express, priced at checkout.
     assurances: [

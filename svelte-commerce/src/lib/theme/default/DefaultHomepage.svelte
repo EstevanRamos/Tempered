@@ -8,6 +8,10 @@
 	import type { CatalogueEntry } from './catalogue-tree.js'
 	import DefaultProductCard from './DefaultProductCard.svelte'
 	import Arrow from './Arrow.svelte'
+	import LinkButton from './LinkButton.svelte'
+	import SectionHeader from './SectionHeader.svelte'
+	import TextLink from './TextLink.svelte'
+	import ValueList from './ValueList.svelte'
 
 	let { themeContent, featuredProducts = [] }: ThemeHomepageProps = $props()
 
@@ -56,16 +60,9 @@
 					{content.hero.title}
 				</h1>
 				<p class="mb-12 max-w-measure text-body-l text-muted-foreground">{content.hero.text}</p>
-				<a href={content.hero.href} class="tp-btn group">
-					{content.hero.cta}
-					<Arrow />
-				</a>
+				<LinkButton href={content.hero.href}>{content.hero.cta}</LinkButton>
 			</div>
-			<ul class="values hidden md:flex" aria-label="What we stand for">
-				{#each content.hero.values as value (value)}
-					<li>{value}</li>
-				{/each}
-			</ul>
+			<ValueList items={content.hero.values} label="What we stand for" class="max-md:hidden" />
 		</div>
 	</section>
 
@@ -91,15 +88,11 @@
 	<!-- Featured products, on the new product card. -->
 	{#if products.length}
 		<section class="page-width py-16 md:py-24" aria-labelledby="home-featured">
-			<div class="flex items-end justify-between gap-8">
-				<div>
-					<h2 id="home-featured" class="font-serif text-[28px] font-medium uppercase leading-[34px] tracking-[0.08em] text-foreground md:text-heading">
-						{content.featured.title}
-					</h2>
-					<span class="mt-4 block h-px w-8 bg-primary" aria-hidden="true"></span>
-				</div>
-				<a href={content.featured.viewAllHref} class="text-link group">{content.featured.viewAll} <Arrow /></a>
-			</div>
+			<SectionHeader id="home-featured" title={content.featured.title}>
+				{#snippet action()}
+					<TextLink href={content.featured.viewAllHref}>{content.featured.viewAll}</TextLink>
+				{/snippet}
+			</SectionHeader>
 			<div class="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-6">
 				{#each products as product, i (product.id)}
 					<DefaultProductCard {product} priority={i < 2} />
@@ -121,12 +114,8 @@
 			</h2>
 			<p class="mb-12 max-w-measure text-body-l text-muted-foreground">{content.manifesto.text}</p>
 			<div class="flex flex-wrap items-end justify-between gap-10">
-				<a href={content.manifesto.href} class="tp-btn group">{content.manifesto.cta} <Arrow /></a>
-				<ul class="values" aria-label="The virtues">
-					{#each content.manifesto.values as value (value)}
-						<li>{value}</li>
-					{/each}
-				</ul>
+				<LinkButton href={content.manifesto.href}>{content.manifesto.cta}</LinkButton>
+				<ValueList items={content.manifesto.values} label="The virtues" />
 			</div>
 		</div>
 	</section>
@@ -142,76 +131,6 @@
 {/if}
 
 <style>
-	/* The design system's outline Button: an ink hairline that fills with ink on hover. */
-	.tp-btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 12px;
-		height: 48px;
-		padding: 0 32px;
-		border: 1px solid hsl(var(--foreground));
-		color: hsl(var(--foreground));
-		font-size: 12px;
-		font-weight: 500;
-		line-height: 16px;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		transition:
-			background-color 0.2s,
-			color 0.2s;
-	}
-
-	.tp-btn:hover {
-		background: hsl(var(--foreground));
-		color: hsl(var(--background));
-	}
-
-	/* TextLink: tracked uppercase with the hairline arrow, underlined on hover. */
-	.text-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 4px 0;
-		border-bottom: 1px solid transparent;
-		color: hsl(var(--foreground));
-		font-size: 12px;
-		font-weight: 500;
-		line-height: 16px;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		white-space: nowrap;
-		transition: border-color 0.2s;
-	}
-
-	.text-link:hover {
-		border-bottom-color: currentColor;
-	}
-
-	/* ValueList: virtues in eyebrow type, right-aligned; the last one, the conclusion, in ink. */
-	.values {
-		flex-direction: column;
-		align-items: flex-end;
-		gap: 8px;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		color: hsl(var(--muted-foreground));
-		font-size: 11px;
-		font-weight: 500;
-		line-height: 16px;
-		letter-spacing: 0.32em;
-		text-align: right;
-		text-transform: uppercase;
-	}
-
-	.manifesto .values {
-		display: flex;
-	}
-
-	.values li:last-child {
-		color: hsl(var(--foreground));
-	}
-
 	/* Hero: 720px on desktop, the copy beside the image. On a phone the image takes the top and
 	   fades down into the ground, and the copy sits beneath it, clear of the face. */
 	.hero__img {
