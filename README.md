@@ -44,8 +44,10 @@ the start of every session, so the stack is already up.
 `vendure/catalogue/` holds the Tempered catalogue as Vendure import files, so it can be reloaded
 and the same format reused for real products:
 
-- `products.csv`: the products, their size variants, tax-inclusive prices, stock and Category Tag
-  (`Category:Tees`), in Vendure's product-import format. Images come from `design/assets/Imagery`.
+- `products.csv`: the products, their size variants, tax-inclusive prices, stock, Category Tag
+  (`Category:Tees`) and optional Badge (`Badge:New`, `Badge:Limited`), in Vendure's product-import
+  format. Images come from `design/assets/Imagery`. A variant with no stock shows as a sold-out size;
+  a product with none at all shows "Sold out" on its card.
 - `initial-data.json`: countries and zones, tax rates, shipping (Standard $5, Express $10), the
   payment method, and the Collection trees. Under **Shop**, one Collection per Category, filled by
   a Tag filter, so tagging a product is all it takes to put it in a Category. Under **Drops**,

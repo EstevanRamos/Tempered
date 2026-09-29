@@ -15,7 +15,12 @@ export const load: PageLoad = async (event) => {
 		products?: { data?: unknown[]; categoryHierarchy?: unknown[] }
 	}
 
-	const resolved = data?.products?.categoryHierarchy?.length || data?.products?.data?.length
+	// A Category or Collection the Engine has is a real page even with nothing in it yet: it shows
+	// an empty shelf that links back to Shop all, not a 404.
+	const { catalogue } = (await event.parent()) as { catalogue?: { categories?: { slug: string }[]; collections?: { slug: string }[] } }
+	const known = [...(catalogue?.categories ?? []), ...(catalogue?.collections ?? [])].some((c) => c.slug === event.params.slug)
+
+	const resolved = known || data?.products?.categoryHierarchy?.length || data?.products?.data?.length
 	const narrowed = FILTER_PARAMS.some((p) => event.url.searchParams.has(p))
 	if (!resolved && !narrowed) error(404, 'Not found')
 

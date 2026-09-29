@@ -118,10 +118,11 @@
 		display: contents;
 	}
 
+	/* On the page's ground; `surface` is for the image wells. */
 	:global([data-theme='default']) .ed-plp {
 		display: block;
-		background: var(--ed-surface);
-		padding-bottom: clamp(24px, 2.4vw, 40px);
+		background: transparent;
+		padding-bottom: clamp(64px, 6.7vw, 96px);
 	}
 
 	:global([data-theme='default']) .ed-plp__crumbs {
@@ -131,14 +132,14 @@
 	/* Was clamp(24px, 3vw, 48px) / clamp(20px, 2.6vw, 34px): a 48px rail gutter and 34px above the
 	   title, on top of the 34px the breadcrumb block already spent. 32px is the desktop gutter. */
 	:global([data-theme='default']) .ed-plp__row {
-		gap: clamp(16px, 1.6vw, 24px);
-		padding-top: clamp(10px, 1.1vw, 16px);
+		gap: clamp(16px, 2.2vw, 32px);
+		padding-top: clamp(32px, 4.4vw, 64px);
 	}
 
 	/* The one rhythm for the main column — header, filter chips, grid, pagination. Every child that
 	   also carried its own margin has been zeroed so this gap is the only thing setting it. */
 	:global([data-theme='default']) .ed-plp__main {
-		gap: 12px;
+		gap: 32px;
 	}
 
 	/* 28px chips with 6px between them from md up, where the pointer is a mouse. Below md the
