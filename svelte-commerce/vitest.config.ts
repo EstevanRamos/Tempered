@@ -8,7 +8,8 @@ export default defineConfig({
 		environment: 'jsdom',
 		setupFiles: ['./tests/test-setup.ts'],
 		include: ['tests/**/*.{test,spec}.{js,ts}'],
-		exclude: ['node_modules', '.svelte-kit', 'src'],
+		// The shopper-path test is Playwright, run by playwright.shopper.config.ts against the live stack.
+		exclude: ['node_modules', '.svelte-kit', 'src', 'tests/shopper-path/**'],
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],

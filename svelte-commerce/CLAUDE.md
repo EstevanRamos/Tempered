@@ -25,25 +25,29 @@ the relevant ones in their prompts so each does not re-derive them.
 - svelte-check baseline on 2026-09-03 is **150 errors, 102 warnings, 66 files**, all pre-existing.
   Compare against that number; do not treat it as your regression.
 - Unit tests: `bunx vitest run`. Playwright specs expect the app on `http://localhost:3000`.
-- Playwright: launch with `chromium.launch({ channel: 'chrome' })`. The bundled browser build is
-  not installed. From Git Bash, prefix a route argument with `MSYS_NO_PATHCONV=1` or `/products`
+- The shopper-path test (`bun run test:shopper`, `tests/shopper-path/`) is the definition of done:
+  one end-to-end walk against the running stack, selecting by role and name. Keep it green. The
+  other Playwright specs query test IDs that don't exist in `src/`; don't rely on them.
+- Playwright: the bundled browser build may not match. Set `PLAYWRIGHT_CHROMIUM_PATH` (cloud
+  sessions: `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`) or launch with `channel: 'chrome'`. From Git Bash, prefix a route argument with `MSYS_NO_PATHCONV=1` or `/products`
   is rewritten into a Windows path.
 - `bun run dev` serves the default theme. `PUBLIC_STOREFRONT_THEME=<name>` overrides it, but only
   when the store record carries no theme of its own.
 
 **The local backend**
 
-- The active connector is `@misiki/gocommerce-connector`, talking to the local GoCommerce engine in
-  `../gocommerce` via `PUBLIC_GOCOMMERCE_API_URL=http://127.0.0.1:8080`. `../scripts/dev.sh` starts
-  Postgres, the engine and this storefront; `../scripts/seed.sh` loads a 3-product demo catalog.
-- Browser-side calls go through `src/routes/proxy/gocommerce/[...path]` (the engine sends no CORS
-  headers); server-side calls hit the engine directly.
-- GoCommerce has no store record, so identity (name, logo, menus, plugin toggles) comes from
+- The active connector is `@misiki/vendure-connector`, talking to the Vendure Engine in
+  `../vendure` via `PUBLIC_VENDURE_API_URL=http://127.0.0.1:3001` (the only backend variable).
+  `../scripts/dev.sh` starts Postgres, Vendure and this storefront, loading the catalogue on first run.
+- Browser and server calls both go straight to `<PUBLIC_VENDURE_API_URL>/shop-api`; Vendure answers
+  CORS for the storefront origin with credentials. Use `127.0.0.1`, not `localhost`: the session
+  cookie is scoped to the API's host.
+- Vendure has no store record, so identity (name, logo, menus, plugin toggles) comes from
   `src/lib/core/connectors/default-store.json` merged under `kitcommerce.config.ts`'s default export.
-- Services the engine lacks (blogs, banners, reels, …) return empty lists or throw a named
-  `UnsupportedByGoCommerce` error; that is expected, not a bug.
-- A missing product image is demo data, not a defect. A component that collapses to zero height
-  because the image is missing is a defect.
+  **The merge is shallow**: overriding a nested key (`plugins`, `menu`, …) replaces all of it, so
+  spread the defaults.
+- Services Vendure lacks (blogs, banners, reels, …) return empty lists; that is expected, not a bug.
+- `/auth/login` is not a page. Login is a modal opened with `/?show_auth=true&login=true`.
 
 **Ownership: what you may not edit**
 

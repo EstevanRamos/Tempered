@@ -237,12 +237,18 @@
 					<!-- coupon applied-->
 					{#if cartState.cart.couponCode}
 						<div class="flex items-center justify-between px-1 text-sm sm:text-base">
-							<p class="font-medium">Coupon Applied</p>
+							<p class="font-medium">Code applied</p>
 							<div class="flex items-center gap-2 rounded-radius border border-border bg-background p-2 px-3">
 								<p class="text-sm font-medium text-muted-foreground">
 									{cartState.cart.couponCode}
 								</p>
-								<Button variant="ghost" size="icon" class="h-auto w-auto p-1 text-destructive" onclick={paymentModule.removeAppliedCoupon}>
+								<Button
+									variant="ghost"
+									size="icon"
+									class="h-auto w-auto p-1 text-destructive"
+									aria-label="Remove code {cartState.cart.couponCode}"
+									onclick={paymentModule.removeAppliedCoupon}
+								>
 									<X class="size-4" />
 								</Button>
 							</div>
@@ -307,6 +313,7 @@
 									<PriceSummary
 										subtotal={cartState.cart.subtotal}
 										discount={cartState.cart.discountAmount}
+										couponCode={cartState.cart.couponCode}
 										shipping={cartState.cart.shippingCharges}
 										tax={cartState.cart.tax}
 										total={cartState.cart.total}

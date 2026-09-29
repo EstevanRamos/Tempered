@@ -10,12 +10,18 @@
 	import { afterNavigate, beforeNavigate } from '$app/navigation'
 	import { browser } from '$app/environment'
 	import { Loader } from '@lucide/svelte'
-	import { type Snippet } from 'svelte'
+	import { onMount, type Snippet } from 'svelte'
 	import type { StoreData } from '$lib/core/types/index.js'
 	import { ColorPalette } from '$lib/core/components/index.js'
 	import StoreFont from '$lib/components/common/store-font.svelte'
 	import StorePalette from '$lib/components/common/store-palette.svelte'
 	import { guardStorePalette } from '$lib/components/common/store-palette-guard.js'
+
+	// Marks the page interactive once the root layout has hydrated. The shopper-path test waits on
+	// it so it never clicks a server-rendered button that has no handler yet.
+	onMount(() => {
+		document.documentElement.dataset.hydrated = 'true'
+	})
 
 	interface LayoutData {
 		store: StoreData

@@ -474,6 +474,7 @@
 									<PriceSummary
 										subtotal={cartState.cart.subtotal}
 										discount={cartState.cart.discountAmount}
+										couponCode={cartState.cart.couponCode}
 										shipping={cartState.cart.shippingCharges}
 										tax={cartState.cart.tax}
 										total={cartState.cart.total}

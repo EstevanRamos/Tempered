@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Drawer from '$lib/components/ui/drawer/index.js'
 	import Button from '$lib/components/ui/button/button.svelte'
+	import { buttonVariants } from '$lib/components/ui/button/index.js'
 	import { ChevronRight, Copy, X } from '@lucide/svelte'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { CouponDrawerRenderer } from '$lib/core/composables/index.js'
@@ -8,27 +9,38 @@
 	import { date, formatPrice } from '$lib/core/utils/index.js'
 	import { page } from '$app/state'
 	import { innerWidth } from 'svelte/reactivity/window'
+	import { getCartState } from '$lib/core/stores/index.js'
 
-	let { open = false, code = $bindable(''), class: className = '' } = $props()
+	let { code = $bindable(''), class: className = '' } = $props()
+
+	const cartState = getCartState()
+	let drawerOpen = $state(false)
+
+	// Close once the code is on the cart, so the shopper sees the discount line in the summary
+	// instead of a drawer covering it. A refused code keeps the drawer open beside its error.
+	async function apply(check: () => void | Promise<void>) {
+		await check()
+		if (cartState?.cart?.couponCode) drawerOpen = false
+	}
 </script>
 
 <CouponDrawerRenderer bind:code>
 	<!-- The code input is always available: unlisted codes (email, influencer, support) have no
 	     entry point otherwise. Only the public coupon list is gated on there being coupons. -->
 	{#snippet content({ coupons, isChecking, handleCheck, handleCouponClick, handleCopy })}
-		<Drawer.Root {open} direction={innerWidth.current && innerWidth.current > 400 ? 'right' : 'bottom'} shouldScaleBackground={true}>
-			<Drawer.Trigger class="w-full {className ? 'h-full' : ''}">
-				<Button variant="outline" class="group w-full justify-between !px-6 !py-5 {className}">
-					Apply Promo Code
-					<span class="text-muted-foreground">
-						<ChevronRight class="h-4 w-4" />
-					</span>
-				</Button>
+		<Drawer.Root bind:open={drawerOpen} direction={innerWidth.current && innerWidth.current > 400 ? 'right' : 'bottom'} shouldScaleBackground={true}>
+			<!-- The trigger is the button itself: a Button inside Drawer.Trigger nested one <button> in
+			     another, which is invalid and read twice by screen readers. -->
+			<Drawer.Trigger class={buttonVariants({ variant: 'outline', class: `group w-full justify-between !px-6 !py-5 ${className}` })}>
+				Apply promo code
+				<span class="text-muted-foreground">
+					<ChevronRight class="h-4 w-4" />
+				</span>
 			</Drawer.Trigger>
 			<Drawer.Content class="sm:left-auto sm:right-0 sm:top-0 sm:mt-0 sm:h-[100dvh] sm:w-fit sm:max-w-xl [&>div:first-child]:hidden">
 				<div in:fly={{ duration: 300 }} class="mx-auto w-full max-w-4xl pb-20 sm:pb-0">
 					<Drawer.Header class="text-left">
-						<Drawer.Title>Apply Promo Code</Drawer.Title>
+						<Drawer.Title>Apply promo code</Drawer.Title>
 						<Drawer.Close
 							class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
 						>
@@ -38,9 +50,9 @@
 					</Drawer.Header>
 					<div class="p-4 pb-0">
 						<div class="flex gap-2">
-							<Input placeholder="Enter your coupon code" bind:value={code} class="flex-1" />
-							<Button onclick={handleCheck} disabled={!code || isChecking}>
-								{isChecking ? 'Checking...' : 'APPLY'}
+							<Input placeholder="Enter your code" aria-label="Promo code" bind:value={code} class="flex-1" />
+							<Button onclick={() => apply(handleCheck)} disabled={!code || isChecking}>
+								{isChecking ? 'Checking…' : 'Apply'}
 							</Button>
 						</div>
 					</div>

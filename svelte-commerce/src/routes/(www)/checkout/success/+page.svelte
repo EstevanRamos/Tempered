@@ -8,6 +8,7 @@
 	import { page } from '$app/state'
 	import { fade, fly } from 'svelte/transition'
 	import CheckoutHeader from '$lib/components/checkout/checkout-header.svelte'
+	import PriceSummary from '$lib/components/checkout/price-summary.svelte'
 
 	const userState = getUserState()
 	const cartState = getCartState()
@@ -39,14 +40,6 @@
 	// shipping, no total and no payment method. A shopper could not check what they had been
 	// charged without opening their email.
 	const currencyCode = $derived(firstOrder?.currencyCode || page?.data?.store?.currency?.code)
-	const orderTotals = $derived(
-		[
-			{ label: 'Subtotal', value: firstOrder?.subtotal },
-			{ label: 'Shipping', value: firstOrder?.shippingCharges },
-			{ label: 'Discount', value: firstOrder?.discount ? -Math.abs(firstOrder.discount) : 0 }
-		].filter((row) => typeof row.value === 'number' && row.value !== 0)
-	)
-
 	const estimatedDeliveryDateMachine = $derived.by(() => {
 		if (!firstOrder) return ''
 		const date = new Date(firstOrder.createdAt)
@@ -223,17 +216,19 @@
 					<!-- Order-level money. The page listed per-item prices and then stopped, so a shopper could
 					     not check what they had actually been charged, or how, without opening their email. -->
 					<div class="mt-6 space-y-2 border-t border-muted/30 pt-6 text-sm">
-						{#each orderTotals as row}
-							<div class="flex items-center justify-between text-muted-foreground">
-								<span>{row.label}</span>
-								<span>{formatPrice(row.value, currencyCode)}</span>
-							</div>
-						{/each}
 						{#if typeof firstOrder?.total === 'number'}
-							<div class="flex items-center justify-between border-t border-muted/30 pt-2 text-base font-bold text-foreground">
-								<span>Total</span>
-								<span>{formatPrice(firstOrder.total, currencyCode)}</span>
-							</div>
+							<!-- The same money block as the bag and checkout, so the discount line and the tax
+							     wording read the same on the receipt as where the shopper agreed to them. -->
+							<PriceSummary
+								subtotal={firstOrder.subtotal}
+								discount={firstOrder.discount}
+								couponCode={firstOrder.couponCode}
+								shipping={firstOrder.shippingCharges}
+								tax={firstOrder.tax}
+								total={firstOrder.total}
+								{currencyCode}
+								shippingResolved
+							/>
 						{/if}
 						{#if firstOrder?.paymentMethod}
 							<div class="flex items-center justify-between pt-1 text-muted-foreground">

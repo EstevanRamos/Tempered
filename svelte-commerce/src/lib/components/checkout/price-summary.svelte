@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { cn, formatPrice } from '$lib/core/utils'
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js'
+	import { page } from '$app/state'
 
 	/**
 	 * The one money block for cart, checkout and order confirmation. The same five rows were
@@ -18,7 +19,8 @@
 	let {
 		subtotal = 0,
 		discount = 0,
-		discountLabel = 'Discount',
+		couponCode = null,
+		discountLabel = couponCode ? `Discount (${couponCode})` : 'Discount',
 		shipping = 0,
 		tax = 0,
 		total = 0,
@@ -26,12 +28,14 @@
 		shippingResolved = false,
 		unresolvedShippingText = 'Address required',
 		estimatedNote = 'Shipping is added once we have your address.',
+		taxIncluded = !!page?.data?.store?.currency?.includesTax,
 		loading = false,
 		class: className = ''
 	}: {
 		subtotal?: number | null
 		discount?: number | null
-		/** Review names the code, e.g. `Discount (SAVE10)`; the other steps just say Discount. */
+		/** The applied code, named on the discount row: `Discount (SAVE10)`. */
+		couponCode?: string | null
 		discountLabel?: string
 		shipping?: number | null
 		tax?: number | null
@@ -41,6 +45,8 @@
 		shippingResolved?: boolean
 		unresolvedShippingText?: string
 		estimatedNote?: string
+		/** The prices already contain the tax, so it is shown as part of the total, never as a charge. Defaults to the store's `currency.includesTax`. */
+		taxIncluded?: boolean
 		loading?: boolean
 		class?: string
 	} = $props()
@@ -81,7 +87,7 @@
 				<div class="flex items-center justify-between gap-4 text-sm">
 					<dt class="font-medium text-muted-foreground">{discountLabel}</dt>
 					<!-- A saving reads as success, not as the raw orange it used to carry. -->
-					<dd class="font-bold text-success">-{money(discount)}</dd>
+					<dd class="font-bold text-success">−{money(discount)}</dd>
 				</div>
 			{/if}
 
@@ -102,8 +108,9 @@
 				</dd>
 			</div>
 
-			<!-- Only when the store actually charges it; a permanent "Tax $0.00" row is noise. -->
-			{#if hasTax}
+			<!-- Only when the store adds tax on top; a permanent "Tax $0.00" row is noise, and tax that is
+			     already inside the prices is noted under the total instead. -->
+			{#if hasTax && !taxIncluded}
 				<div class="flex items-center justify-between gap-4 text-sm">
 					<dt class="font-medium text-muted-foreground">Tax</dt>
 					<dd class="font-bold text-foreground">{money(tax)}</dd>
@@ -117,6 +124,11 @@
 					<span class="text-sm font-bold uppercase text-foreground">{totalLabel}</span>
 					{#if !shippingResolved}
 						<span class="text-xs font-normal text-muted-foreground">{estimatedNote}</span>
+					{/if}
+					{#if taxIncluded}
+						<span class="text-xs font-normal text-muted-foreground">
+							incl. tax{#if hasTax}&nbsp;{money(tax)}{/if}
+						</span>
 					{/if}
 				</dt>
 				<dd class="shrink-0 text-xl font-bold text-foreground">{money(total)}</dd>
