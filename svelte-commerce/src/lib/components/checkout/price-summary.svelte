@@ -19,7 +19,8 @@
 	let {
 		subtotal = 0,
 		discount = 0,
-		discountLabel = 'Discount',
+		couponCode = null,
+		discountLabel = couponCode ? `Discount (${couponCode})` : 'Discount',
 		shipping = 0,
 		tax = 0,
 		total = 0,
@@ -33,7 +34,8 @@
 	}: {
 		subtotal?: number | null
 		discount?: number | null
-		/** Review names the code, e.g. `Discount (SAVE10)`; the other steps just say Discount. */
+		/** The applied code, named on the discount row: `Discount (SAVE10)`. */
+		couponCode?: string | null
 		discountLabel?: string
 		shipping?: number | null
 		tax?: number | null

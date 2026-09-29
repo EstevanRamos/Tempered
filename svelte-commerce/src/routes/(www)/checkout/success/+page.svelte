@@ -222,7 +222,7 @@
 							<PriceSummary
 								subtotal={firstOrder.subtotal}
 								discount={firstOrder.discount}
-								discountLabel={firstOrder.couponCode ? `Discount (${firstOrder.couponCode})` : 'Discount'}
+								couponCode={firstOrder.couponCode}
 								shipping={firstOrder.shippingCharges}
 								tax={firstOrder.tax}
 								total={firstOrder.total}

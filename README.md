@@ -59,7 +59,7 @@ cd vendure && npm run catalogue:reload   # wipes the database (orders and custom
 ```
 
 In the dashboard, the owner edits products, stock and prices; adds a Tag to put a product in a
-Category; and hand-picks products into a Drop. The tax rates are placeholders until the real tax
+Category; and hand-picks products into a Collection under Drops. The tax rates are placeholders until the real tax
 setup is decided.
 
 ## How the Storefront reaches the Engine

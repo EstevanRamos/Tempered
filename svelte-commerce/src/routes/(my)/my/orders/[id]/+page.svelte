@@ -34,9 +34,6 @@
 	// number is what says a real order came back; without it the empty state belongs on screen.
 	const orderNumberOf = (order: any) => order?.orderNo ?? order?.orderNumber ?? order?.number ?? ''
 	const isRealOrder = (order: any) => !!orderNumberOf(order)
-	// `couponCode` is added by the Vendure corrections (src/lib/core/connectors/vendure-corrections.ts);
-	// the core Order type predates it.
-	const discountLabelOf = (order: any) => (order?.couponCode ? `Discount (${order.couponCode})` : 'Discount')
 
 	// `formatPrice(undefined, …)` renders the string "$undefined". A money row the backend did not
 	// supply is shown as an em dash instead, the way an unknown value should read.
@@ -297,7 +294,7 @@
 											<PriceSummary
 												subtotal={order.subtotal}
 												discount={order.discount}
-												discountLabel={discountLabelOf(order)}
+												couponCode={(order as any).couponCode}
 												shipping={order.shippingCharges}
 												tax={order.tax}
 												total={order.total}

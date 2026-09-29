@@ -45,8 +45,8 @@ const ROOT = path.join(__dirname, '..');
 const CATALOGUE = path.join(ROOT, 'catalogue');
 const IMAGERY = path.join(ROOT, '../design/assets/Imagery');
 
-/** Hand-picked Collections: products chosen one by one, not by Tag. */
-const DROPS = [{ name: 'War', slug: 'war', parent: 'drops', asset: 'tile-war.webp', products: ['war-edition-tee'] }];
+/** Hand-picked Collections, under the Drops parent: products chosen one by one, not by Tag. */
+const HAND_PICKED_COLLECTIONS = [{ name: 'War', slug: 'war', parent: 'drops', asset: 'tile-war.webp', products: ['war-edition-tee'] }];
 
 const PROMOTIONS = [{ name: 'Tempered 10% off', couponCode: 'TEMPERED10', percentOff: 10 }];
 
@@ -77,7 +77,7 @@ async function main() {
     if (result.errors?.length) throw new Error(`Product import failed:\n${result.errors.join('\n')}`);
     await populateCollections(app, initialData);
 
-    await createDrops(app, ctx);
+    await createHandPickedCollections(app, ctx);
     await createPromotions(app, ctx);
     await app.get(SearchService).reindex(ctx);
     await waitForJobs(app);
@@ -105,21 +105,21 @@ async function adminContext(app: INestApplication): Promise<RequestContext> {
     return app.get(RequestContextService).create({ apiType: 'admin', user: superadmin ?? undefined });
 }
 
-async function createDrops(app: INestApplication, ctx: RequestContext) {
+async function createHandPickedCollections(app: INestApplication, ctx: RequestContext) {
     const collections = app.get(CollectionService);
-    for (const drop of DROPS) {
-        const parent = await collections.findOneBySlug(ctx, drop.parent);
-        if (!parent) throw new Error(`Collection "${drop.parent}" is missing from initial-data.json`);
+    for (const collection of HAND_PICKED_COLLECTIONS) {
+        const parent = await collections.findOneBySlug(ctx, collection.parent);
+        if (!parent) throw new Error(`Collection "${collection.parent}" is missing from initial-data.json`);
         const productIds = await Promise.all(
-            drop.products.map(async slug => {
+            collection.products.map(async slug => {
                 const product = await app.get(ProductService).findOneBySlug(ctx, slug);
-                if (!product) throw new Error(`${drop.name} lists "${slug}", which products.csv doesn't have`);
+                if (!product) throw new Error(`${collection.name} lists "${slug}", which products.csv doesn't have`);
                 return product.id;
             }),
         );
-        const { assets } = await app.get(AssetImporter).getAssets([drop.asset], ctx);
+        const { assets } = await app.get(AssetImporter).getAssets([collection.asset], ctx);
         await collections.create(ctx, {
-            translations: [{ languageCode: LanguageCode.en, name: drop.name, slug: drop.slug, description: '' }],
+            translations: [{ languageCode: LanguageCode.en, name: collection.name, slug: collection.slug, description: '' }],
             parentId: parent.id,
             inheritFilters: false,
             featuredAssetId: assets[0]?.id,

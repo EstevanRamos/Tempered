@@ -226,7 +226,8 @@ test('a shopper browses, buys as a guest, then signs up and finds the order in t
 		await dialog.getByRole('textbox', { name: 'Email address' }).fill(SHOPPER.Email)
 		await dialog.getByRole('textbox', { name: 'Password' }).fill(PASSWORD)
 		await dialog.getByRole('button', { name: 'Sign in' }).click()
-		await expect(page).toHaveURL(/\/my\/orders/)
+		// Back on the page that asked for the login, not left on the homepage behind a closed modal.
+		await expect.poll(() => new URL(page.url()).pathname).toBe('/my/orders')
 		await expect(page.locator('main').getByText(`#${orderNo}`)).toBeVisible()
 		await expect(page.locator('main').getByText(EXPECTED.total, { exact: true }).first()).toBeVisible()
 	})
