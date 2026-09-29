@@ -238,7 +238,7 @@
 				     where every other field uses the 14px label, and centred itself so its text sat
 				     below the ZIP label beside it. -->
 				<div class="flex flex-col gap-2">
-					<Label for="country-code"
+					<Label class="ed-label" for="country-code"
 						>Country{#if countries.length > 1}<span class="text-destructive"> *</span>{/if}</Label
 					>
 					{#if countries.length > 1}

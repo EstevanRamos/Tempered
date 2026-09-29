@@ -3,7 +3,7 @@
 	import { ChevronLeft, CreditCard, LockKeyhole, Mail, MapPin, Pencil, Truck } from '@lucide/svelte'
 	import { formatPrice } from '$lib/core/utils'
 	import { page } from '$app/state'
-	import OrderTrustBadges from '$lib/core/components/plugins/order-trust-badges.svelte'
+	import CheckoutAssurances from '$lib/components/checkout/checkout-assurances.svelte'
 	import CheckoutHeader from '$lib/components/checkout/checkout-header.svelte'
 	import PriceSummary from '$lib/components/checkout/price-summary.svelte'
 	import CheckoutButton from '$lib/components/buttons/checkout-button.svelte'
@@ -30,7 +30,7 @@
 		<CheckoutHeader step={3} />
 
 		<div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-			<h1 class="text-xl font-bold uppercase text-foreground" style="font-family: var(--font-body);">Review Your Order</h1>
+			<h1 class="text-xl font-bold uppercase text-foreground">Review Your Order</h1>
 			<Button variant="outline" onclick={onback} class="group flex w-fit items-center gap-2">
 				<ChevronLeft class="size-4 transition-transform duration-300 group-hover:-translate-x-1" /> Back to Payment
 			</Button>
@@ -43,10 +43,10 @@
 				<!-- Items -->
 				<div class="rounded-lg border border-border bg-background p-6 shadow-sm">
 					<div class="flex items-center justify-between border-b border-border pb-3">
-						<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">
+						<h2 class="text-base font-bold uppercase text-foreground">
 							Items ({selectedItems.length})
 						</h2>
-						<Button variant="ghost" size="sm" href={appendOneTimeCartId('/checkout/cart')} class="h-8 text-primary hover:text-primary/80">
+						<Button variant="ghost" size="sm" href={appendOneTimeCartId('/checkout/cart')} class="h-8 text-muted-foreground hover:text-foreground">
 							<Pencil class="mr-1 size-3.5" /> Edit
 						</Button>
 					</div>
@@ -81,10 +81,10 @@
 				{#if cartState.cart?.email || cartState.cart?.phone}
 					<div class="rounded-lg border border-border bg-background p-6 shadow-sm">
 						<div class="flex items-center justify-between border-b border-border pb-3">
-							<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">
-								<Mail class="size-4 text-primary" /> Contact
+							<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground">
+								<Mail class="size-4 text-muted-foreground" /> Contact
 							</h2>
-							<Button variant="ghost" size="sm" href={appendOneTimeCartId('/checkout/address')} class="h-8 text-primary hover:text-primary/80">
+							<Button variant="ghost" size="sm" href={appendOneTimeCartId('/checkout/address')} class="h-8 text-muted-foreground hover:text-foreground">
 								<Pencil class="mr-1 size-3.5" /> Edit
 							</Button>
 						</div>
@@ -103,10 +103,10 @@
 				{#if cartState.cart?.shippingAddress}
 					<div class="rounded-lg border border-border bg-background p-6 shadow-sm">
 						<div class="flex items-center justify-between border-b border-border pb-3">
-							<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">
-								<MapPin class="size-4 text-primary" /> Delivery Address
+							<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground">
+								<MapPin class="size-4 text-muted-foreground" /> Delivery Address
 							</h2>
-							<Button variant="ghost" size="sm" href={appendOneTimeCartId('/checkout/address')} class="h-8 text-primary hover:text-primary/80">
+							<Button variant="ghost" size="sm" href={appendOneTimeCartId('/checkout/address')} class="h-8 text-muted-foreground hover:text-foreground">
 								<Pencil class="mr-1 size-3.5" /> Edit
 							</Button>
 						</div>
@@ -134,10 +134,10 @@
 				{#if selectedShippingRate}
 					<div class="rounded-lg border border-border bg-background p-6 shadow-sm">
 						<div class="flex items-center justify-between border-b border-border pb-3">
-							<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">
-								<Truck class="size-4 text-primary" /> Shipping Method
+							<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground">
+								<Truck class="size-4 text-muted-foreground" /> Shipping Method
 							</h2>
-							<Button variant="ghost" size="sm" onclick={onback} class="h-8 text-primary hover:text-primary/80">
+							<Button variant="ghost" size="sm" onclick={onback} class="h-8 text-muted-foreground hover:text-foreground">
 								<Pencil class="mr-1 size-3.5" /> Edit
 							</Button>
 						</div>
@@ -163,10 +163,10 @@
 				<!-- Payment Method -->
 				<div class="rounded-lg border border-border bg-background p-6 shadow-sm">
 					<div class="flex items-center justify-between border-b border-border pb-3">
-						<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">
-							<CreditCard class="size-4 text-primary" /> Payment Method
+						<h2 class="flex items-center gap-2 text-base font-bold uppercase text-foreground">
+							<CreditCard class="size-4 text-muted-foreground" /> Payment Method
 						</h2>
-						<Button variant="ghost" size="sm" onclick={onback} class="h-8 text-primary hover:text-primary/80">
+						<Button variant="ghost" size="sm" onclick={onback} class="h-8 text-muted-foreground hover:text-foreground">
 							<Pencil class="mr-1 size-3.5" /> Edit
 						</Button>
 					</div>
@@ -187,8 +187,8 @@
 			<div class="flex h-fit flex-col gap-3">
 				<div class="space-y-4 rounded-lg border border-border bg-background p-6 shadow-sm">
 					<div class="mb-6 flex flex-col gap-1">
-						<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Price Summary</h2>
-						<div class="h-1 w-12 bg-primary"></div>
+						<h2 class="text-base font-bold uppercase text-foreground">Price Summary</h2>
+						<div class="h-px w-8 bg-primary"></div>
 					</div>
 					<div class="space-y-4">
 						<PriceSummary
@@ -223,7 +223,7 @@
 					</div>
 				</div>
 
-				<OrderTrustBadges />
+				<CheckoutAssurances />
 			</div>
 		</div>
 	</div>

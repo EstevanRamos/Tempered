@@ -71,7 +71,7 @@
 								</Button>
 								<button
 									onclick={() => handleCouponClick(coupon.code)}
-									class="font-mono inline-block rounded-radius border border-dashed border-primary px-3 py-1 text-sm font-semibold text-foreground hover:bg-primary/5"
+									class="font-mono inline-block rounded-radius border border-dashed border-border-strong px-3 py-1 text-sm font-semibold text-foreground hover:bg-accent"
 								>
 									{coupon.code}
 								</button>

@@ -9,7 +9,7 @@
 	import { page } from '$app/state'
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte'
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js'
-	import OrderTrustBadges from '$lib/core/components/plugins/order-trust-badges.svelte'
+	import CheckoutAssurances from '$lib/components/checkout/checkout-assurances.svelte'
 	import { showAuthModal } from '$lib/core/components/index.js'
 	import Textbox from '$lib/components/form/textbox.svelte'
 	import { AddressModule, emptyAddress, checkoutAddressSchema as schemas } from '$lib/core/composables/index.js'
@@ -215,15 +215,15 @@
 						{#await userState.hasLoaded then _}
 							<!-- Every logged-out visitor sees the guest-checkout banner. -->
 							{#if !userState.user?.userId}
-								<div class="rounded-lg border border-blue-100 bg-blue-50 p-4">
+								<div class="rounded-lg border border-border bg-success/10 p-4">
 									<div class="flex items-start gap-3">
-										<ShoppingBag class="mt-0.5 size-5 shrink-0 text-blue-600" />
+										<ShoppingBag class="mt-0.5 size-5 shrink-0 text-foreground" />
 										<div>
-											<p class="text-sm font-semibold text-blue-900">You're checking out as a guest</p>
-											<p class="mt-1 text-sm text-blue-800">
+											<p class="text-sm font-semibold text-foreground">You're checking out as a guest</p>
+											<p class="mt-1 text-sm text-foreground">
 												No account needed — just enter your details below. Optionally,
 												<button
-													class="font-bold underline hover:text-blue-900"
+													class="font-bold underline hover:text-foreground"
 													onclick={() => {
 														showAuthModal('login')
 													}}
@@ -245,7 +245,7 @@
 							<div class="overflow-hidden rounded-lg border border-border bg-background shadow-sm">
 								<div class="flex items-center justify-between border-b border-border px-5 py-4">
 									<div class="flex items-center space-x-3">
-										<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Contact Details</h2>
+										<h2 class="text-base font-bold uppercase text-foreground">Contact Details</h2>
 									</div>
 									{#if cartState.cart.email && !addressModule.editEmail && !userState.user?.userId}
 										<Button onclick={addressModule.handleEditEmail} variant="ghost" size="sm" class="h-8">
@@ -321,7 +321,7 @@
 									<!-- Guest checkout: inline address form, no login required -->
 									<div class="p-6">
 										<div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-											<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Delivery Address</h2>
+											<h2 class="text-base font-bold uppercase text-foreground">Delivery Address</h2>
 											<Button variant="link" onclick={() => showAuthModal('login')} class="h-auto whitespace-normal p-0 text-left">
 												Login to view your saved addresses
 											</Button>
@@ -331,7 +331,7 @@
 								{:else if cartState.cart.shippingAddress}
 									<div class="">
 										<div class="flex items-center justify-between border-b border-border px-5 py-4">
-											<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Delivery Address</h2>
+											<h2 class="text-base font-bold uppercase text-foreground">Delivery Address</h2>
 											{#if !addressModule.loadingForSaveToCart}
 												<Button onclick={addressModule.handleAddressChangeClick} variant="ghost" class="h-8">Change</Button>
 											{/if}
@@ -343,7 +343,7 @@
 										{:else}
 											<div class="p-6 transition-all duration-500">
 												<div class="mb-4 flex items-center">
-													<MapPin class="mr-2 h-4 w-4 text-primary" />
+													<MapPin class="mr-2 h-4 w-4 text-muted-foreground" />
 													<h3 class="text-sm font-bold uppercase tracking-tight text-foreground">
 														{cartState.cart.shippingAddress?.firstName}
 														{cartState.cart.shippingAddress?.lastName}
@@ -372,7 +372,7 @@
 								{:else}
 									<div class="p-6">
 										<div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-											<h2 class="text-base font-bold uppercase tracking-widest text-foreground" style="font-family: var(--font-body);">
+											<h2 class="text-base font-bold uppercase tracking-widest text-foreground">
 												Shipping Address
 											</h2>
 
@@ -400,7 +400,7 @@
 								<div class="overflow-hidden rounded-lg border border-border bg-background shadow-sm transition-all duration-300">
 									<div class="">
 										<div class="flex items-center justify-between border-b border-border px-5 py-4">
-											<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Billing Address</h2>
+											<h2 class="text-base font-bold uppercase text-foreground">Billing Address</h2>
 											{#if !addressModule.loadingForSaveToCart}
 												<Button onclick={addressModule.handleBilingAddOrChangeClick} variant="ghost" class="h-8">
 													{#if cartState.cart.billingAddress?.address_1}
@@ -418,7 +418,7 @@
 										{:else if cartState.cart?.billingAddress?.address_1}
 											<div class="p-6 transition-all duration-500">
 												<div class="mb-4 flex items-center">
-													<MapPin class="mr-2 h-4 w-4 text-primary" />
+													<MapPin class="mr-2 h-4 w-4 text-muted-foreground" />
 													<h3 class="text-sm font-bold uppercase tracking-tight text-foreground">
 														{cartState.cart.billingAddress?.firstName}
 														{cartState.cart.billingAddress?.lastName}
@@ -464,8 +464,8 @@
 					<div class="space-y-4">
 						<div class="space-y-4 rounded-lg border border-border bg-background p-6 shadow-sm">
 							<div class="mb-6 flex flex-col gap-1">
-								<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Price Summary</h2>
-								<div class="h-1 w-12 bg-primary"></div>
+								<h2 class="text-base font-bold uppercase text-foreground">Price Summary</h2>
+								<div class="h-px w-8 bg-primary"></div>
 							</div>
 							{#if addressModule.loadingForCart}
 								<PriceSummary loading />
@@ -521,7 +521,7 @@
 							{/if}
 						</div>
 
-						<OrderTrustBadges />
+						<CheckoutAssurances />
 					</div>
 				</div>
 			{/if}

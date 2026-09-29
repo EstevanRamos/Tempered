@@ -133,7 +133,7 @@
 					<div class="relative flex justify-between">
 						<!-- Timeline Line -->
 						<div class="absolute left-0 top-5 h-[2px] w-full bg-border">
-							<div class="h-full w-1/3 bg-primary transition-all duration-1000"></div>
+							<div class="h-full w-1/3 bg-foreground transition-all duration-1000"></div>
 						</div>
 
 						{#each timelineSteps as step, i}
@@ -141,9 +141,9 @@
 								<div
 									class="flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors duration-500
 									{step.completed
-										? 'border-primary bg-primary text-primary-foreground'
+										? 'border-foreground bg-foreground text-background'
 										: step.current
-											? 'border-primary bg-card text-primary'
+											? 'border-foreground bg-card text-foreground'
 											: 'border-border bg-card text-muted-foreground'}"
 								>
 									<step.icon class="h-5 w-5" />
@@ -244,7 +244,7 @@
 					<!-- Shipping Info -->
 					<div class="border-b border-muted/30 p-4 sm:border-b-0 sm:border-r md:p-6">
 						<div class="mb-4 flex items-center gap-2 text-base font-bold text-foreground">
-							<MapPin class="h-5 w-5 text-primary" />
+							<MapPin class="h-5 w-5 text-muted-foreground" />
 							<h3>Shipping Address</h3>
 						</div>
 						<!-- Every line is conditional. The city/state/zip line was interpolated unconditionally,
@@ -277,7 +277,7 @@
 					<!-- Delivery Status -->
 					<div class="p-4 md:p-6">
 						<div class="mb-4 flex items-center gap-2 text-base font-bold text-foreground">
-							<Calendar class="h-5 w-5 text-primary" />
+							<Calendar class="h-5 w-5 text-muted-foreground" />
 							<h3>Estimated Delivery</h3>
 						</div>
 						<p class="px-2 text-lg font-bold tracking-tight text-foreground">{estimatedDeliveryDateDisplay}</p>
@@ -296,7 +296,7 @@
 			{:else if hasOrderReference}
 				<div class="border-b border-muted/30 p-6 md:p-12">
 					<div class="flex items-start gap-3 rounded-radius border border-border bg-card p-4">
-						<Package class="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+						<Package class="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
 						<div class="text-sm leading-relaxed text-foreground">
 							<p class="font-bold text-foreground">Order details aren't available yet</p>
 							<p class="mt-1">
@@ -306,8 +306,8 @@
 								{/if}
 							</p>
 							<p class="mt-2">
-								Check <a href="/my/orders" class="font-semibold text-primary underline-offset-4 hover:underline">your orders</a> in a few minutes, or
-								<a href="/contact-us" class="font-semibold text-primary underline-offset-4 hover:underline">contact us</a>.
+								Check <a href="/my/orders" class="font-semibold text-foreground underline underline-offset-4">your orders</a> in a few minutes, or
+								<a href="/contact-us" class="font-semibold text-foreground underline underline-offset-4">contact us</a>.
 							</p>
 						</div>
 					</div>
@@ -328,7 +328,7 @@
 				<div class="mt-8 text-center">
 					<p class="text-sm text-muted-foreground">
 						Need help with your order?
-						<a href="/contact-us" class="font-semibold text-primary underline-offset-4 hover:underline">Contact us</a>
+						<a href="/contact-us" class="font-semibold text-foreground underline underline-offset-4">Contact us</a>
 					</p>
 				</div>
 			</div>

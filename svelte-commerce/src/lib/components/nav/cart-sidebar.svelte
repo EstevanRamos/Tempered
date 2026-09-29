@@ -147,7 +147,7 @@
 		<!-- close cart backdrop -->
 		<Button
 			variant="ghost"
-			class="fixed inset-0 z-overlay h-svh w-full rounded-none border-0 bg-foreground/40 hover:bg-foreground/40"
+			class="fixed inset-0 z-overlay h-svh w-full rounded-none border-0 bg-background/80 hover:bg-background/80"
 			aria-label="Close cart"
 			onclick={closeCart}
 		>
@@ -163,7 +163,7 @@
 		     now sits on <html>, so a panel painted in `bg-background` follows the active theme
 		     rather than freezing the default palette into the drawer. -->
 		<div
-			class="fixed right-0 top-0 z-modal flex h-svh w-full flex-col bg-background shadow-z-10 sm:w-[26rem]"
+			class="fixed right-0 top-0 z-modal flex h-svh w-full flex-col border-l border-border bg-popover text-popover-foreground shadow-overlay sm:w-[26rem]"
 			transition:slideInFromRight={{ duration: 220 }}
 			role="dialog"
 			aria-modal="true"
@@ -172,10 +172,10 @@
 			use:dialog={closeCart}
 		>
 			<div class="flex shrink-0 items-center justify-between gap-2 border-b border-border px-4 py-3">
-				<h2 id={titleId} class="text-base font-semibold text-foreground">
+				<h2 id={titleId} class="font-serif text-title uppercase text-foreground">
 					Your bag
 					{#if itemCount > 0}
-						<span class="font-normal text-muted-foreground">({cartState.cart.qty})</span>
+						<span class="font-sans text-price tabular-nums text-muted-foreground">({cartState.cart.qty})</span>
 					{/if}
 				</h2>
 				<Button variant="ghost" size="icon" class="-mr-2 rounded-full" aria-label="Close cart" onclick={closeCart}>
@@ -190,7 +190,7 @@
 					{/each}
 				</div>
 
-				<div class="shrink-0 border-t border-border bg-muted/40 px-4 py-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
+				<div class="shrink-0 border-t border-border px-4 py-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
 					<div class="flex items-baseline justify-between gap-4">
 						<p class="text-sm font-medium text-foreground">Subtotal</p>
 						{#if isBusy}
@@ -198,10 +198,12 @@
 							     flight the amount is skeletoned rather than left asserting the old number. -->
 							<Skeleton class="h-6 w-24" />
 						{:else}
-							<p class="text-lg font-bold text-foreground">{subtotal}</p>
+							<p class="text-lg tabular-nums tracking-[0.04em] text-foreground">{subtotal}</p>
 						{/if}
 					</div>
-					<p class="mt-1 text-xs text-muted-foreground">Shipping and taxes calculated at checkout.</p>
+					<p class="mt-1 text-xs text-muted-foreground">
+						{storeData?.currency?.includesTax ? 'Prices include tax. Shipping is chosen at checkout.' : 'Shipping and taxes calculated at checkout.'}
+					</p>
 
 					<!-- The drawer had no live region, so a screen-reader user heard nothing when a quantity
 					     change moved the subtotal. -->

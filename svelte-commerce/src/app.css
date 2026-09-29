@@ -519,6 +519,50 @@
 	letter-spacing: normal;
 }
 
+/* ── Tempered forms ────────────────────────────────────────────────────────────
+   design/components/Input: no box, a line-strong underline that turns gold on focus (the focus
+   outline is gold too), 44px tall; an invalid field's underline is `danger` and its message is
+   words beside it. Labels sit above in tracked uppercase. The border colour classes the fields
+   already carry (border-input, border-destructive, border-success) still decide the colour. */
+[data-theme='default'] .ed-input {
+	height: 44px;
+	padding-inline: 0;
+	border-width: 0 0 1px;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+	font-size: 15px;
+}
+
+[data-theme='default'] .ed-input:focus,
+[data-theme='default'] .ed-input:focus-visible {
+	border-bottom-color: hsl(var(--ring));
+}
+
+[data-theme='default'] .ed-label {
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 16px;
+	letter-spacing: 0.24em;
+	text-transform: uppercase;
+	color: hsl(var(--muted-foreground));
+}
+
+/* The package-owned LazyImg paints its loading placeholder in a hard-coded light grey
+   (`bg-gray-50`); on Night that is a pale box where a product image is about to appear. */
+[data-theme='default'] :is(.bg-gray-50, .bg-gray-50\/50) {
+	background-color: hsl(var(--card));
+}
+
+/* ── Tempered checkout ─────────────────────────────────────────────────────────
+   Page and section titles in the display serif, uppercase and tracked, like every SectionHeader. */
+[data-theme='default'] .tp-checkout :is(h1, h2) {
+	font-family: var(--font-heading);
+	font-weight: 500;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
 /* ------------------------------------------------------------------ *
  * Reduced motion
  *

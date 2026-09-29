@@ -74,7 +74,7 @@
 
 				<p class="mt-5 text-sm text-muted-foreground">
 					Still not going through?
-					<a href="/contact-us" class="font-semibold text-primary underline-offset-4 hover:underline">Contact us</a>
+					<a href="/contact-us" class="font-semibold text-foreground underline underline-offset-4">Contact us</a>
 					and we'll help you finish the order.
 				</p>
 			</div>
