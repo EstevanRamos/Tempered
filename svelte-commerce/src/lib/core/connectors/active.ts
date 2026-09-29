@@ -2,6 +2,7 @@ import * as connector from '$connector'
 import { staticStoreConfig } from './static-store'
 import { blockRestFallbacks, serveRestLocally } from './rest-guard'
 import { localStoreData } from './local-store-data'
+import { correctVendureTotals } from './vendure-totals'
 
 // The active backend, whichever connector package this project installs.
 //
@@ -55,3 +56,7 @@ if (!OWNS_LITEKART_REST) {
 	serveRestLocally(localStoreData)
 	if (hooks.BaseService) blockRestFallbacks(hooks.BaseService, connectorName)
 }
+
+// Vendure's connector drops discounts from its money figures and ignores coupon errors; see
+// vendure-totals.ts.
+if (connectorName === 'vendure') correctVendureTotals(connector as Parameters<typeof correctVendureTotals>[0])

@@ -32,6 +32,11 @@ const categories = [
 ]
 
 export default {
+	// Vendure runs promotions, so show the bag's promo-code box. Spread: overriding `plugins` replaces them all.
+	plugins: { ...defaults.plugins, isDiscountCoupons: { ...defaults.plugins.isDiscountCoupons, active: true } },
+	// Tempered's prices include tax (the Vendure channel's pricesIncludeTax), so the price summary
+	// shows the tax inside the total rather than as an extra charge.
+	currency: { ...defaults.currency, includesTax: true },
 	menu: defaults.menu.map((menu) =>
 		menu.menuId === 'header' ? { ...menu, items: [...categories, { id: 'nav-products', link: '/products', name: 'Shop all' }] } : menu
 	)

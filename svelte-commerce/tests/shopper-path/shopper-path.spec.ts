@@ -28,6 +28,22 @@ async function hydrated(page: Page) {
 	await page.locator('html[data-hydrated]').waitFor({ state: 'attached', timeout: 90_000 })
 }
 
+// The worked example: the XXL tee is $38.00, TEMPERED10 takes 10% off the goods (-$3.80) and
+// express shipping adds $10.00, so the shopper pays $44.20. Prices include tax.
+const CODE = 'TEMPERED10'
+const EXPECTED = { subtotal: '$38.00', discount: '$3.80', afterDiscount: '$34.20', shipping: '$10.00', total: '$44.20' }
+
+/** The value beside a price-summary label, e.g. summaryRow(page, 'Subtotal') → the "$38.00" cell. */
+function summaryRow(page: Page, label: string | RegExp) {
+	return page
+		.getByRole('term')
+		.filter({ hasText: typeof label === 'string' ? new RegExp(`^\\s*${escape(label)}`) : label })
+		.first()
+		.locator('xpath=following-sibling::*[1]')
+}
+
+const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
 /** The first price shown in a block of text, e.g. "$1,558.80". */
 const firstPrice = (text: string) => text.match(/\$[\d,]+\.\d{2}/)?.[0]
 
@@ -92,6 +108,37 @@ test('a shopper browses, buys as a guest and sees their order confirmed', async 
 		lineName = (await line.innerText()).trim()
 	})
 
+	await test.step('the price summary says prices include tax, never adds it', async () => {
+		await expect(page.getByRole('term').filter({ hasText: /^\s*Tax\s*$/ })).toHaveCount(0)
+		await expect(page.getByText(/incl\. tax/)).toBeVisible()
+	})
+
+	await test.step('discount code: a wrong code is refused, a right one applies and can be removed', async () => {
+		await page.getByRole('button', { name: 'Apply promo code' }).click()
+		const codeBox = page.getByRole('textbox', { name: 'Promo code' })
+		await codeBox.fill('NOTACODE')
+		await page.getByRole('button', { name: 'Apply', exact: true }).click()
+		await expect(page.getByText(/NOTACODE.*not valid/i)).toBeVisible()
+
+		await codeBox.fill(CODE)
+		await page.getByRole('button', { name: 'Apply', exact: true }).click()
+		await expect(summaryRow(page, `Discount (${CODE})`)).toHaveText(new RegExp(`^[−-]\\${EXPECTED.discount}$`))
+		await expect(summaryRow(page, 'Subtotal')).toHaveText(EXPECTED.subtotal)
+		await expect(summaryRow(page, /Estimated total/)).toHaveText(EXPECTED.afterDiscount)
+		// Applying closes the drawer, uncovering the summary.
+		await expect(page.getByRole('dialog')).toBeHidden()
+
+		await page.getByRole('button', { name: `Remove code ${CODE}` }).click()
+		await expect(page.getByRole('button', { name: `Remove code ${CODE}` })).toBeHidden()
+		await expect(summaryRow(page, /Estimated total/)).toHaveText(EXPECTED.subtotal)
+		await expect(page.getByRole('term').filter({ hasText: 'Discount' })).toHaveCount(0)
+
+		await page.getByRole('button', { name: 'Apply promo code' }).click()
+		await codeBox.fill(CODE)
+		await page.getByRole('button', { name: 'Apply', exact: true }).click()
+		await expect(summaryRow(page, `Discount (${CODE})`)).toBeVisible()
+	})
+
 	await test.step('guest checkout: address', async () => {
 		await page.getByRole('button', { name: 'Proceed to Shipping' }).click()
 		await expect(page.getByRole('heading', { level: 1, name: 'Delivery address' })).toBeVisible()
@@ -115,6 +162,8 @@ test('a shopper browses, buys as a guest and sees their order confirmed', async 
 		await expect(page.getByText(lineName, { exact: true })).toBeVisible()
 		await expect(page.getByText(SHOPPER['Address Line 1'])).toBeVisible()
 		await expect(page.getByText(/^Express Shipping/)).toBeVisible()
+		await expect(summaryRow(page, `Discount (${CODE})`)).toHaveText(new RegExp(`^[−-]\\${EXPECTED.discount}$`))
+		await expect(summaryRow(page, /^\s*Total/)).toHaveText(EXPECTED.total)
 		await page.getByRole('button', { name: 'Confirm Order' }).click()
 	})
 
@@ -124,5 +173,10 @@ test('a shopper browses, buys as a guest and sees their order confirmed', async 
 		})
 		await expect(page.getByText(/Order #[A-Z0-9]{8,}/)).toBeVisible()
 		await expect(page.getByRole('heading', { level: 3, name: lineName })).toBeVisible()
+		await expect(summaryRow(page, 'Subtotal')).toHaveText(EXPECTED.subtotal)
+		await expect(summaryRow(page, `Discount (${CODE})`)).toHaveText(new RegExp(`^[−-]\\${EXPECTED.discount}$`))
+		await expect(summaryRow(page, 'Shipping')).toHaveText(EXPECTED.shipping)
+		await expect(summaryRow(page, /^\s*Total/)).toHaveText(EXPECTED.total)
+		await expect(page.getByText(/incl\. tax/)).toBeVisible()
 	})
 })
