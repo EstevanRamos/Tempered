@@ -9,8 +9,10 @@
 	import Skeleton from '../ui/skeleton/skeleton.svelte'
 	import { priceRoundUp } from '@misiki/kitcommerce-core/utils'
 	import { page } from '$app/state'
+	import { headerWord } from '$lib/theme/default/header-word.js'
 
-	let { class: className = '', placeholder = 'Search...', handleCloseSearch = () => {} } = $props()
+	// `words`: the trigger reads "Search" rather than a glyph (the default theme's header).
+	let { class: className = '', placeholder = 'Search...', handleCloseSearch = () => {}, words = false } = $props()
 
 	let search = $state('')
 </script>
@@ -33,7 +35,18 @@
 		<!-- `plugins.search.active === false` means the store has no search backend (e.g. the
 		     non-Litekart connectors serve empty autocomplete) — hide the trigger entirely.
 		     `undefined` keeps the icon for stores that predate the plugin toggle. -->
-		{#if searchPlugin?.active !== false}
+		{#if searchPlugin?.active !== false && words}
+			<button
+				type="button"
+				class={headerWord}
+				aria-label="Open search"
+				aria-haspopup="dialog"
+				aria-expanded={expandSearch && showSearchResults}
+				onclick={showSearch}
+			>
+				Search
+			</button>
+		{:else if searchPlugin?.active !== false}
 			<Button
 				variant="ghost"
 				size="icon"

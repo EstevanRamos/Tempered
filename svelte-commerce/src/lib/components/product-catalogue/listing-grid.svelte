@@ -15,6 +15,8 @@
 	// the card itself was hard-coded square; now that the card honours the store's
 	// productImageAspectRatio, a square placeholder would jump on every page of an infinite scroll.
 	const cardRatio = $derived(toCssRatio(page?.data?.store?.productImageAspectRatio, '1:1'))
+	// A Category or Collection page with nothing in it yet (not a search, not a filter).
+	const emptyShelf = $derived(!page.url.searchParams.get('search') && page.url.pathname !== '/products')
 	const searchService = new SearchService(fetch)
 	const listingQueryKey = $derived.by(() => {
 		const params = new URLSearchParams(page.url.search)
@@ -155,33 +157,42 @@
 	<div class="ed-empty flex flex-col items-center justify-center gap-2 px-6 py-12 text-center">
 		<p class="ed-empty__title text-lg font-medium text-foreground">
 			{#if searchTerm}
-				No products match “{searchTerm}”
+				Nothing matches “{searchTerm}”.
+			{:else if hasRemovableFilters}
+				Nothing matches these filters.
+			{:else if emptyShelf}
+				Nothing here yet.
 			{:else}
-				No products match these filters
+				Nothing to show.
 			{/if}
 		</p>
 		<p class="max-w-sm text-sm text-muted-foreground">
 			{#if hasRemovableFilters}
-				Try removing a filter, or search for something more general.
+				Remove a filter, or see everything we make.
+			{:else if searchTerm}
+				Try a shorter word, or see everything we make.
 			{:else}
-				Try a shorter or more general search term.
+				The next pieces are on their way. Everything we make is one step away.
 			{/if}
 		</p>
-		{#if hasRemovableFilters}
-			<a
-				href={urlWithoutAnyFilter(page.url)}
-				class="ed-empty__link mt-2 inline-flex h-11 items-center rounded-md border border-input px-4 text-sm font-semibold transition-colors hover:bg-muted"
-			>
-				Clear all filters
-			</a>
-		{:else if searchTerm}
-			<a
-				href="/products"
-				class="ed-empty__link mt-2 inline-flex h-11 items-center rounded-md border border-input px-4 text-sm font-semibold transition-colors hover:bg-muted"
-			>
-				Browse all products
-			</a>
-		{/if}
+		<div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+			{#if hasRemovableFilters}
+				<a
+					href={urlWithoutAnyFilter(page.url)}
+					class="ed-empty__link inline-flex h-11 items-center rounded-md border border-input px-4 text-sm font-semibold transition-colors hover:bg-muted"
+				>
+					Clear all filters
+				</a>
+			{/if}
+			{#if page.url.pathname !== '/products' || hasRemovableFilters || searchTerm}
+				<a
+					href="/products"
+					class="ed-empty__link inline-flex h-11 items-center rounded-md border border-input px-4 text-sm font-semibold transition-colors hover:bg-muted"
+				>
+					Shop all
+				</a>
+			{/if}
+		</div>
 	</div>
 {:else}
 	<div
@@ -245,27 +256,28 @@
 	   drifted only at the ends, so the same three products sat 22px apart vertically here and 14px
 	   apart on the homepage. Uniform, not split: the card's caption already separates one row from
 	   the next, so a taller row-gap only adds height. */
+	/* Tempered: space-4 across on a phone, space-6 on a dense desktop grid (design/components/
+	   ProductCard), and a row gap that clears the card's one-line caption. */
 	:global([data-theme='default']) .ed-grid {
-		column-gap: clamp(10px, 1.1vw, 16px);
-		row-gap: clamp(14px, 1.4vw, 20px);
+		column-gap: 16px;
+		row-gap: 40px;
 	}
 
-	/* A denser column ladder than the Tailwind classes above, and expressed here rather than on
-	   the element so the other four themes keep 2 / 3 / 4 with the quarter-width rail they were
-	   built against. The default theme's rail is capped at 232px (see listing-page.svelte), which
-	   is what makes room for the extra column: it holds the card between 155px and 184px at every
-	   width from 360 up, instead of swinging from 160px on a tablet to 205px on a desktop. */
+	@media (min-width: 768px) {
+		:global([data-theme='default']) .ed-grid {
+			column-gap: 24px;
+			row-gap: 48px;
+		}
+	}
+
+	/* Four across from 1024px: Tempered's product grid is 4 on desktop and 2 on a phone. Expressed
+	   here rather than on the element so the other four themes keep their own ladder. */
 	@media (min-width: 1024px) {
 		:global([data-theme='default']) .ed-grid {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
 	}
 
-	@media (min-width: 1280px) {
-		:global([data-theme='default']) .ed-grid {
-			grid-template-columns: repeat(5, minmax(0, 1fr));
-		}
-	}
 
 	/* Empty state. 58vh reserved most of a viewport for one sentence and a button. */
 	:global([data-theme='default']) .ed-empty {
@@ -276,15 +288,31 @@
 	:global([data-theme='default']) .ed-empty__title {
 		font-family: var(--ed-display);
 		font-weight: 500;
-		font-size: clamp(1.125rem, 1.4vw, 1.375rem);
-		letter-spacing: -0.01em;
-		text-transform: none;
+		font-size: clamp(1.5rem, 2vw, 2rem);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 		color: var(--ed-ink);
 	}
 
+	/* The design system's outline Button: square, an ink hairline, filling with ink on hover. */
 	:global([data-theme='default']) .ed-empty__link {
-		color: hsl(var(--primary));
-		text-underline-offset: 4px;
+		height: 48px;
+		padding: 0 32px;
+		border: 1px solid hsl(var(--foreground));
+		border-radius: 0;
+		color: hsl(var(--foreground));
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	:global([data-theme='default']) .ed-empty__link:hover {
+		background: hsl(var(--foreground));
+		color: hsl(var(--background));
 	}
 
 	:global([data-theme='default']) .ed-more,
@@ -301,9 +329,9 @@
 
 	:global([data-theme='default'] .ed-pagination a),
 	:global([data-theme='default'] .ed-pagination button) {
-		border: 1px solid var(--ed-line);
-		border-radius: var(--ed-radius);
-		background: var(--ed-surface);
+		border: 1px solid var(--ed-line-strong);
+		border-radius: 0;
+		background: transparent;
 		color: var(--ed-ink);
 		font-family: var(--ed-body);
 		font-size: 0.85rem;
@@ -317,15 +345,16 @@
 
 	:global([data-theme='default'] .ed-pagination a:hover),
 	:global([data-theme='default'] .ed-pagination button:not(:disabled):hover) {
-		border-color: hsl(var(--primary));
-		background: var(--ed-surface);
-		color: hsl(var(--primary));
+		border-color: hsl(var(--foreground));
+		background: transparent;
+		color: hsl(var(--foreground));
 	}
 
+	/* The current page is filled with ink, like a selected size chip: gold is the header's. */
 	:global([data-theme='default'] .ed-pagination a[aria-current='page']) {
-		background: hsl(var(--primary));
-		border-color: hsl(var(--primary));
-		color: hsl(var(--primary-foreground));
+		background: hsl(var(--foreground));
+		border-color: hsl(var(--foreground));
+		color: hsl(var(--background));
 	}
 
 	:global([data-theme='default'] .ed-pagination button:disabled) {

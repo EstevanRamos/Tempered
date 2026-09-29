@@ -77,23 +77,24 @@
 		</div>
 		<span class="sr-only">Loading order totals</span>
 	{:else}
-		<dl class="space-y-3 border-b border-border pb-6">
-			<div class="flex items-center justify-between gap-4 text-sm">
-				<dt class="font-medium text-muted-foreground">Subtotal</dt>
-				<dd class="font-bold text-foreground">{money(subtotal)}</dd>
+		<!-- Hairline rows: every figure on its own line, prices in tabular numerals. -->
+		<dl class="divide-y divide-border border-b border-border">
+			<div class="flex items-center justify-between gap-4 py-3 text-sm">
+				<dt class="text-muted-foreground">Subtotal</dt>
+				<dd class="tabular-nums text-foreground">{money(subtotal)}</dd>
 			</div>
 
 			{#if hasDiscount}
-				<div class="flex items-center justify-between gap-4 text-sm">
-					<dt class="font-medium text-muted-foreground">{discountLabel}</dt>
+				<div class="flex items-center justify-between gap-4 py-3 text-sm">
+					<dt class="text-muted-foreground">{discountLabel}</dt>
 					<!-- A saving reads as success, not as the raw orange it used to carry. -->
-					<dd class="font-bold text-success">−{money(discount)}</dd>
+					<dd class="tabular-nums text-success">−{money(discount)}</dd>
 				</div>
 			{/if}
 
-			<div class="flex items-center justify-between gap-4 text-sm">
-				<dt class="font-medium text-muted-foreground">Shipping</dt>
-				<dd class="font-bold text-foreground">
+			<div class="flex items-center justify-between gap-4 py-3 text-sm">
+				<dt class="text-muted-foreground">Shipping</dt>
+				<dd class="tabular-nums text-foreground">
 					{#if !shippingResolved}
 						<span class="font-medium text-muted-foreground">{unresolvedShippingText}</span>
 					{:else if isFreeShipping}
@@ -111,17 +112,17 @@
 			<!-- Only when the store adds tax on top; a permanent "Tax $0.00" row is noise, and tax that is
 			     already inside the prices is noted under the total instead. -->
 			{#if hasTax && !taxIncluded}
-				<div class="flex items-center justify-between gap-4 text-sm">
-					<dt class="font-medium text-muted-foreground">Tax</dt>
-					<dd class="font-bold text-foreground">{money(tax)}</dd>
+				<div class="flex items-center justify-between gap-4 py-3 text-sm">
+					<dt class="text-muted-foreground">Tax</dt>
+					<dd class="tabular-nums text-foreground">{money(tax)}</dd>
 				</div>
 			{/if}
 		</dl>
 
-		<dl class="pt-2">
+		<dl class="pt-4">
 			<div class="flex items-start justify-between gap-4">
 				<dt class="flex flex-col gap-1">
-					<span class="text-sm font-bold uppercase text-foreground">{totalLabel}</span>
+					<span class="text-label uppercase text-foreground">{totalLabel}</span>
 					{#if !shippingResolved}
 						<span class="text-xs font-normal text-muted-foreground">{estimatedNote}</span>
 					{/if}
@@ -131,7 +132,7 @@
 						</span>
 					{/if}
 				</dt>
-				<dd class="shrink-0 text-xl font-bold text-foreground">{money(total)}</dd>
+				<dd class="shrink-0 text-lg tabular-nums tracking-[0.04em] text-foreground">{money(total)}</dd>
 			</div>
 		</dl>
 	{/if}

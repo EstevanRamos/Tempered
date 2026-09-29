@@ -23,21 +23,27 @@ export * as services from './src/lib/core/connectors/active'
 // stranded there.
 import defaults from './src/lib/core/connectors/default-store.json'
 
-// The header lists the Shop's Categories. Each is a Vendure Collection filled from the products'
-// Category Tags, served at its bare slug. The store merge is shallow, so `menu` keeps every other
-// menu (the footer) as it is and replaces only the header's items.
-const categories = [
-	{ id: 'nav-tees', link: '/tees', name: 'Tees' },
-	{ id: 'nav-joggers', link: '/joggers', name: 'Joggers' }
-]
-
 export default {
+	// Tempered's identity (design/assets/Logos): the crowned mark is the header logo and favicon.
+	name: 'Tempered',
+	logo: '/tempered/mark.png',
+	favicon: '/tempered/favicon.png',
+	// Product shots are 4:5 (design/README.md → Imagery); cards, gallery and placeholders read this.
+	productImageAspectRatio: '4:5',
+	// The look comes from the default Theme in src/app.css. A runtime merchant palette would be
+	// painted over it (store-palette.svelte, and the SSR palette tag in routes/+layout.svelte), so it
+	// stays empty: the brand can't be broken by a stray setting. See ADR 0001.
+	cssVariables: {} as Partial<typeof defaults.cssVariables>,
 	// Vendure runs promotions, so show the bag's promo-code box. Spread: overriding `plugins` replaces them all.
-	plugins: { ...defaults.plugins, isDiscountCoupons: { ...defaults.plugins.isDiscountCoupons, active: true } },
+	// The newsletter stays hidden until a provider is chosen.
+	plugins: {
+		...defaults.plugins,
+		isDiscountCoupons: { ...defaults.plugins.isDiscountCoupons, active: true },
+		newsletter: { ...defaults.plugins.newsletter, active: false }
+	},
 	// Tempered's prices include tax (the Vendure channel's pricesIncludeTax), so the price summary
 	// shows the tax inside the total rather than as an extra charge.
 	currency: { ...defaults.currency, includesTax: true },
-	menu: defaults.menu.map((menu) =>
-		menu.menuId === 'header' ? { ...menu, items: [...categories, { id: 'nav-products', link: '/products', name: 'Shop all' }] } : menu
-	)
+	// The header's menu is the Engine's Shop Categories plus Shop all, filled in by the root layout
+	// load (src/lib/theme/default/catalogue-tree.ts); nothing here names a Category.
 }

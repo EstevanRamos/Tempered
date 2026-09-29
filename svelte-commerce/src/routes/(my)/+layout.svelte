@@ -72,7 +72,16 @@
 {#snippet accountLinks()}
 	{#each menuItems as { href, icon: Icon, label }}
 		{@const isActive = page.url.pathname === href || (page.url.pathname.startsWith(href) && href !== '/my')}
-		<Button {href} variant={isActive ? 'default' : 'ghost'} class="h-11 w-full justify-start md:h-10" onclick={() => (isMobileMenuOpen = false)}>
+		<!-- On Tempered the current page is a Tabs-style active item (surface-raised on a line-strong
+		     hairline), not a gold fill: gold is kept for the one action a view exists for. -->
+		{@const tempered = (page.data?.theme?.name ?? 'default') === 'default'}
+		<Button
+			{href}
+			variant={isActive ? (tempered ? 'secondary' : 'default') : 'ghost'}
+			class="h-11 w-full justify-start md:h-10 {isActive && tempered ? 'border border-border-strong' : ''}"
+			aria-current={isActive ? 'page' : undefined}
+			onclick={() => (isMobileMenuOpen = false)}
+		>
 			<Icon class="mr-4 h-5 w-5" />
 			{label}
 		</Button>

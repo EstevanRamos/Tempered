@@ -6,7 +6,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js'
 	import { page } from '$app/state'
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte'
-	import OrderTrustBadges from '$lib/core/components/plugins/order-trust-badges.svelte'
+	import CheckoutAssurances from '$lib/components/checkout/checkout-assurances.svelte'
 	import CouponsDrawer from '$lib/components/coupon/coupons-drawer.svelte'
 	import { CartModule } from '$lib/core/composables/index.js'
 	import CheckoutHeader from '$lib/components/checkout/checkout-header.svelte'
@@ -452,7 +452,7 @@
 							{/if}
 						</div>
 
-						<OrderTrustBadges />
+						<CheckoutAssurances />
 					</div>
 				</div>
 			{/if}

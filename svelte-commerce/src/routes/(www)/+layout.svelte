@@ -43,13 +43,15 @@
 	>
 		Skip to main content
 	</a>
-	{#if !isCheckout}
-		<Nav />
-	{/if}
-	<main id="main" class="inter-gap flex min-h-screen flex-1 flex-col">
+	{#if isCheckout}
+		<!-- Checkout's own layout renders its minimal header, its <main> and its footer, so this one
+		     must not wrap it in a second main landmark. -->
 		{@render children()}
-	</main>
-	{#if !isCheckout}
+	{:else}
+		<Nav />
+		<main id="main" class="inter-gap flex min-h-screen flex-1 flex-col">
+			{@render children()}
+		</main>
 		<Footer />
 	{/if}
 </div>

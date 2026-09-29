@@ -14,6 +14,10 @@
 // 4. Orders (confirmation, history, detail) carried no discount, coupon or tax figures at all.
 // 5. Order statuses were Vendure's state names ("PaymentSettled"), which the pages printed raw.
 //    They are plain words here ("Paid"), in the vocabulary StatusCell colours.
+// 6. Listing and search results said nothing about stock (every one reported `stock: 0`) and
+//    dropped the product's facets, so a card could show neither "Sold out" nor a New / Limited
+//    badge. The search asks for `inStock` and `facetValueIds` too, and each result gets
+//    `soldOut` and `badge` (its Badge facet value, e.g. Badge:New in the catalogue).
 //
 // Tax is `totalWithTax - total`: what the total contains, not something added to it when the
 // store's prices include tax (see `currency.includesTax` in kitcommerce.config.ts).
@@ -93,7 +97,43 @@ const money = (value: number, currencyCode?: string) => {
 	return Math.round(value * scale) / scale
 }
 
-export function correctVendureConnector(connector: { CartService?: ServiceClass; OrderService?: ServiceClass }) {
+type SearchItem = { inStock?: boolean; facetValueIds?: string[] }
+type SearchFacetValue = { facetValue?: { id?: string; name?: string; facet?: { code?: string; name?: string } } }
+
+/** What a search result adds to a product card: whether it is sold out, and its Badge facet. */
+export function searchExtras(items: SearchItem[], facetValues: SearchFacetValue[]) {
+	const badges = new Map<string, string>()
+	for (const { facetValue } of facetValues) {
+		const facet = (facetValue?.facet?.code ?? facetValue?.facet?.name ?? '').toLowerCase()
+		if (facet === 'badge' && facetValue?.id && facetValue.name) badges.set(facetValue.id, facetValue.name)
+	}
+	return items.map((item) => ({
+		soldOut: item?.inStock === false,
+		badge: (item?.facetValueIds ?? []).map((id) => badges.get(id)).find(Boolean) ?? null
+	}))
+}
+
+export function correctVendureConnector(connector: { CartService?: ServiceClass; OrderService?: ServiceClass; SearchService?: ServiceClass }) {
+	const search = connector.SearchService?.prototype
+	if (search?.mapVendureSearchToProductSearchResult && search.query) {
+		// Own property on SearchService, so every other service keeps BaseService's query.
+		const query = search.query
+		search.query = function (path: string, document: unknown, variables?: Record<string, unknown>) {
+			const asked =
+				typeof document === 'string' && document.includes('query SearchProducts') && !document.includes('inStock')
+					? document.replace('productName', 'productName\n        inStock\n        facetValueIds')
+					: document
+			return query.call(this, path, asked, variables)
+		}
+		const mapSearch = search.mapVendureSearchToProductSearchResult
+		search.mapVendureSearchToProductSearchResult = function (result: any) {
+			const mapped = mapSearch.call(this, result)
+			if (!mapped?.data?.length) return mapped
+			const extras = searchExtras(result?.search?.items ?? [], result?.search?.facetValues ?? [])
+			return { ...mapped, data: mapped.data.map((product: any, i: number) => ({ ...product, ...extras[i] })) }
+		}
+	}
+
 	const cart = connector.CartService?.prototype
 	const orders = connector.OrderService?.prototype
 	if (!cart?.mapVendureOrder || !orders?.getOrder) return

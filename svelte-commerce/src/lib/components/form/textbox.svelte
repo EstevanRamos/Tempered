@@ -66,7 +66,7 @@
 		{@const describedBy = [invalid ? messageId : null, info ? infoId : null].filter(Boolean).join(' ') || undefined}
 		<div class="mb-3 space-y-2">
 			{#if label}
-				<Label for={inputId} class="block text-sm font-medium">
+				<Label for={inputId} class="ed-label block text-sm font-medium">
 					{label}
 					{#if optional}<span class="text-xs text-muted-foreground">(Optional)</span>{/if}
 				</Label>

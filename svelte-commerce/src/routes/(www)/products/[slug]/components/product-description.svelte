@@ -65,21 +65,23 @@
 		border-bottom: 1px solid var(--ed-line);
 	}
 
+	/* Quiet sections: a tracked eyebrow label over a hairline. */
 	:global([data-theme='default'] .edp-acc-label) {
 		font-family: var(--ed-body);
-		font-size: 0.78rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.24em;
 		text-transform: uppercase;
-		color: var(--ed-ink);
+		color: var(--ed-soft);
 	}
 
 	:global([data-theme='default'] .edp-prose) {
 		color: var(--ed-soft);
 		/* 14.4px / 1.6 — inside the 14-16px body band. Was 0.92rem/1.7, which read as a long
 		   loose column next to a compact buy box. */
-		font-size: 0.9rem;
-		line-height: 1.6;
+		font-size: 15px;
+		line-height: 24px;
+		max-width: var(--measure, 56ch);
 	}
 
 	:global([data-theme='default'] .edp-prose :is(h1, h2, h3, h4, strong)) {

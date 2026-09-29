@@ -125,8 +125,9 @@
 		// Read through entries rather than by key: `cssVariables` is typed `{}` upstream, so indexing it
 		// needs a cast. This is what paletteStyleTag above already does with the same object.
 		const override = Object.entries(data?.store?.cssVariables ?? {}).find(([key]) => key === '--background')?.[1]
+		// The fallback is Tempered's Night `ground`, the default theme's --background in app.css.
 		const triplet =
-			typeof override === 'string' && override.trim() ? override.replaceAll(',', '').replace('hsl(', '').replace(')', '').trim() : '0 0% 100%'
+			typeof override === 'string' && override.trim() ? override.replaceAll(',', '').replace('hsl(', '').replace(')', '').trim() : '60 4.8% 4.1%'
 		return `hsl(${triplet})`
 	})
 
@@ -251,7 +252,7 @@
 			     navigations still pending after 700ms get the overlay. -->
 			{#await new Promise((resolve) => setTimeout(resolve, 700)) then _}
 				<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm" role="status">
-					<div class="rounded-lg bg-white p-4">
+					<div class="rounded-lg bg-popover p-4 text-popover-foreground shadow-overlay">
 						<Loader class="animate-spin" />
 						<span class="sr-only">Loading</span>
 					</div>

@@ -10,6 +10,7 @@
 	import { page } from '$app/state'
 	import { onDestroy, onMount } from 'svelte'
 	import { dialog } from '$lib/actions/dialog.js'
+	import { headerWord } from '$lib/theme/default/header-word.js'
 
 	const cartState = getCartState()
 	const storeData = $derived(page.data?.store)
@@ -24,7 +25,8 @@
 	const subtotal = $derived(formatPrice(cartState?.cart?.subtotal ?? cartState?.cart?.total ?? 0, storeData?.currencyCode))
 	const itemCount = $derived(cartState?.cart?.lineItems?.length ?? 0)
 
-	const { onClose, onContinueShopping, onRemoveCartItem } = $props()
+	// `words`: the trigger reads "Cart 0", the count in gold (the default theme's header).
+	const { onClose, onContinueShopping, onRemoveCartItem, words = false } = $props()
 	const modalHistoryKey = '__svelteCommerceCartSidebar'
 	const titleId = $props.id()
 	let ownsHistoryEntry = false
@@ -120,15 +122,20 @@
 	     geometry as every other header action. -->
 	<button
 		data-testid="cart-icon"
-		class="flex h-9 w-9 items-center justify-center rounded-full max-md:h-11 max-md:w-11"
+		class={words ? `${headerWord} gap-2` : 'flex h-9 w-9 items-center justify-center rounded-full max-md:h-11 max-md:w-11'}
 		aria-label="Cart, {cartState?.cart?.qty ?? 0} items"
 		aria-expanded={!!cartState?.isOpen}
 		onclick={() => {
 			if (cartState) cartState.isOpen = !cartState.isOpen
 		}}
 	>
-		<ShoppingBag class="h-5 w-5" />
-		{#if cartState?.cart?.total && cartState.cart?.lineItems?.length > 0}
+		{#if words}
+			<!-- The count is the header's one gold element. -->
+			Cart <span class="tabular-nums text-primary">{cartState?.cart?.qty ?? 0}</span>
+		{:else}
+			<ShoppingBag class="h-5 w-5" />
+		{/if}
+		{#if !words && cartState?.cart?.total && cartState.cart?.lineItems?.length > 0}
 			<span
 				class="absolute right-0 top-0 inline-flex -translate-y-1/2 translate-x-1/2 transform items-center justify-center rounded-full bg-primary px-1.5 py-1 text-xs font-bold leading-none text-primary-foreground"
 			>
@@ -140,7 +147,7 @@
 		<!-- close cart backdrop -->
 		<Button
 			variant="ghost"
-			class="fixed inset-0 z-overlay h-svh w-full rounded-none border-0 bg-foreground/40 hover:bg-foreground/40"
+			class="fixed inset-0 z-overlay h-svh w-full rounded-none border-0 bg-background/80 hover:bg-background/80"
 			aria-label="Close cart"
 			onclick={closeCart}
 		>
@@ -156,7 +163,7 @@
 		     now sits on <html>, so a panel painted in `bg-background` follows the active theme
 		     rather than freezing the default palette into the drawer. -->
 		<div
-			class="fixed right-0 top-0 z-modal flex h-svh w-full flex-col bg-background shadow-z-10 sm:w-[26rem]"
+			class="fixed right-0 top-0 z-modal flex h-svh w-full flex-col border-l border-border bg-popover text-popover-foreground shadow-overlay sm:w-[26rem]"
 			transition:slideInFromRight={{ duration: 220 }}
 			role="dialog"
 			aria-modal="true"
@@ -165,10 +172,10 @@
 			use:dialog={closeCart}
 		>
 			<div class="flex shrink-0 items-center justify-between gap-2 border-b border-border px-4 py-3">
-				<h2 id={titleId} class="text-base font-semibold text-foreground">
+				<h2 id={titleId} class="font-serif text-title uppercase text-foreground">
 					Your bag
 					{#if itemCount > 0}
-						<span class="font-normal text-muted-foreground">({cartState.cart.qty})</span>
+						<span class="font-sans text-price tabular-nums text-muted-foreground">({cartState.cart.qty})</span>
 					{/if}
 				</h2>
 				<Button variant="ghost" size="icon" class="-mr-2 rounded-full" aria-label="Close cart" onclick={closeCart}>
@@ -183,7 +190,7 @@
 					{/each}
 				</div>
 
-				<div class="shrink-0 border-t border-border bg-muted/40 px-4 py-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
+				<div class="shrink-0 border-t border-border px-4 py-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
 					<div class="flex items-baseline justify-between gap-4">
 						<p class="text-sm font-medium text-foreground">Subtotal</p>
 						{#if isBusy}
@@ -191,7 +198,7 @@
 							     flight the amount is skeletoned rather than left asserting the old number. -->
 							<Skeleton class="h-6 w-24" />
 						{:else}
-							<p class="text-lg font-bold text-foreground">{subtotal}</p>
+							<p class="text-lg tabular-nums tracking-[0.04em] text-foreground">{subtotal}</p>
 						{/if}
 					</div>
 					<p class="mt-1 text-xs text-muted-foreground">Shipping and taxes calculated at checkout.</p>

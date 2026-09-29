@@ -40,6 +40,10 @@ _Avoid_: collection, department, type
 A label on a product that says which Category it belongs to, such as Category: Tees.
 _Avoid_: facet (the Engine's word), attribute
 
+**Badge**:
+A product's one highlight on its card, New or Limited, set in the Engine as a Badge facet value. "Sold out" is never set by hand; it comes from stock.
+_Avoid_: tag, label, ribbon
+
 **Story page**:
 A brand page, such as Our Story, that is not a product group. It may share a Collection's tile look.
 _Avoid_: collection, about page

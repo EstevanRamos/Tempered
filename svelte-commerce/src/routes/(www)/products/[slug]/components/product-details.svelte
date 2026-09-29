@@ -9,7 +9,8 @@
 	import Breadcrumb from '$lib/components/ui/breadcrumb.svelte'
 	import PolicyLink from '$lib/components/common/policy-link.svelte'
 	import { useProductState } from '$lib/core/composables/index.js'
-	import { RotateCcw, Truck } from '@lucide/svelte'
+	import { RotateCcw, ShieldCheck, Truck } from '@lucide/svelte'
+	import { resolveThemeContent } from '$lib/theme/index.js'
 	import ProductAggregation from './product-aggregation.svelte'
 	import ProductAvailability from './product-availability.svelte'
 	import ProductCartAndWishlistButtons from './product-cart-and-wishlist-buttons.svelte'
@@ -40,6 +41,15 @@
 	const publishedCmsPages = $derived<string[]>(data?.cmsPages ?? [])
 	const hasShippingPolicy = $derived(publishedCmsPages.includes('shipping-policy'))
 	const hasRefundPolicy = $derived(publishedCmsPages.includes('refund-policy'))
+
+	// Tempered states its shipping, returns and payment assurances right beside Add to bag, where
+	// the shopper decides (they moved here from the homepage). Each links to its policy page when
+	// the store publishes one.
+	const isTempered = $derived((data?.theme?.name ?? 'default') === 'default')
+	const assurances = $derived(isTempered ? (resolveThemeContent('default', data?.store)?.tempered?.assurances ?? []) : [])
+	const ASSURANCE_ICONS = { truck: Truck, returns: RotateCcw, shield: ShieldCheck }
+	const assuranceHref = (icon: string) =>
+		icon === 'truck' && hasShippingPolicy ? '/shipping-policy' : icon === 'returns' && hasRefundPolicy ? '/refund-policy' : ''
 
 	// The sticky mobile purchase bar, revealed only after the in-flow Add to bag has scrolled out
 	// of view — never from first paint, which is what the rule forbids, and never on a viewport
@@ -319,7 +329,26 @@
 					<ProductCartAndWishlistButtons />
 				</div>
 
-				{#if showPincodeCheck}
+				{#if assurances.length}
+					<!-- Words first; each icon is a 1px stroke at 16px, the design system's one allowance. -->
+					<ul class="flex flex-col gap-3 border-t border-border pt-5" aria-label="Shipping, returns and payment">
+						{#each assurances as item (item.title)}
+							{@const Icon = ASSURANCE_ICONS[item.icon] ?? ShieldCheck}
+							{@const href = assuranceHref(item.icon)}
+							<li class="flex items-start gap-3">
+								<Icon class="mt-0.5 size-4 shrink-0 text-muted-foreground" strokeWidth={1} aria-hidden="true" />
+								<p class="text-small text-muted-foreground">
+									{#if href}
+										<PolicyLink {href} class="text-eyebrow uppercase text-foreground underline-offset-4 hover:underline">{item.title}</PolicyLink>
+									{:else}
+										<span class="text-eyebrow uppercase text-foreground">{item.title}</span>
+									{/if}
+									<span class="mt-0.5 block">{item.text}</span>
+								</p>
+							</li>
+						{/each}
+					</ul>
+				{:else if showPincodeCheck}
 					<div class="flex flex-col gap-2 border-t pt-3">
 						<div class="flex items-center gap-2">
 							<Truck class="size-4 text-muted-foreground" />

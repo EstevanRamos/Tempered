@@ -1,98 +1,45 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js'
 	import { goto } from '$app/navigation'
-	import { appendOneTimeCartId, cn } from '$lib/core/utils/index.js'
+	import { appendOneTimeCartId } from '$lib/core/utils/index.js'
 
 	let { step = 1 } = $props()
+
+	// Cart and Address can be revisited until the order is placed; Payment and Placed are reached
+	// only by going forward.
+	const steps = [
+		{ n: 1, label: 'Cart', href: '/checkout/cart' },
+		{ n: 2, label: 'Address', href: '/checkout/address' },
+		{ n: 3, label: 'Payment', href: '' },
+		{ n: 4, label: 'Placed', href: '' }
+	]
+	const reachable = (n: number, href: string) => !!href && n < step && step < 4
 </script>
 
-<!-- Shown on mobile too: it is the only step context and the only way back to cart/address there.
-     Below sm only the current step keeps its label so all four steps still fit. -->
-<div class="mb-8">
-	<div class="flex items-center justify-center space-x-2 sm:space-x-4 md:space-x-8">
-		<!-- Step 1: Cart -->
-		<Button
-			variant="plain"
-			disabled={step === 1 || step === 4}
-			onclick={() => goto(appendOneTimeCartId('/checkout/cart'))}
-			class={cn('flex h-auto items-center p-0 font-normal disabled:opacity-100', step === 1 ? 'text-primary' : 'text-inherit')}
-		>
-			<div
-				class={cn(
-					'flex h-7 w-7 items-center justify-center rounded-full border text-[11px] font-bold tracking-tight',
-					step === 1 ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
-				)}
-			>
-				1
-			</div>
-			<span class="ml-2 text-xs font-bold uppercase tracking-widest {step === 1 ? '' : 'hidden sm:inline'}">Cart</span>
-		</Button>
-
-		<div class="h-px w-4 bg-border sm:w-8 md:w-16"></div>
-
-		<!-- Step 2: Address -->
-		<Button
-			variant="plain"
-			disabled={step === 1 || step === 4}
-			onclick={() => goto(appendOneTimeCartId('/checkout/address'))}
-			class={cn(
-				'flex h-auto items-center p-0 font-normal hover:bg-transparent disabled:opacity-100',
-				step === 2 ? 'text-primary' : step === 1 ? 'text-muted-foreground hover:text-foreground' : 'text-inherit'
-			)}
-		>
-			<div
-				class={cn(
-					'flex h-7 w-7 items-center justify-center rounded-full border text-[11px] font-bold tracking-tight',
-					step === 2 ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
-				)}
-			>
-				2
-			</div>
-			<span class="ml-2 text-xs font-bold uppercase tracking-widest {step === 2 ? '' : 'hidden sm:inline'}">Address</span>
-		</Button>
-
-		<div class="h-px w-4 bg-border sm:w-8 md:w-16"></div>
-
-		<!-- Step 3: Payment -->
-		<Button
-			variant="plain"
-			disabled={true}
-			class={cn(
-				'flex h-auto items-center p-0 font-normal hover:bg-transparent disabled:opacity-100',
-				step === 3 ? 'text-primary' : 'text-muted-foreground'
-			)}
-		>
-			<div
-				class={cn(
-					'flex h-7 w-7 items-center justify-center rounded-full border text-[11px] font-bold tracking-tight',
-					step === 3 ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
-				)}
-			>
-				3
-			</div>
-			<span class="ml-2 text-xs font-bold uppercase tracking-widest {step === 3 ? '' : 'hidden sm:inline'}">Payment</span>
-		</Button>
-
-		<div class="h-px w-4 bg-border sm:w-8 md:w-16"></div>
-
-		<!-- Step 4: Placed -->
-		<Button
-			variant="plain"
-			disabled={true}
-			class={cn(
-				'flex h-auto items-center p-0 font-normal hover:bg-transparent disabled:opacity-100',
-				step === 4 ? 'text-primary' : 'text-muted-foreground'
-			)}
-		>
-			<div
-				class={cn(
-					'flex h-7 w-7 items-center justify-center rounded-full border text-[11px] font-bold tracking-tight',
-					step === 4 ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
-				)}
-			>
-				4
-			</div>
-			<span class="ml-2 text-xs font-bold uppercase tracking-widest {step === 4 ? '' : 'hidden sm:inline'}">Placed</span>
-		</Button>
-	</div>
-</div>
+<!-- The step indicator in uppercase label type: numbered steps on a hairline, the current one in ink.
+     Shown on mobile too: it is the only step context and the only way back to cart and address
+     there. Below sm only the current step keeps its label so all four fit. -->
+<nav aria-label="Checkout steps" class="mb-8 mt-8 md:mb-12 md:mt-12">
+	<ol class="flex items-center justify-center gap-3 sm:gap-6">
+		{#each steps as { n, label, href }, i (n)}
+			{#if i > 0}
+				<li aria-hidden="true" class="h-px w-4 bg-border sm:w-10 md:w-16"></li>
+			{/if}
+			<li>
+				<button
+					type="button"
+					disabled={!reachable(n, href)}
+					aria-current={n === step ? 'step' : undefined}
+					onclick={() => goto(appendOneTimeCartId(href))}
+					class="flex min-h-11 items-center gap-2 border-b text-label uppercase transition-colors disabled:cursor-default {n === step
+						? 'border-foreground text-foreground'
+						: n < step
+							? 'border-transparent text-muted-foreground enabled:hover:text-foreground'
+							: 'border-transparent text-faint-foreground'}"
+				>
+					<span class="tabular-nums">{String(n).padStart(2, '0')}</span>
+					<span class={n === step ? '' : 'hidden sm:inline'}>{label}</span>
+				</button>
+			</li>
+		{/each}
+	</ol>
+</nav>

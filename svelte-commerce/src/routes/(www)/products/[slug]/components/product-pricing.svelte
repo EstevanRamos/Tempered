@@ -38,7 +38,7 @@
 		{/if}
 
 		{#if includesTax}
-			<span class="edp-tax w-fit text-sm font-normal text-muted-foreground">Inclusive of all taxes</span>
+			<span class="edp-tax w-fit text-sm font-normal text-muted-foreground">Includes tax</span>
 		{/if}
 	</div>
 </div>
@@ -49,9 +49,10 @@
 		font-family: var(--ed-body);
 		/* Was a flat 1.6rem (25.6px) at every width, which made the price LARGER than the product
 		   title on a phone. 20-22.4px keeps it second in the hierarchy, where it belongs. */
-		font-size: clamp(1.25rem, 1.6vw, 1.4rem);
-		font-weight: 600;
-		letter-spacing: -0.01em;
+		font-size: 1.125rem;
+		font-weight: 400;
+		letter-spacing: 0.04em;
+		font-variant-numeric: tabular-nums;
 		color: var(--ed-ink);
 	}
 

@@ -29,14 +29,22 @@
 	     entry point otherwise. Only the public coupon list is gated on there being coupons. -->
 	{#snippet content({ coupons, isChecking, handleCheck, handleCouponClick, handleCopy })}
 		<Drawer.Root bind:open={drawerOpen} direction={innerWidth.current && innerWidth.current > 400 ? 'right' : 'bottom'} shouldScaleBackground={true}>
-			<!-- The trigger is the button itself: a Button inside Drawer.Trigger nested one <button> in
-			     another, which is invalid and read twice by screen readers. -->
-			<Drawer.Trigger class={buttonVariants({ variant: 'outline', class: `group w-full justify-between !px-6 !py-5 ${className}` })}>
+			<!-- Opened through `drawerOpen`, not a Drawer.Trigger: the drawer wrapper holds a reopen that
+			     comes right after a close (apply, remove, open again) until vaul's own close has
+			     finished, and it only sees opens made through the prop. One plain <button>, never a
+			     Button inside a trigger (two nested buttons, read twice by screen readers). -->
+			<button
+				type="button"
+				aria-haspopup="dialog"
+				aria-expanded={drawerOpen}
+				onclick={() => (drawerOpen = true)}
+				class={buttonVariants({ variant: 'outline', class: `group w-full justify-between !px-6 !py-5 ${className}` })}
+			>
 				Apply promo code
 				<span class="text-muted-foreground">
 					<ChevronRight class="h-4 w-4" />
 				</span>
-			</Drawer.Trigger>
+			</button>
 			<Drawer.Content class="sm:left-auto sm:right-0 sm:top-0 sm:mt-0 sm:h-[100dvh] sm:w-fit sm:max-w-xl [&>div:first-child]:hidden">
 				<div in:fly={{ duration: 300 }} class="mx-auto w-full max-w-4xl pb-20 sm:pb-0">
 					<Drawer.Header class="text-left">
@@ -71,7 +79,7 @@
 								</Button>
 								<button
 									onclick={() => handleCouponClick(coupon.code)}
-									class="font-mono inline-block rounded-radius border border-dashed border-primary px-3 py-1 text-sm font-semibold text-foreground hover:bg-primary/5"
+									class="font-mono inline-block rounded-radius border border-dashed border-border-strong px-3 py-1 text-sm font-semibold text-foreground hover:bg-accent"
 								>
 									{coupon.code}
 								</button>

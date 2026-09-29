@@ -138,11 +138,11 @@
 
 	:global([data-theme='default'] .edp-spec .edp-acc-label) {
 		font-family: var(--ed-body);
-		font-size: 0.78rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.24em;
 		text-transform: uppercase;
-		color: var(--ed-ink);
+		color: var(--ed-soft);
 	}
 
 	/* Base (all themes): the labels were `text-[10px] ... uppercase`, i.e. 10px all-caps, under

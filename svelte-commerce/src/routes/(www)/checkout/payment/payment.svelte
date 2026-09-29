@@ -5,7 +5,7 @@
 	import { formatPrice } from '$lib/core/utils'
 	import PriceSummary from '$lib/components/checkout/price-summary.svelte'
 	import { page } from '$app/state'
-	import OrderTrustBadges from '$lib/core/components/plugins/order-trust-badges.svelte'
+	import CheckoutAssurances from '$lib/components/checkout/checkout-assurances.svelte'
 	import CouponsDrawer from '$lib/components/coupon/coupons-drawer.svelte'
 	import CheckoutHeader from '$lib/components/checkout/checkout-header.svelte'
 	import CheckoutButton from '$lib/components/buttons/checkout-button.svelte'
@@ -120,7 +120,7 @@
 					{/if}
 
 					<div class="h-fit space-y-6">
-						<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Select Payment Method</h2>
+						<h2 class="text-base font-bold uppercase text-foreground">Select Payment Method</h2>
 						{#if paymentModule.showError}
 							<div class="rounded-radius border border-destructive/40 bg-destructive/5 p-3 text-sm font-medium text-destructive">
 								{paymentModule.errorMessage}
@@ -133,7 +133,7 @@
 									<label
 										class="relative flex cursor-pointer items-center justify-between rounded-lg border bg-background px-6 py-5 {paymentModule.selectedPGCode ==
 											method?.code && paymentModule.listOfPaymentMethods?.length !== 1
-											? 'border-primary ring-1 ring-primary'
+											? 'border-foreground ring-1 ring-foreground'
 											: 'border-border shadow-sm'}"
 									>
 										<div class="flex items-center gap-4">
@@ -144,9 +144,9 @@
 													value={method?.code}
 													checked={paymentModule.SELECTED_PG_CODE === method?.code}
 													onchange={() => (paymentModule.SELECTED_PG_CODE = method?.code)}
-													class="peer h-5 w-5 appearance-none rounded-full border-2 border-border transition-all checked:border-primary"
+													class="peer h-5 w-5 appearance-none rounded-full border-2 border-border transition-all checked:border-foreground"
 												/>
-												<div class="absolute h-2.5 w-2.5 rounded-full bg-primary opacity-0 transition-opacity peer-checked:opacity-100"></div>
+												<div class="absolute h-2.5 w-2.5 rounded-full bg-foreground opacity-0 transition-opacity peer-checked:opacity-100"></div>
 											</div>
 
 											<div class="flex items-center gap-3">
@@ -181,7 +181,7 @@
 
 					{#if paymentModule.shippingRates?.data?.length}
 						<div class="grid h-fit grid-cols-1 space-y-6 pt-4">
-							<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Select Shipping Method</h2>
+							<h2 class="text-base font-bold uppercase text-foreground">Select Shipping Method</h2>
 
 							<div class="flex flex-col gap-3">
 								{#each paymentModule.shippingRates?.data as rate}
@@ -200,9 +200,9 @@
 													id={rate.id}
 													checked={cartState?.cart?.shippingRateId === rate.id}
 													onchange={() => paymentModule.handleShippingRateChange(rate)}
-													class="peer h-5 w-5 appearance-none rounded-full border-2 border-border transition-all checked:border-primary"
+													class="peer h-5 w-5 appearance-none rounded-full border-2 border-border transition-all checked:border-foreground"
 												/>
-												<div class="absolute h-2.5 w-2.5 rounded-full bg-primary opacity-0 transition-opacity peer-checked:opacity-100"></div>
+												<div class="absolute h-2.5 w-2.5 rounded-full bg-foreground opacity-0 transition-opacity peer-checked:opacity-100"></div>
 											</div>
 
 											<div class="flex flex-col gap-0.5">
@@ -211,7 +211,7 @@
 												</span>
 												<div class="flex items-center gap-2">
 													{#if !Number.isNaN(Number.parseFloat(rate?.estimated_min_days)) && !Number.isNaN(Number.parseFloat(rate?.estimated_max_days))}
-														<span class="text-[10px] font-bold uppercase tracking-tighter text-primary">
+														<span class="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">
 															{rate?.estimated_min_days} - {rate?.estimated_max_days} Days
 														</span>
 														<span class="h-1 w-1 rounded-full bg-border"></span>
@@ -303,8 +303,8 @@
 					<div class="space-y-4">
 						<div class="space-y-4 rounded-lg border border-border bg-background p-6 shadow-sm">
 							<div class="mb-6 flex flex-col gap-1">
-								<h2 class="text-base font-bold uppercase text-foreground" style="font-family: var(--font-body);">Price Summary</h2>
-								<div class="h-1 w-12 bg-primary"></div>
+								<h2 class="text-base font-bold uppercase text-foreground">Price Summary</h2>
+								<div class="h-px w-8 bg-primary"></div>
 							</div>
 							{#if paymentModule.loadingForCart}
 								<PriceSummary loading />
@@ -351,7 +351,7 @@
 							{/if}
 						</div>
 
-						<OrderTrustBadges />
+						<CheckoutAssurances />
 					</div>
 				</div>
 			</div>

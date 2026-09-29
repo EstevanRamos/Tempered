@@ -279,6 +279,33 @@ export interface ThemeHomepageContent {
 		hiddenSections?: Record<string, boolean>
 	}
 	/**
+	 * Tempered's homepage and product-page copy (the default theme). Imagery is Tempered's own, in
+	 * static/tempered. Live commerce data (Collections, products) comes from the Engine, never here.
+	 */
+	tempered?: {
+		hero: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string; values: string[] }
+		tiles: {
+			shopAll: { title: string; cta: string; image: string }
+			collection: { cta: string }
+			story: { title: string; subtitle: string; cta: string; href: string; image: string }
+		}
+		featured: { title: string; viewAll: string; viewAllHref: string }
+		manifesto: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string; values: string[] }
+		quote: { text: string; signoff: string }
+		/** The Our Story page (a Story page, not a product group), band by band. */
+		story: {
+			seoTitle: string
+			seoDescription: string
+			hero: { eyebrow: string; title: string; text: string; image: string; imageAlt: string }
+			chapters: Array<{ eyebrow: string; title: string; text: string[]; image: string; imageAlt: string }>
+			values: string[]
+			quote: { text: string; signoff: string }
+			close: { eyebrow: string; title: string; text: string; cta: string; href: string }
+		}
+		/** Shipping, returns and payment reassurance, shown beside Add to bag on the product page. */
+		assurances: Array<{ icon: 'truck' | 'returns' | 'shield'; title: string; text: string }>
+	}
+	/**
 	 * Per-device content overrides set by the admin Theme page, cascading
 	 * mobile → tablet → desktop: `editorial` is the mobile/base layer, tablet deep-merges
 	 * over it, desktop deep-merges over tablet. Absent/blank fields inherit the previous

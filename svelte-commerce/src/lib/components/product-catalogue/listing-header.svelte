@@ -11,6 +11,23 @@
 	const data = $derived(page.data)
 
 	const sortLabel = $derived(sortOptions.find((option) => option.value === selectedSort)?.name ?? 'Sort')
+
+	// The listing's subject. The Engine sends no category hierarchy for a Collection page, so the
+	// Category or Collection is found in the layout's catalogue tree by its path; that also names an
+	// empty one, whose page has no products to take a name from.
+	const search = $derived(page.url.searchParams.get('search'))
+	const catalogue = $derived(page.data?.catalogue)
+	const category = $derived(catalogue?.categories?.find((c: { link: string }) => c.link === page.url.pathname))
+	const collection = $derived(catalogue?.collections?.find((c: { link: string }) => c.link === page.url.pathname))
+	const title = $derived(
+		search
+			? `Results for “${search}”`
+			: (category?.name ?? collection?.name ?? data.products?.categoryHierarchy?.at?.(-1)?.name ?? (page.url.pathname === '/products' ? 'Shop all' : 'All products'))
+	)
+	const eyebrow = $derived(search ? 'Search' : category ? 'Category' : collection ? 'Collection' : 'Tempered')
+	const count = $derived(Number(data.products?.count ?? 0))
+	const countLabel = $derived(`${count > 999 ? '1000+' : count} ${count === 1 ? 'product' : 'products'}`)
+	const isTempered = $derived((data?.theme?.name ?? 'default') === 'default')
 </script>
 
 <!-- Ungated on purpose: this block used to be `hidden lg:flex`, which is display:none — it took the
@@ -21,6 +38,18 @@
 	<!-- Title and count on one baseline, not a tracked eyebrow stacked over a display heading. The
 	     two lines said one thing in two typographic voices and cost 60px of header before the first
 	     product; a listing's subject and its size are a single fact and read as one line. -->
+	{#if isTempered}
+		<!-- Tempered's SectionHeader: eyebrow, the title in the display serif, a short gold rule, and
+		     the result count on the title's line. -->
+		<div class="flex min-w-0 flex-col">
+			<p class="text-eyebrow uppercase text-muted-foreground">{eyebrow}</p>
+			<div class="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+				<h1 class="font-serif text-[28px] font-medium uppercase leading-[34px] tracking-[0.08em] text-foreground md:text-heading">{title}</h1>
+				<span class="text-small text-muted-foreground">{countLabel}</span>
+			</div>
+			<span class="mt-4 block h-px w-8 bg-primary" aria-hidden="true"></span>
+		</div>
+	{:else}
 	<div class="ed-lh__group flex min-w-0 items-baseline gap-2">
 		<h1 class="page-heading ed-lh__title">
 			{#if page.url.searchParams.get('search')}
@@ -36,12 +65,13 @@
 			{data.products.count > 999 ? '1000+' : data.products.count} items
 		</span>
 	</div>
+	{/if}
 	{#if data.products.data.length}
 		<!-- `md:flex`, not `lg:flex`. The fixed Filter/Sort bar that carries sorting on a phone is
 		     itself `md:hidden`, so between 768px and 1023px neither control rendered and a tablet
 		     shopper could filter but never re-order. The sidebar is already visible from md, so the
 		     bar stays hidden and there is exactly one sort affordance at every width. -->
-		<div class="ed-lh__sort hidden items-center gap-1.5 md:flex">
+		<div class="ed-lh__sort hidden items-center gap-3 self-end md:flex">
 			<span id="sort-by-label" class="ed-lh__sortlabel text-xs font-semibold uppercase tracking-widest text-muted-foreground">Sort by</span>
 			<!-- The shadcn/bits-ui select, not the project's custom combobox. That one opens a popover
 			     whose command list has no focusable input when search is off, so nothing consumed the
@@ -85,9 +115,9 @@
 	   1280px. The column gap is now the single rhythm for this region (see listing-page.svelte). */
 	:global([data-theme='default']) .ed-lh {
 		flex-wrap: wrap;
-		align-items: center;
-		gap: 8px 16px;
-		padding-bottom: clamp(8px, 0.9vw, 12px);
+		align-items: flex-end;
+		gap: 16px 32px;
+		padding-bottom: 24px;
 		margin-bottom: 0;
 		border-bottom: 1px solid var(--ed-line);
 	}
@@ -126,7 +156,9 @@
 
 	:global([data-theme='default']) .ed-lh__sortlabel {
 		color: var(--ed-soft);
-		letter-spacing: 0.18em;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.24em;
 	}
 
 	:global([data-theme='default']) .ed-lh__desc {
@@ -144,16 +176,18 @@
 	   applied and the trigger kept the raw shadcn skin. 36px — the bottom of the 36-40px desktop
 	   control band — because this block never renders below 768px (a phone sorts from the fixed
 	   bar), so no touch target depends on it, and the header it sits in is now 36px tall itself. */
+	/* Tempered's Input: no box, a line-strong underline that turns gold on focus. */
 	:global([data-theme='default'] .ed-lh__select) {
 		height: 36px;
 		min-width: 0;
-		padding: 0 10px;
-		border: 1px solid var(--ed-line-strong);
-		border-radius: var(--ed-radius);
-		background: var(--ed-surface);
+		padding: 0 2px;
+		border: 0;
+		border-bottom: 1px solid var(--ed-line-strong);
+		border-radius: 0;
+		background: transparent;
 		color: var(--ed-ink);
 		font-family: var(--ed-body);
-		font-size: 0.8rem;
+		font-size: 0.8125rem;
 		font-weight: 500;
 		letter-spacing: 0.01em;
 		transition: border-color 0.2s ease;
@@ -166,9 +200,10 @@
 		box-shadow: none;
 	}
 
-	:global([data-theme='default'] .ed-lh__select:hover) {
-		border-color: hsl(var(--primary));
-		background: var(--ed-surface);
+	:global([data-theme='default'] .ed-lh__select:hover),
+	:global([data-theme='default'] .ed-lh__select[data-state='open']) {
+		border-color: hsl(var(--foreground));
+		background: transparent;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

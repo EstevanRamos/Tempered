@@ -6,8 +6,10 @@
 	import LazyImg from '$lib/core/components/image/lazy-img.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { page } from '$app/state'
+	import { headerWord } from '$lib/theme/default/header-word.js'
 	const userState = getUserState()
-	const { onSignOut } = $props()
+	// `words`: the trigger reads "Account" rather than a glyph (the default theme's header).
+	const { onSignOut, words = false } = $props()
   const wishlistPlugin = $derived(page.data?.store?.plugins?.isWishlist)
 </script>
 
@@ -28,7 +30,7 @@
 		background: var(--ed-surface);
 		border: 1px solid var(--ed-line);
 		border-radius: var(--ed-radius);
-		box-shadow: 0 24px 48px -24px rgba(27, 26, 23, 0.28);
+		box-shadow: var(--shadow-overlay);
 	}
 
 	:global([data-theme='default'] .ed-pd-head) {
@@ -58,8 +60,13 @@
 </style>
 
 <DropdownMenu.Root>
-	<DropdownMenu.Trigger aria-label="User Profile" class="ed-pd-trigger flex items-center justify-center rounded-full">
-		{#if userState.user?.avatar}
+	<DropdownMenu.Trigger
+		aria-label={words ? 'Account menu' : 'User Profile'}
+		class={words ? headerWord : 'ed-pd-trigger flex items-center justify-center rounded-full'}
+	>
+		{#if words}
+			Account
+		{:else if userState.user?.avatar}
 			<div class="h-5 w-5 overflow-hidden rounded-full">
 				<LazyImg
 					width="20"
@@ -74,9 +81,9 @@
 		{/if}
 	</DropdownMenu.Trigger>
 
-	<DropdownMenu.Content class="ed-pd-menu min-w-[240px] border-gray-100 bg-white p-2 shadow-2xl">
+	<DropdownMenu.Content class="ed-pd-menu min-w-[240px] border-border bg-popover p-2 text-popover-foreground shadow-overlay">
 		<!-- User Header -->
-		<div class="ed-pd-head mb-2 flex items-center gap-3 border-b border-gray-50 px-4 py-4">
+		<div class="ed-pd-head mb-2 flex items-center gap-3 border-b border-border px-4 py-4">
 			<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/5 text-primary">
 				{#if userState.user?.avatar}
 					<img src={userState.user.avatar} alt="" class="h-full w-full rounded-full object-cover" />
@@ -85,10 +92,10 @@
 				{/if}
 			</div>
 			<div class="overflow-hidden">
-				<p class="truncate text-sm font-black text-gray-900">
+				<p class="truncate text-sm font-black text-foreground">
 					{userState.user?.firstName || userState.user?.name || 'My Account'}
 				</p>
-				<p class="truncate text-[10px] font-bold uppercase tracking-widest text-gray-400">
+				<p class="truncate text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
 					{userState.user?.email || 'Logged In'}
 				</p>
 			</div>
@@ -97,9 +104,9 @@
 		<DropdownMenu.Group>
 			<a href="/my/profile" class="block w-full">
 				<DropdownMenu.Item
-					class="ed-pd-item flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 transition-all hover:bg-gray-50 hover:text-primary"
+					class="ed-pd-item flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-primary"
 				>
-					<div class="ed-pd-ico flex h-8 w-8 items-center justify-center bg-gray-50 transition-colors group-hover:bg-white">
+					<div class="ed-pd-ico flex h-8 w-8 items-center justify-center bg-muted">
 						<UserCircle class="h-4 w-4" />
 					</div>
 					Profile Settings
@@ -107,9 +114,9 @@
 			</a>
 			<a href="/my/orders" class="block w-full">
 				<DropdownMenu.Item
-					class="ed-pd-item flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 transition-all hover:bg-gray-50 hover:text-primary"
+					class="ed-pd-item flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-primary"
 				>
-					<div class="ed-pd-ico flex h-8 w-8 items-center justify-center bg-gray-50">
+					<div class="ed-pd-ico flex h-8 w-8 items-center justify-center bg-muted">
 						<ShoppingBag class="h-4 w-4" />
 					</div>
 					Order History
@@ -117,9 +124,9 @@
 			</a>
 			<a href="/my/addresses" class="block w-full">
 				<DropdownMenu.Item
-					class="ed-pd-item flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 transition-all hover:bg-gray-50 hover:text-primary"
+					class="ed-pd-item flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-primary"
 				>
-					<div class="ed-pd-ico flex h-8 w-8 items-center justify-center bg-gray-50">
+					<div class="ed-pd-ico flex h-8 w-8 items-center justify-center bg-muted">
 						<MapPin class="h-4 w-4" />
 					</div>
 					My Addresses
@@ -128,9 +135,9 @@
       {#if wishlistPlugin?.active}
 			 <a href="/my/wishlist" class="block w-full">
 			 	<DropdownMenu.Item
-			 		class="flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 transition-all hover:bg-gray-50 hover:text-primary"
+			 		class="flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-primary"
 			 	>
-			 		<div class="flex h-8 w-8 items-center justify-center bg-gray-50">
+			 		<div class="flex h-8 w-8 items-center justify-center bg-muted">
 			 			<Heart class="h-4 w-4" />
 			 		</div>
 			 		My Wishlist
@@ -139,15 +146,15 @@
       {/if}
 		</DropdownMenu.Group>
 
-		<div class="ed-pd-sep my-2 h-px bg-gray-50"></div>
+		<div class="ed-pd-sep my-2 h-px bg-border"></div>
 
 		<DropdownMenu.Item>
 			<Button
 				variant="ghost"
-				class="flex h-auto w-full items-center justify-start gap-3 px-3 py-2.5 text-red-500"
+				class="flex h-auto w-full items-center justify-start gap-3 px-3 py-2.5 text-destructive"
 				onclick={onSignOut}
 			>
-				<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-100/30">
+				<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10">
 					<ArrowRightCircleIcon class="h-4 w-4" />
 				</div>
 				Sign Out

@@ -224,9 +224,9 @@
 	:global([data-theme='default'] .edp-opt-label) {
 		font-family: var(--ed-body);
 		/* 12px floor for supporting text. The row is min-h-6, so this does not reflow. */
-		font-size: 0.75rem;
-		font-weight: 600;
-		letter-spacing: 0.16em;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.24em;
 		text-transform: uppercase;
 		color: var(--ed-soft);
 	}
@@ -244,17 +244,20 @@
 
 	/* Height stays on the utility classes (44px on phones, 40px from md) so the density rule is
 	   readable at the call site; only the editorial surface is restated here. */
+	/* design/components/SizeSelector: square 44px chips on a line-strong hairline; the selected one
+	   fills with ink; a sold-out size is disabled, struck through, in ink-faint on a `line` edge. */
 	:global([data-theme='default'] .edp-pill) {
-		min-width: 3.25rem;
-		padding: 0 18px !important;
+		min-width: 48px;
+		height: 44px !important;
+		padding: 0 12px !important;
 		border-color: var(--ed-line-strong) !important;
 		border-radius: var(--ed-radius) !important;
 		background: transparent !important;
 		color: var(--ed-ink) !important;
 		font-family: var(--ed-body);
-		font-size: 0.85rem;
+		font-size: 12px;
 		font-weight: 500;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.12em;
 		text-transform: none;
 		box-shadow: none !important;
 		transition:
@@ -268,16 +271,19 @@
 	}
 
 	:global([data-theme='default'] .edp-pill.edp-on) {
-		border-color: hsl(var(--primary)) !important;
-		background: hsl(var(--primary)) !important;
-		color: hsl(var(--primary-foreground)) !important;
+		border-color: hsl(var(--foreground)) !important;
+		background: hsl(var(--foreground)) !important;
+		color: hsl(var(--background)) !important;
 	}
 
 	/* Reserved for values the catalogue has actually excluded — a combination that does not exist
 	   or cannot be bought. Everything else renders enabled, including before hydration. */
 	:global([data-theme='default'] .edp-pill:disabled) {
-		opacity: 0.45 !important;
+		opacity: 1 !important;
+		border-color: var(--ed-line) !important;
+		color: hsl(var(--faint-foreground)) !important;
 		text-decoration: line-through;
+		cursor: not-allowed;
 	}
 
 	:global([data-theme='default'] .edp-swatch) {

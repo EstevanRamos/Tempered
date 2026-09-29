@@ -27,70 +27,37 @@
 			value?.toLowerCase() === 'rejected' ||
 			value?.toLowerCase() === 'false'
 	)
+
+	// Four tones from the theme's tokens, the word always carrying the meaning: positive (paid,
+	// shipped, delivered, in progress), warning (awaiting money, refunded), danger (failed,
+	// cancelled) and neutral (pending, anything unknown).
+	const tone = $derived(
+		isErrorStatus
+			? 'danger'
+			: isWarningStatus || isPartiallyPaid || isRefunded
+				? 'warning'
+				: isPositiveStatus || isAuthorized || isInfoStatus || isFulfilling
+					? 'positive'
+					: 'neutral'
+	)
+	const TONES: Record<string, { pill: string; dot: string }> = {
+		positive: { pill: 'bg-success/10 text-success ring-success/40', dot: 'bg-success' },
+		warning: { pill: 'bg-warning/10 text-warning ring-warning/40', dot: 'bg-warning' },
+		danger: { pill: 'bg-destructive/10 text-destructive ring-destructive/40', dot: 'bg-destructive' },
+		neutral: { pill: 'bg-card text-muted-foreground ring-border-strong', dot: 'bg-muted-foreground' }
+	}
 </script>
 
 {#if value}
-	<span
-		class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium uppercase {isPositiveStatus
-			? 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20'
-			: isWarningStatus
-				? 'bg-yellow-50 text-yellow-700 ring-1 ring-inset ring-yellow-600/20'
-				: isPartiallyPaid
-					? 'bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/20'
-					: isAuthorized
-						? 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20'
-						: isPending
-							? 'bg-gray-50 text-gray-700 ring-1 ring-inset ring-gray-600/20'
-							: isFulfilling
-								? 'bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-600/20'
-								: isInfoStatus
-									? 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20'
-									: isErrorStatus
-										? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'
-										: isRefunded
-											? 'bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-600/20'
-											: 'bg-gray-50 text-gray-700 ring-1 ring-inset ring-gray-600/20'}"
-	>
+	<span class="inline-flex items-center gap-1 rounded-sm px-2.5 py-0.5 text-xs font-medium uppercase ring-1 ring-inset {TONES[tone].pill}">
 		{#if isRefunded}
-			<Undo class="h-3 w-3 text-orange-600" />
+			<Undo class="h-3 w-3" />
 		{:else if isFulfilling}
-			<Package2 class="h-3 w-3 text-purple-600" />
+			<Package2 class="h-3 w-3" />
 		{:else}
 			<span class="relative mr-1 flex h-1.5 w-1.5">
-				<span
-					class="absolute inline-flex h-full w-full animate-ping rounded-full {isPositiveStatus
-						? 'bg-green-400'
-						: isWarningStatus
-							? 'bg-yellow-400'
-							: isPartiallyPaid
-								? 'bg-indigo-400'
-								: isAuthorized
-									? 'bg-blue-400'
-									: isPending
-										? 'bg-gray-400'
-										: isInfoStatus
-											? 'bg-blue-400'
-											: isErrorStatus
-												? 'bg-red-400'
-												: 'bg-gray-400'} opacity-75"
-				></span>
-				<span
-					class="relative inline-flex h-1.5 w-1.5 rounded-full {isPositiveStatus
-						? 'bg-green-500'
-						: isWarningStatus
-							? 'bg-yellow-500'
-							: isPartiallyPaid
-								? 'bg-indigo-500'
-								: isAuthorized
-									? 'bg-blue-500'
-									: isPending
-										? 'bg-gray-500'
-										: isInfoStatus
-											? 'bg-blue-500'
-											: isErrorStatus
-												? 'bg-red-500'
-												: 'bg-gray-500'}"
-				></span>
+				<span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 {TONES[tone].dot}"></span>
+				<span class="relative inline-flex h-1.5 w-1.5 rounded-full {TONES[tone].dot}"></span>
 			</span>
 		{/if}
 		{value}
