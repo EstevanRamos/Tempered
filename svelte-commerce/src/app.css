@@ -565,6 +565,28 @@
 }
 
 /* ------------------------------------------------------------------ *
+ * Scroll reveal ($lib/actions/reveal.ts)
+ *
+ * Deliberately slower than the feedback/panel tokens: this is an entrance
+ * for whole bands of the page, not a response to a click. The action sets
+ * `data-reveal` only on the client and only below the fold, so the server
+ * HTML never starts hidden.
+ * ------------------------------------------------------------------ */
+[data-reveal] {
+	opacity: 0;
+	transform: translate3d(0, 24px, 0);
+	transition:
+		opacity 700ms var(--motion-ease),
+		transform 900ms var(--motion-ease);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal='in'] {
+	opacity: 1;
+	transform: none;
+}
+
+/* ------------------------------------------------------------------ *
  * Reduced motion
  *
  * This block used to cover .ed-btn-base and nothing else, and even that at
@@ -619,6 +641,14 @@
 		animation: none !important;
 		opacity: 1 !important;
 		transform: none !important;
+	}
+
+	/* Scroll reveal: the action already skips under reduced motion; this covers
+	   the preference changing after the page has loaded. */
+	html [data-reveal] {
+		opacity: 1 !important;
+		transform: none !important;
+		transition: none !important;
 	}
 
 	html {

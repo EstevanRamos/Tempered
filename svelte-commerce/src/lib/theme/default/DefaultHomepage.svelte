@@ -4,6 +4,7 @@
 	// content's `tempered` block; Collections, Categories and products come from the Engine. A band
 	// with nothing real to show is left out rather than filled with placeholders.
 	import { page } from '$app/state'
+	import { reveal } from '$lib/actions/reveal.js'
 	import type { ThemeHomepageProps } from '../homepages.js'
 	import type { CatalogueEntry } from './catalogue-tree.js'
 	import Crest from './Crest.svelte'
@@ -93,18 +94,20 @@
 	<!-- The collection: the featured products as one spotlight. -->
 	{#if products.length}
 		<section class="page-width pt-[88px] md:pt-[140px]" aria-labelledby="home-collection">
-			<SectionHeader
-				id="home-collection"
-				align="center"
-				rule={false}
-				eyebrow={content.collection.eyebrow}
-				title={content.collection.title}
-				text={content.collection.text}
-			/>
-			<div class="mt-9 md:mt-14">
+			<div use:reveal>
+				<SectionHeader
+					id="home-collection"
+					align="center"
+					rule={false}
+					eyebrow={content.collection.eyebrow}
+					title={content.collection.title}
+					text={content.collection.text}
+				/>
+			</div>
+			<div class="mt-9 md:mt-14" use:reveal>
 				<ProductSpotlight {products} notes={content.collection.notes} viewPiece={content.collection.viewPiece} />
 			</div>
-			<div class="mt-9 flex justify-center md:mt-[72px]">
+			<div class="mt-9 flex justify-center md:mt-[72px]" use:reveal>
 				<LinkButton href={content.collection.href} arrow={false} class="w-full md:w-auto">{content.collection.cta}</LinkButton>
 			</div>
 		</section>
@@ -114,7 +117,7 @@
 	     phone, one at a time in a snapping carousel. -->
 	{#if seats.length}
 		<section id="collections" class="scroll-mt-20 pt-[104px] md:pt-[140px]" aria-labelledby="home-seats">
-			<div class="page-width">
+			<div class="page-width" use:reveal>
 				<SectionHeader id="home-seats" align="center" rule={false} eyebrow={content.seats.eyebrow} title={content.seats.title} />
 			</div>
 			<ul
@@ -123,7 +126,7 @@
 				onscroll={onSeatScroll}
 			>
 				{#each seats as seat (seat.href)}
-					<li class="w-full flex-none snap-center">
+					<li class="w-full flex-none snap-center" use:reveal>
 						<a href={seat.href} class="seat group">
 							{#if seat.image}
 								<img src={seat.image} alt="" class="seat__img" loading="lazy" />
@@ -149,13 +152,16 @@
 
 	<!-- The Code: five virtues under outlined Roman numerals. A list on a phone, five columns on desktop. -->
 	<section class="page-width pt-[104px] lg:pt-40" aria-labelledby="home-code">
-		<div class="mb-6 flex items-baseline justify-between gap-4 lg:mb-10">
+		<div class="mb-6 flex items-baseline justify-between gap-4 lg:mb-10" use:reveal>
 			<h2 id="home-code" class="font-sans text-eyebrow uppercase text-muted-foreground">{content.code.eyebrow}</h2>
 			<TextLink href={content.code.href} muted>{content.code.link}</TextLink>
 		</div>
 		<ol class="grid grid-cols-1 lg:grid-cols-5 lg:gap-5">
 			{#each content.code.items as item (item.numeral)}
-				<li class="grid grid-cols-[64px_1fr] items-baseline gap-x-3 gap-y-1 border-t border-border py-5 lg:flex lg:flex-col lg:gap-4 lg:pb-0 lg:pt-6">
+				<li
+					use:reveal
+					class="grid grid-cols-[64px_1fr] items-baseline gap-x-3 gap-y-1 border-t border-border py-5 lg:flex lg:flex-col lg:gap-4 lg:pb-0 lg:pt-6"
+				>
 					<span class="numeral row-span-2 font-numeral text-[44px] leading-[.9] lg:text-[76px]" aria-hidden="true">{item.numeral}</span>
 					<h3 class="font-sans text-eyebrow uppercase tracking-[0.28em] text-foreground lg:text-label lg:tracking-[0.28em]">{item.title}</h3>
 					<p class="max-w-[220px] text-[14px] leading-[1.55] text-faint-foreground max-lg:col-start-2 max-lg:max-w-none">{item.text}</p>
@@ -166,8 +172,14 @@
 
 	<!-- A different breed: image then copy, 50/50 on desktop. -->
 	<section class="grid items-center pb-24 pt-14 lg:grid-cols-2 lg:pb-[140px] lg:pt-24" aria-labelledby="home-manifesto">
-		<img src={content.manifesto.image} alt={content.manifesto.imageAlt} class="aspect-[4/3] w-full object-cover lg:aspect-[839/723]" loading="lazy" />
-		<div class="flex flex-col gap-[18px] px-4 pt-9 sm:px-8 lg:gap-6 lg:px-[clamp(32px,8vw,120px)] lg:pt-0">
+		<img
+			src={content.manifesto.image}
+			alt={content.manifesto.imageAlt}
+			class="aspect-[4/3] w-full object-cover lg:aspect-[839/723]"
+			loading="lazy"
+			use:reveal
+		/>
+		<div class="flex flex-col gap-[18px] px-4 pt-9 sm:px-8 lg:gap-6 lg:px-[clamp(32px,8vw,120px)] lg:pt-0" use:reveal>
 			<p class="text-eyebrow uppercase text-muted-foreground">{content.manifesto.eyebrow}</p>
 			<h2
 				id="home-manifesto"
@@ -182,11 +194,14 @@
 
 	<!-- Quote: the crest in moving foil on a low gold glow, the line, the sign-off. -->
 	<figure class="quote relative flex flex-col items-center gap-6 overflow-hidden px-6 py-24 text-center lg:gap-10 lg:py-40">
-		<Crest shimmer class="relative w-[150px] lg:w-[260px]" />
-		<blockquote class="relative max-w-[760px] font-serif text-[28px] italic leading-[1.2] text-foreground [text-wrap:balance] lg:text-[44px]">
+		<div class="relative" use:reveal><Crest shimmer class="w-[150px] lg:w-[260px]" /></div>
+		<blockquote
+			use:reveal
+			class="relative max-w-[760px] font-serif text-[28px] italic leading-[1.2] text-foreground [text-wrap:balance] lg:text-[44px]"
+		>
 			“{content.quote.text}”
 		</blockquote>
-		<figcaption class="relative text-eyebrow uppercase text-primary-hover">{content.quote.signoff}</figcaption>
+		<figcaption use:reveal class="relative text-eyebrow uppercase text-primary-hover">{content.quote.signoff}</figcaption>
 	</figure>
 {/if}
 
