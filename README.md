@@ -23,8 +23,8 @@ scripts/dev.sh stop
 - Vendure dashboard (the owner's admin): http://127.0.0.1:3001/dashboard, signed in as `superadmin` / `superadmin`
 - Shop API: http://127.0.0.1:3001/shop-api (GraphiQL at http://127.0.0.1:3001/graphiql/shop)
 
-On first run the script creates the `vendure` role and database, applies the migrations, loads the
-catalogue into the empty database and builds the dashboard. Logs are in `.dev/`. Override
+On first run the script creates the `vendure` role and database, applies the migrations, imports
+the Tempered catalogue into the empty database and builds the dashboard. Logs are in `.dev/`. Override
 `DATABASE_URL` (and Vendure's `SUPERADMIN_USERNAME`, `SUPERADMIN_PASSWORD`, `COOKIE_SECRET`) in the
 environment. In Claude Code on the web, `.claude/hooks/session-start.sh` runs `scripts/dev.sh` at
 the start of every session, so the stack is already up.
@@ -39,6 +39,29 @@ the start of every session, so the stack is already up.
 - CORS reflects the Storefront's origin with credentials; anonymous telemetry is off.
 - Payments use Vendure's dummy handler until production hosting adds Stripe.
 
+## The catalogue
+
+`vendure/catalogue/` holds the Tempered catalogue as Vendure import files, so it can be reloaded
+and the same format reused for real products:
+
+- `products.csv`: the products, their size variants, tax-inclusive prices, stock and Category Tag
+  (`Category:Tees`), in Vendure's product-import format. Images come from `design/assets/Imagery`.
+- `initial-data.json`: countries and zones, tax rates, shipping (Standard $5, Express $10), the
+  payment method, and the Collection trees. Under **Shop**, one Collection per Category, filled by
+  a Tag filter, so tagging a product is all it takes to put it in a Category. Under **Drops**,
+  hand-picked Collections.
+- `vendure/src/import-catalogue.ts` loads both, then adds what the import format can't express:
+  the hand-picked **War** Collection (the War edition tee) and the `TEMPERED10` promotion (10% off
+  the order).
+
+```sh
+cd vendure && npm run catalogue:reload   # wipes the database (orders and customers too) and re-imports
+```
+
+In the dashboard, the owner edits products, stock and prices; adds a Tag to put a product in a
+Category; and hand-picks products into a Drop. The tax rates are placeholders until the real tax
+setup is decided.
+
 ## How the Storefront reaches the Engine
 
 - `svelte-commerce/.env` sets `PUBLIC_VENDURE_API_URL=http://127.0.0.1:3001`, and nothing else
@@ -50,8 +73,8 @@ the start of every session, so the stack is already up.
 
 ## The shopper-path test
 
-One Playwright test walks what a shopper does, against the running stack: homepage → product page
-(a variant changes the price) → add to bag → the bag survives a reload → guest checkout (address →
+One Playwright test walks what a shopper does, against the running stack: homepage → a Category
+from the header → search by name → product page (a variant changes the price) → add to bag → the bag survives a reload → guest checkout (address →
 shipping → review → confirm) → the confirmation shows an order number. Every change keeps it green.
 
 ```sh

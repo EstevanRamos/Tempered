@@ -22,8 +22,6 @@ export default defineConfig({
 		navigationTimeout: 90_000,
 		trace: 'retain-on-failure',
 		screenshot: 'only-on-failure',
-		launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH
-			? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
-			: {}
+		launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH } : {}
 	}
 })

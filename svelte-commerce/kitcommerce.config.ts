@@ -21,4 +21,18 @@ export * as services from './src/lib/core/connectors/active'
 // it only defers the failure to the payment step — on Vendure, `State Transition Failed: Cannot
 // transition Order to the "ArrangingPayment" state without Customer details`, with the shopper
 // stranded there.
-export default {}
+import defaults from './src/lib/core/connectors/default-store.json'
+
+// The header lists the Shop's Categories. Each is a Vendure Collection filled from the products'
+// Category Tags, served at its bare slug. The store merge is shallow, so `menu` keeps every other
+// menu (the footer) as it is and replaces only the header's items.
+const categories = [
+	{ id: 'nav-tees', link: '/tees', name: 'Tees' },
+	{ id: 'nav-joggers', link: '/joggers', name: 'Joggers' }
+]
+
+export default {
+	menu: defaults.menu.map((menu) =>
+		menu.menuId === 'header' ? { ...menu, items: [...categories, { id: 'nav-products', link: '/products', name: 'Shop all' }] } : menu
+	)
+}

@@ -48,7 +48,7 @@ if ! curl -sf -o /dev/null "$ENGINE_URL/health"; then
   products="$(psql "$DB_URL" -tAc 'select count(*) from product' 2>/dev/null || echo 0)"
   if [[ "$products" == "0" ]]; then
     echo "loading the catalogue into Vendure"
-    npx ts-node src/populate.ts > "$RUN/populate.log" 2>&1 || { echo "catalogue load failed; see $RUN/populate.log"; exit 1; }
+    npx ts-node src/import-catalogue.ts > "$RUN/catalogue.log" 2>&1 || { echo "catalogue import failed; see $RUN/catalogue.log"; exit 1; }
   fi
   setsid nohup npx ts-node src/index.ts > "$RUN/vendure.log" 2>&1 &
   echo $! > "$RUN/vendure.pid"

@@ -3,7 +3,8 @@ import { expect, test, type Page } from '@playwright/test'
 // Everything a shopper sees and does, end to end, against the real Storefront + Vendure stack.
 // Selects by accessible role and name only: no internal functions, stores or test IDs.
 
-const PRODUCT = { name: 'Laptop', slug: 'laptop', option: '15 inch' }
+// A Tempered product whose XXL costs more than the other sizes, so choosing it changes the price.
+const PRODUCT = { name: 'Classic logo tee', slug: 'classic-logo-tee', option: 'XXL' }
 
 // A fresh shopper each run, so the guest order is theirs alone.
 const SHOPPER = {
@@ -37,6 +38,31 @@ test('a shopper browses, buys as a guest and sees their order confirmed', async 
 	await test.step('homepage', async () => {
 		await visit(page, '/')
 		await expect(bagButton).toBeVisible()
+	})
+
+	await test.step('the header lists the Categories; a Category page shows only its products', async () => {
+		const header = page.getByRole('banner')
+		await expect(header.getByRole('link', { name: 'Tees', exact: true })).toBeVisible()
+		await expect(header.getByRole('link', { name: 'Joggers', exact: true })).toBeVisible()
+		await header.getByRole('link', { name: 'Tees', exact: true }).click()
+		await expect(page).toHaveURL(/\/tees$/)
+		const main = page.locator('main')
+		for (const tee of ['Classic logo tee', 'Elephant arch tee', 'War edition tee']) {
+			await expect(main.getByRole('link', { name: tee, exact: true })).toBeVisible()
+		}
+		await expect(main.getByRole('link', { name: 'Classic joggers', exact: true })).toHaveCount(0)
+	})
+
+	await test.step('search finds products by name', async () => {
+		await visit(page, '/')
+		await page.getByRole('button', { name: 'Open search' }).click()
+		const search = page.getByRole('combobox', { name: 'Search products' })
+		await search.fill('joggers')
+		await search.press('Enter')
+		await expect(page).toHaveURL(/search=joggers/)
+		const main = page.locator('main')
+		await expect(main.getByRole('link', { name: 'Classic joggers', exact: true })).toBeVisible()
+		await expect(main.getByRole('link', { name: 'Classic logo tee', exact: true })).toHaveCount(0)
 	})
 
 	await test.step('product page: choosing a variant changes the price', async () => {
