@@ -9,7 +9,7 @@
 	// load it: `title` or `name`, `slug`, `price` (or `variants[].price`), `thumbnail`, and
 	// optionally `badge` and `soldOut` (vendure-corrections.ts adds both to search results).
 	import { page } from '$app/state'
-	import { formatPrice } from '$lib/core/utils'
+	import { productPrice } from './product-price.js'
 	import { getImageCDNUrl } from '@misiki/kitcommerce-core/utils'
 	import { toCssRatio } from '$lib/theme/aspect-ratio.js'
 	import Badge from './Badge.svelte'
@@ -24,16 +24,7 @@
 	const href = $derived(`/products/${product?.slug}`)
 	const image = $derived(product?.thumbnail || product?.image_url || product?.featuredImage || '')
 
-	// `price` is the cheapest variant; when variants cost different amounts, say so rather than
-	// advertising the low figure as the price.
-	const variantPrices = $derived(
-		(Array.isArray(product?.variants) ? product.variants : [])
-			.map((variant: any) => Number(variant?.price))
-			.filter((value: number) => Number.isFinite(value) && value > 0)
-	)
-	const minPrice = $derived(variantPrices.length ? Math.min(...variantPrices) : Number(product?.price))
-	const hasRange = $derived(variantPrices.length > 1 && Math.max(...variantPrices) > minPrice)
-	const price = $derived(Number.isFinite(minPrice) && minPrice > 0 ? `${hasRange ? 'From ' : ''}${formatPrice(minPrice, currencyCode)}` : '')
+	const price = $derived(productPrice(product, currencyCode))
 
 	const badge = $derived(productBadge(product))
 	const soldOut = $derived(!!product?.soldOut)

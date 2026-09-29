@@ -33,7 +33,8 @@ const config: Config = {
 		},
 		fontFamily: {
 			sans: ['var(--font-body)', ...fontFamily.sans],
-			serif: ['var(--font-heading)', ...fontFamily.serif]
+			serif: ['var(--font-heading)', ...fontFamily.serif],
+			numeral: ['var(--font-numeral, var(--font-heading))', ...fontFamily.serif]
 		},
 		extend: {
 			spacing: {

@@ -1,237 +1,328 @@
 <script lang="ts">
-	// Tempered's homepage (design/homepage, design/screenshots/home-night.png), band by band: the hero,
-	// the tiles, featured products, the manifesto and the quote. Copy is the theme content's
-	// `tempered` block; Collections and products come from the Engine. A band with nothing real to
-	// show is left out rather than filled with placeholders.
+	// Tempered's homepage (the 2026-09 redesign), band by band: the hero under a floating header, the
+	// collection spotlight, Choose your seat, The Code, the manifesto and the quote. Copy is the theme
+	// content's `tempered` block; Collections, Categories and products come from the Engine. A band
+	// with nothing real to show is left out rather than filled with placeholders.
 	import { page } from '$app/state'
 	import type { ThemeHomepageProps } from '../homepages.js'
 	import type { CatalogueEntry } from './catalogue-tree.js'
-	import DefaultProductCard from './DefaultProductCard.svelte'
-	import Arrow from './Arrow.svelte'
+	import Crest from './Crest.svelte'
 	import LinkButton from './LinkButton.svelte'
+	import ProductSpotlight from './ProductSpotlight.svelte'
 	import SectionHeader from './SectionHeader.svelte'
 	import TextLink from './TextLink.svelte'
-	import ValueList from './ValueList.svelte'
 
 	let { themeContent, featuredProducts = [] }: ThemeHomepageProps = $props()
 
 	const content = $derived(themeContent.tempered)
 	const catalogue = $derived(page.data?.catalogue ?? { categories: [], collections: [] })
-	const collections = $derived<CatalogueEntry[]>(page.data?.collectionTiles ?? catalogue.collections ?? [])
+	// Collections under Drops carry an image even when the Engine gives them none (+page.ts).
+	const drops = $derived<CatalogueEntry[]>(page.data?.collectionTiles ?? catalogue.collections ?? [])
 	// Search results carry Badge and sold-out; the featured feed is the fallback.
 	const products = $derived<any[]>((page.data?.homeProducts?.length ? page.data.homeProducts : featuredProducts).slice(0, 4))
 
-	type Tile = { title: string; subtitle: string; cta: string; href: string; image: string | null; end?: boolean }
-	const tiles = $derived.by<Tile[]>(() => {
-		if (!content) return []
-		const shopAll: Tile = {
-			title: content.tiles.shopAll.title,
-			subtitle: catalogue.categories.map((c: CatalogueEntry) => c.name).join(' · '),
-			cta: content.tiles.shopAll.cta,
-			href: '/products',
-			image: content.tiles.shopAll.image
-		}
-		const collectionTiles: Tile[] = collections.map((c) => ({
-			title: `${c.name} collection`,
-			subtitle: c.description ?? '',
-			cta: content.tiles.collection.cta,
-			href: c.link,
-			image: c.image
-		}))
-		// The story tile's subject sits left, so its text sits bottom-right.
-		const story: Tile = { ...content.tiles.story, end: true }
-		return [shopAll, ...collectionTiles, story]
-	})
+	// Choose your seat: the drops first, then the Categories.
+	const seats = $derived(
+		content
+			? [...drops, ...(catalogue.categories as CatalogueEntry[])].map((entry) => {
+					const own = content.seats.tiles[entry.slug] ?? {}
+					return { title: entry.name, subtitle: own.subtitle ?? entry.description ?? '', image: own.image ?? entry.image, href: entry.link }
+				})
+			: []
+	)
+
+	// The phone carousel's position, for the hairline dots beneath it.
+	let seatIndex = $state(0)
+	function onSeatScroll(event: Event) {
+		const track = event.currentTarget as HTMLElement
+		seatIndex = Math.round(track.scrollLeft / Math.max(track.clientWidth, 1))
+	}
 </script>
 
 {#if content}
-	<!-- Hero: always photographic. The elephant holds the right of the band and fades into the ground;
-	     the copy sits on the ground at the left, never over the face. -->
-	<section class="hero relative overflow-hidden border-b border-border" aria-labelledby="home-title">
-		<img src={content.hero.image} alt={content.hero.imageAlt} class="hero__img" fetchpriority="high" />
-		<div class="hero__fade" aria-hidden="true"></div>
-		<div class="page-width relative flex h-full flex-col justify-end gap-12 pb-16 pt-2 md:flex-row md:items-end md:justify-between md:pb-24 md:pt-0">
-			<div class="max-w-[640px]">
+	<!-- Hero: the crowned elephant, darkened and fading into the ground on every side, the header
+	     floating over its top edge. The copy sits bottom-left on a phone and centred-left from 768px;
+	     the values stand at the right on desktop and fold into one line under the buttons on a phone. -->
+	<section class="hero relative overflow-hidden" aria-labelledby="home-title">
+		<img
+			src={content.hero.image}
+			srcset="{content.hero.imageSmall} 1000w, {content.hero.image} 2000w"
+			sizes="100vw"
+			alt={content.hero.imageAlt}
+			class="hero__img"
+			fetchpriority="high"
+		/>
+		<div class="hero__scrim" aria-hidden="true"></div>
+		<div
+			class="page-width relative flex min-h-[760px] flex-col justify-end pb-14 pt-[76px] md:min-h-[920px] md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-12 md:pb-0 md:pt-0 lg:pl-[clamp(0px,11vw,192px)] lg:pr-[clamp(0px,6vw,88px)]"
+		>
+			<div class="flex min-w-0 max-w-[720px] flex-col md:flex-[1_1_520px]">
 				<p class="text-eyebrow uppercase text-muted-foreground">{content.hero.eyebrow}</p>
 				<h1
 					id="home-title"
-					class="-mr-[0.14em] mb-4 mt-6 font-serif text-[48px] font-normal uppercase leading-none tracking-[0.14em] text-foreground sm:text-[72px] lg:text-display-xl"
+					class="-mr-[0.12em] mb-3.5 mt-[18px] whitespace-nowrap font-serif text-[58px] font-normal uppercase leading-none tracking-[0.12em] text-foreground md:mb-6 md:mt-7 md:text-[clamp(56px,9vw,132px)] md:tracking-[0.14em]"
 				>
 					{content.hero.title}
 				</h1>
-				<p class="mb-12 max-w-measure text-body-l text-muted-foreground">{content.hero.text}</p>
-				<LinkButton href={content.hero.href}>{content.hero.cta}</LinkButton>
+				<p class="font-serif text-[21px] italic leading-tight text-foreground/80 md:text-[26px]">{content.hero.tagline}</p>
+				<p class="mt-[18px] max-w-[470px] text-[14px] leading-[1.6] text-muted-foreground md:mt-7 md:text-body">{content.hero.text}</p>
+				<div class="mt-8 flex flex-col gap-2.5 md:mt-10 md:flex-row md:gap-4">
+					<LinkButton href={content.hero.href} variant="gold" class="h-[52px] md:h-12">{content.hero.cta}</LinkButton>
+					<LinkButton href={content.hero.secondaryHref} arrow={false}>{content.hero.secondaryCta}</LinkButton>
+				</div>
+				<ul
+					class="mt-9 flex flex-wrap gap-x-3.5 gap-y-1.5 text-eyebrow uppercase tracking-[0.28em] text-faint-foreground md:hidden"
+					aria-label="What we stand for"
+				>
+					{#each content.hero.values as value, i (value)}
+						<li class:text-foreground={i === content.hero.values.length - 1}>{value}</li>
+					{/each}
+				</ul>
 			</div>
-			<ValueList items={content.hero.values} label="What we stand for" class="max-md:hidden" />
+			<ul
+				class="hidden flex-col items-end gap-[22px] border-r border-border-strong pr-6 text-right text-eyebrow uppercase tracking-[0.3em] text-muted-foreground md:mt-[120px] md:flex"
+				aria-label="What we stand for"
+			>
+				{#each content.hero.values as value, i (value)}
+					<li class:text-foreground={i === content.hero.values.length - 1}>{value}</li>
+				{/each}
+			</ul>
 		</div>
 	</section>
 
-	<!-- Tiles: Shop all, one per Collection under Drops in the Engine, and the Story page. -->
-	<section class="tiles mt-1 grid grid-cols-1 gap-1" style="--tile-count: {tiles.length}" aria-label="Shop by collection">
-		{#each tiles as tile (tile.href)}
-			<a href={tile.href} class="tile group">
-				{#if tile.image}
-					<img src={tile.image} alt="" class="tile__img" loading="lazy" />
-				{/if}
-				<span class="tile__scrim" aria-hidden="true"></span>
-				<span class="tile__body" class:tile__body--end={tile.end}>
-					<span class="font-serif text-title uppercase tracking-[0.12em]">{tile.title}</span>
-					{#if tile.subtitle}
-						<span class="text-eyebrow uppercase tracking-[0.28em] text-muted-foreground">{tile.subtitle}</span>
-					{/if}
-					<span class="mt-4 inline-flex items-center gap-2 text-eyebrow uppercase tracking-[0.2em]">{tile.cta} <Arrow /></span>
-				</span>
-			</a>
-		{/each}
-	</section>
-
-	<!-- Featured products, on the new product card. -->
+	<!-- The collection: the featured products as one spotlight. -->
 	{#if products.length}
-		<section class="page-width py-16 md:py-24" aria-labelledby="home-featured">
-			<SectionHeader id="home-featured" title={content.featured.title}>
-				{#snippet action()}
-					<TextLink href={content.featured.viewAllHref}>{content.featured.viewAll}</TextLink>
-				{/snippet}
-			</SectionHeader>
-			<div class="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-6">
-				{#each products as product, i (product.id)}
-					<DefaultProductCard {product} priority={i < 2} />
-				{/each}
+		<section class="page-width pt-[88px] md:pt-[140px]" aria-labelledby="home-collection">
+			<SectionHeader
+				id="home-collection"
+				align="center"
+				rule={false}
+				eyebrow={content.collection.eyebrow}
+				title={content.collection.title}
+				text={content.collection.text}
+			/>
+			<div class="mt-9 md:mt-14">
+				<ProductSpotlight {products} notes={content.collection.notes} viewPiece={content.collection.viewPiece} />
+			</div>
+			<div class="mt-9 flex justify-center md:mt-[72px]">
+				<LinkButton href={content.collection.href} arrow={false} class="w-full md:w-auto">{content.collection.cta}</LinkButton>
 			</div>
 		</section>
 	{/if}
 
-	<!-- Manifesto: image then copy, 7/5 on desktop. -->
-	<section class="manifesto grid border-y border-border lg:grid-cols-[7fr_5fr]" aria-labelledby="home-manifesto">
-		<img src={content.manifesto.image} alt={content.manifesto.imageAlt} class="aspect-[4/3] h-full w-full object-cover lg:aspect-auto" loading="lazy" />
-		<div class="relative flex flex-col justify-center px-4 py-16 sm:px-8 lg:py-24 lg:pl-16">
+	<!-- Choose your seat: one full-height tile per drop and Category. Three across from 768px; on a
+	     phone, one at a time in a snapping carousel. -->
+	{#if seats.length}
+		<section id="collections" class="scroll-mt-20 pt-[104px] md:pt-[140px]" aria-labelledby="home-seats">
+			<div class="page-width">
+				<SectionHeader id="home-seats" align="center" rule={false} eyebrow={content.seats.eyebrow} title={content.seats.title} />
+			</div>
+			<ul
+				class="seats mt-8 flex snap-x snap-mandatory overflow-x-auto md:mt-14 md:grid md:overflow-visible"
+				style="--seat-count: {seats.length}"
+				onscroll={onSeatScroll}
+			>
+				{#each seats as seat (seat.href)}
+					<li class="w-full flex-none snap-center">
+						<a href={seat.href} class="seat group">
+							{#if seat.image}
+								<img src={seat.image} alt="" class="seat__img" loading="lazy" />
+							{/if}
+							<span class="seat__scrim" aria-hidden="true"></span>
+							<span class="relative font-serif text-[32px] uppercase leading-tight tracking-[0.14em] lg:text-[40px]">{seat.title}</span>
+							{#if seat.subtitle}
+								<span class="relative text-eyebrow uppercase tracking-[0.24em] text-muted-foreground">{seat.subtitle}</span>
+							{/if}
+						</a>
+					</li>
+				{/each}
+			</ul>
+			{#if seats.length > 1}
+				<div class="flex justify-center gap-1.5 pt-4 md:hidden" aria-hidden="true">
+					{#each seats as seat, i (seat.href)}
+						<span class="h-px w-[18px] {i === seatIndex ? 'bg-primary' : 'bg-border-strong'}"></span>
+					{/each}
+				</div>
+			{/if}
+		</section>
+	{/if}
+
+	<!-- The Code: five virtues under outlined Roman numerals. A list on a phone, five columns on desktop. -->
+	<section class="page-width pt-[104px] lg:pt-40" aria-labelledby="home-code">
+		<div class="mb-6 flex items-baseline justify-between gap-4 lg:mb-10">
+			<h2 id="home-code" class="font-sans text-eyebrow uppercase text-muted-foreground">{content.code.eyebrow}</h2>
+			<TextLink href={content.code.href} muted>{content.code.link}</TextLink>
+		</div>
+		<ol class="grid grid-cols-1 lg:grid-cols-5 lg:gap-5">
+			{#each content.code.items as item (item.numeral)}
+				<li class="grid grid-cols-[64px_1fr] items-baseline gap-x-3 gap-y-1 border-t border-border py-5 lg:flex lg:flex-col lg:gap-4 lg:pb-0 lg:pt-6">
+					<span class="numeral row-span-2 font-numeral text-[44px] leading-[.9] lg:text-[76px]" aria-hidden="true">{item.numeral}</span>
+					<h3 class="font-sans text-eyebrow uppercase tracking-[0.28em] text-foreground lg:text-label lg:tracking-[0.28em]">{item.title}</h3>
+					<p class="max-w-[220px] text-[14px] leading-[1.55] text-faint-foreground max-lg:col-start-2 max-lg:max-w-none">{item.text}</p>
+				</li>
+			{/each}
+		</ol>
+	</section>
+
+	<!-- A different breed: image then copy, 50/50 on desktop. -->
+	<section class="grid items-center pb-24 pt-14 lg:grid-cols-2 lg:pb-[140px] lg:pt-24" aria-labelledby="home-manifesto">
+		<img src={content.manifesto.image} alt={content.manifesto.imageAlt} class="aspect-[4/3] w-full object-cover lg:aspect-[839/723]" loading="lazy" />
+		<div class="flex flex-col gap-[18px] px-4 pt-9 sm:px-8 lg:gap-6 lg:px-[clamp(32px,8vw,120px)] lg:pt-0">
 			<p class="text-eyebrow uppercase text-muted-foreground">{content.manifesto.eyebrow}</p>
 			<h2
 				id="home-manifesto"
-				class="mb-6 mt-4 max-w-[12ch] font-serif text-[40px] font-normal uppercase leading-[44px] tracking-[0.1em] text-foreground lg:text-display-l"
+				class="font-serif text-[36px] font-normal uppercase leading-[1.05] tracking-[0.06em] text-foreground [text-wrap:balance] lg:text-[52px]"
 			>
 				{content.manifesto.title}
 			</h2>
-			<p class="mb-12 max-w-measure text-body-l text-muted-foreground">{content.manifesto.text}</p>
-			<div class="flex flex-wrap items-end justify-between gap-10">
-				<LinkButton href={content.manifesto.href}>{content.manifesto.cta}</LinkButton>
-				<ValueList items={content.manifesto.values} label="The virtues" />
-			</div>
+			<p class="max-w-[420px] text-[14px] leading-[1.6] text-muted-foreground md:text-body">{content.manifesto.text}</p>
+			<LinkButton href={content.manifesto.href} arrow={false} class="mt-2 w-full lg:mt-0 lg:w-auto lg:self-start">{content.manifesto.cta}</LinkButton>
 		</div>
 	</section>
 
-	<!-- Quote: the mark, the manifesto line, the sign-off in gold. -->
-	<figure class="page-width px-4 py-24 text-center md:py-32">
-		<img src="/tempered/mark.png" alt="" class="mx-auto h-[72px] w-auto md:h-[88px]" loading="lazy" />
-		<blockquote class="mx-auto mb-4 mt-8 max-w-[720px] font-serif text-[28px] italic leading-[38px] text-foreground md:text-[40px] md:leading-[52px]">
+	<!-- Quote: the crest in moving foil on a low gold glow, the line, the sign-off. -->
+	<figure class="quote relative flex flex-col items-center gap-6 overflow-hidden px-6 py-24 text-center lg:gap-10 lg:py-40">
+		<Crest shimmer class="relative w-[150px] lg:w-[260px]" />
+		<blockquote class="relative max-w-[760px] font-serif text-[28px] italic leading-[1.2] text-foreground [text-wrap:balance] lg:text-[44px]">
 			“{content.quote.text}”
 		</blockquote>
-		<figcaption class="text-eyebrow uppercase text-primary">{content.quote.signoff}</figcaption>
+		<figcaption class="relative text-eyebrow uppercase text-primary-hover">{content.quote.signoff}</figcaption>
 	</figure>
 {/if}
 
 <style>
-	/* Hero: 720px on desktop, the copy beside the image. On a phone the image takes the top and
-	   fades down into the ground, and the copy sits beneath it, clear of the face. */
+	/* Hero: the photograph darkened and desaturated behind every word, then faded into the ground at
+	   the top (under the header), the bottom, and on desktop the left, where the copy sits. */
 	.hero__img {
-		display: block;
-		width: 100%;
-		height: 380px;
-		object-fit: cover;
-		object-position: 60% 20%;
-	}
-
-	.hero__fade {
-		position: absolute;
-		inset: 0 0 auto;
-		height: 380px;
-		background: linear-gradient(0deg, hsl(var(--background)) 0%, hsl(var(--background) / 0) 45%);
-	}
-
-	@media (min-width: 768px) {
-		.hero {
-			height: 720px;
-		}
-
-		.hero__img {
-			position: absolute;
-			top: 0;
-			right: 0;
-			width: 62%;
-			height: 100%;
-			object-position: 50% 20%;
-		}
-
-		.hero__fade {
-			inset: 0;
-			height: auto;
-			background:
-				linear-gradient(90deg, hsl(var(--background)) 38%, hsl(var(--background) / 0.6) 52%, hsl(var(--background) / 0) 72%),
-				linear-gradient(0deg, hsl(var(--background)) 0%, hsl(var(--background) / 0) 22%);
-		}
-	}
-
-	/* CollectionTile: a full-bleed photograph with a bottom scrim, text bottom-left (or bottom-right),
-	   the image zooming slowly on hover. Always photographic, so the text is Night's ink. 1 per row on
-	   a phone; one row with a 4px seam from 1024px. */
-	.tile {
-		position: relative;
-		display: block;
-		height: 320px;
-		overflow: hidden;
-		background: hsl(var(--card));
-		color: hsl(var(--foreground));
-	}
-
-	@media (min-width: 1024px) {
-		.tiles {
-			grid-template-columns: repeat(var(--tile-count), minmax(0, 1fr));
-		}
-
-		.tile {
-			height: 420px;
-		}
-	}
-
-	.tile__img {
 		position: absolute;
 		inset: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		object-position: 48% 30%;
+		filter: brightness(0.34) saturate(0.55) contrast(1.1);
+	}
+
+	.hero__scrim {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(
+				180deg,
+				hsl(var(--background)) 0,
+				hsl(var(--background)) 110px,
+				hsl(var(--background) / 0.6) 208px,
+				hsl(var(--background) / 0) 320px
+			),
+			linear-gradient(0deg, hsl(var(--background)) 0, hsl(var(--background) / 0) 220px),
+			linear-gradient(0deg, hsl(var(--background)) 8%, hsl(var(--background) / 0.55) 50%, hsl(var(--background) / 0.2) 100%);
+	}
+
+	@media (min-width: 768px) {
+		.hero__img {
+			object-position: 58% 40%;
+			filter: brightness(0.32) saturate(0.55) contrast(1.1);
+		}
+
+		.hero__scrim {
+			background:
+				linear-gradient(
+					180deg,
+					hsl(var(--background)) 0,
+					hsl(var(--background)) 144px,
+					hsl(var(--background) / 0.6) 312px,
+					hsl(var(--background) / 0) 480px
+				),
+				linear-gradient(0deg, hsl(var(--background)) 0, hsl(var(--background) / 0) 260px),
+				linear-gradient(90deg, hsl(var(--background) / 0.85) 0%, hsl(var(--background) / 0.55) 45%, hsl(var(--background) / 0.2) 100%);
+		}
+	}
+
+	/* Choose your seat: a photograph under a bottom scrim, the title centred at the foot, the image
+	   zooming slowly on hover. Always photographic, so the text is Night's ink. */
+	.seats {
+		scrollbar-width: none;
+	}
+
+	.seats::-webkit-scrollbar {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.seats {
+			grid-template-columns: repeat(var(--seat-count), minmax(0, 1fr));
+		}
+	}
+
+	.seat {
+		position: relative;
+		display: flex;
+		height: 560px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 10px;
+		overflow: hidden;
+		padding: 32px 16px;
+		text-align: center;
+		color: hsl(var(--foreground));
+	}
+
+	@media (min-width: 1024px) {
+		.seat {
+			height: 760px;
+			gap: 14px;
+			padding: 48px 24px;
+		}
+	}
+
+	.seat__img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: brightness(0.55) saturate(0.7);
 		transition: transform 0.8s var(--motion-ease);
 	}
 
-	.tile:hover .tile__img {
+	.seat:hover .seat__img {
 		transform: scale(1.04);
 	}
 
-	.tile__scrim {
+	.seat__scrim {
+		position: absolute;
+		inset: 45% 0 0 0;
+		background: linear-gradient(0deg, hsl(var(--background) / 0.92), hsl(var(--background) / 0));
+	}
+
+	/* The Code's numerals: outlined in gold-deep, no fill. */
+	.numeral {
+		color: transparent;
+		-webkit-text-stroke: 0.8px hsl(var(--primary-hover));
+		font-variation-settings: 'opsz' 96;
+	}
+
+	/* The quote's low gold glow, centred on the crest and line. */
+	.quote::before {
+		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, hsl(var(--background) / 0) 35%, hsl(var(--background) / 0.82) 100%);
-	}
-
-	.tile__body {
-		position: absolute;
-		inset: auto 32px 32px 32px;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 8px;
-	}
-
-	.tile__body--end {
-		align-items: flex-end;
-		text-align: right;
+		background: radial-gradient(
+			ellipse closest-side at 50% 45%,
+			hsl(var(--primary-hover) / 0.16),
+			hsl(var(--primary-hover) / 0.05) 50%,
+			hsl(var(--primary-hover) / 0) 100%
+		);
+		pointer-events: none;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.tile__img {
+		.seat__img {
 			transition: none;
 		}
 
-		.tile:hover .tile__img {
+		.seat:hover .seat__img {
 			transform: none;
 		}
 	}

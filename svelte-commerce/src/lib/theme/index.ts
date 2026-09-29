@@ -19,9 +19,10 @@ const DEFAULT_THEME = 'default'
 
 const THEME_FONTS: Record<string, string> = {
 	// Tempered (design/README.md → Typography): Cormorant Garamond for the voice, Hanken Grotesk for
-	// everything functional, at 400/500/600 and 400 italic.
+	// everything functional, at 400/500/600 and 400 italic. Bodoni Moda only for the outlined numerals
+	// and the footer wordmark (`font-numeral`).
 	default:
-		'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@400;500;600&display=swap',
+		'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@400;500;600&family=Bodoni+Moda:opsz,wght@6..96,400&display=swap',
 	wine:
 		'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap',
 	organic:

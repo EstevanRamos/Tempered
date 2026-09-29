@@ -283,14 +283,41 @@ export interface ThemeHomepageContent {
 	 * static/tempered. Live commerce data (Collections, products) comes from the Engine, never here.
 	 */
 	tempered?: {
-		hero: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string; values: string[] }
-		tiles: {
-			shopAll: { title: string; cta: string; image: string }
-			collection: { cta: string }
-			story: { title: string; subtitle: string; cta: string; href: string; image: string }
+		hero: {
+			eyebrow: string
+			title: string
+			tagline: string
+			text: string
+			cta: string
+			href: string
+			secondaryCta: string
+			secondaryHref: string
+			/** Full width, and a half-width copy for phones. */
+			image: string
+			imageSmall: string
+			imageAlt: string
+			values: string[]
 		}
-		featured: { title: string; viewAll: string; viewAllHref: string }
-		manifesto: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string; values: string[] }
+		/** The featured products as one spotlight: a large image, its name and a line, and thumbnails. */
+		collection: {
+			eyebrow: string
+			title: string
+			text: string
+			viewPiece: string
+			cta: string
+			href: string
+			/** The line under a product's name, by product slug ("Washed black · Heavyweight"). */
+			notes: Record<string, string>
+		}
+		/** One tile per Collection under Drops, then per Category under Shop, from the Engine. */
+		seats: {
+			eyebrow: string
+			title: string
+			/** Per Collection or Category slug; the Engine's description and image are the fallback. */
+			tiles: Record<string, { subtitle?: string; image?: string }>
+		}
+		code: { eyebrow: string; link: string; href: string; items: Array<{ numeral: string; title: string; text: string }> }
+		manifesto: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string }
 		quote: { text: string; signoff: string }
 		/** The Our Story page (a Story page, not a product group), band by band. */
 		story: {
