@@ -118,5 +118,6 @@
 	:global([data-theme='default'] .edp-gallery-float) {
 		background: var(--ed-surface);
 		border: 1px solid var(--ed-line);
+		border-radius: 0;
 	}
 </style>

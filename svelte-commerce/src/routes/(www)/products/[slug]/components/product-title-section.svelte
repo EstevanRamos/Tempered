@@ -127,10 +127,12 @@
 		color: var(--ed-soft);
 	}
 
+	/* Tempered: the name in the display serif, uppercase and tracked (`title`, a step up on desktop). */
 	:global([data-theme='default'] .edp-title) {
 		font-family: var(--ed-display);
 		font-weight: 500;
-		letter-spacing: -0.01em;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
 		/* Was clamp(1.55rem, 2.6vw, 2.3rem) — 24.8px on a phone and 36.8px at 1440, where a
 		   37px serif name in a half-width column dwarfed the price and every control under it.
 		   The floor is 1.5rem rather than 1.4rem: at 22.4px this h1 was only 2.4px larger than the
@@ -138,8 +140,8 @@
 		   one tap earlier — a product name that shrinks when you open the product. 24px restores
 		   both gaps. The ceiling stays one deliberate step under the 28-36px page-title ramp on the
 		   homepage and listing, because this heading sits in a ~550px column, not the full rail. */
-		font-size: clamp(1.5rem, 2vw, 1.875rem);
-		line-height: 1.15;
+		font-size: clamp(1.5rem, 2.2vw, 2rem);
+		line-height: 1.2;
 		color: var(--ed-ink);
 	}
 

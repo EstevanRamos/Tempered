@@ -127,11 +127,12 @@ export const defaultContent: ThemeHomepageContent = {
       image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1400&q=80&auto=format&fit=crop",
       imageAlt: "Lifestyle editorial photograph"
     },
+    // Shown beside Add to bag on the product page, where the shopper decides. Keep them true to
+    // what checkout does: shipping is Standard or Express, priced at checkout.
     assurances: [
-      { icon: "truck", title: "Free shipping", text: "On your qualifying orders" },
-      { icon: "returns", title: "Easy returns", text: "7-day, hassle-free" },
-      { icon: "shield", title: "Secure checkout", text: "Encrypted & protected" },
-      { icon: "support", title: "Here to help", text: "Support when you need it" }
+      { icon: "truck", title: "Shipping", text: "Standard or express, priced at checkout." },
+      { icon: "returns", title: "Returns", text: "Seven days to send it back." },
+      { icon: "shield", title: "Secure payment", text: "Encrypted from bag to receipt." }
     ],
     newsletter: {
       eyebrow: "Stay in the loop",

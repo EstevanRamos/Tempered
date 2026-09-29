@@ -129,7 +129,7 @@
 {/if}
 
 <div class="flex flex-col gap-2">
-	<div class="flex h-11 items-center gap-2 md:h-10">
+	<div class="edp-atc-row flex h-11 items-center gap-2 md:h-10">
 		<div class="h-full flex-1">
 			{#if enquiryPlugin?.active}
 				<EnquiryModal
@@ -184,19 +184,41 @@
 
 <style>
 	/* Refined Editorial — default theme only. Primary fill CTA + bordered ghost wishlist. */
+	/* design/components/Button, `solid`: the product page's primary action is ink with ground text,
+	   square, in uppercase label type, 48px tall. It hovers to an outline. Gold is kept for the one
+	   money moment in checkout. */
+	:global([data-theme='default'] .edp-atc-row) {
+		height: 48px;
+	}
+
 	:global([data-theme='default'] .edp-atc) {
-		border-radius: var(--ed-radius) !important;
-		font-size: 0.8rem !important;
-		font-weight: 600;
-		letter-spacing: 0.08em;
+		border: 1px solid hsl(var(--foreground)) !important;
+		border-radius: 0 !important;
+		background: hsl(var(--foreground));
+		color: hsl(var(--background));
+		font-size: 12px !important;
+		font-weight: 500;
+		letter-spacing: 0.18em;
 		transition:
-			transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-			opacity 0.25s ease,
-			background 0.25s ease;
+			background-color 0.2s,
+			color 0.2s;
 	}
 
 	:global([data-theme='default'] .edp-atc:hover:not(:disabled)) {
-		transform: translateY(-2px);
+		background: transparent;
+		color: hsl(var(--foreground));
+	}
+
+	:global([data-theme='default'] .edp-atc:disabled) {
+		border-color: var(--ed-line-strong) !important;
+		background: transparent;
+		color: hsl(var(--faint-foreground));
+		opacity: 1;
+	}
+
+	/* The design system's only glyph is the hairline arrow: the bag icon goes. */
+	:global([data-theme='default'] .edp-atc .lucide-shopping-bag) {
+		display: none;
 	}
 
 	:global([data-theme='default'] .edp-wish) {
@@ -223,9 +245,6 @@
 		:global([data-theme='default'] .edp-atc),
 		:global([data-theme='default'] .edp-wish) {
 			transition: none;
-		}
-		:global([data-theme='default'] .edp-atc:hover:not(:disabled)) {
-			transform: none;
 		}
 	}
 </style>

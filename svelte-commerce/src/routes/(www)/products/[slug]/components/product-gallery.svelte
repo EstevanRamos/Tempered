@@ -369,11 +369,27 @@
 	}
 
 	:global([data-theme='default'] .edp-gallery .bg-gray-50) {
-		background-color: #f0ece4;
+		background-color: hsl(var(--card));
 		border-radius: var(--ed-radius);
 	}
 
 	:global([data-theme='default'] .edp-gallery .border-muted) {
 		border-color: var(--ed-line);
+	}
+
+	/* The current thumbnail is marked in ink: gold is the header's. */
+	:global([data-theme='default'] .edp-gallery .border-primary) {
+		border-color: hsl(var(--foreground));
+	}
+
+	/* Tempered: every image fills its 4:5 well on `surface` (the box LazyImg sizes from the store's
+	   productImageAspectRatio), thumbnails included. */
+	:global([data-theme='default'] .edp-gallery img) {
+		object-fit: cover;
+		background: hsl(var(--card));
+	}
+
+	:global([data-theme='default'] .edp-gallery .aspect-square) {
+		aspect-ratio: 4 / 5;
 	}
 </style>
