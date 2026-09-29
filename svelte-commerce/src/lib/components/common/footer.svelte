@@ -14,6 +14,7 @@
 	import { resolveThemeContent } from '$lib/theme/index.js'
 	import LimeFooter from '$lib/theme/lime/LimeFooter.svelte'
 	import NoorFooter from '$lib/theme/noor/NoorFooter.svelte'
+	import DefaultFooter from '$lib/theme/default/DefaultFooter.svelte'
 
 	// Derive store data to prevent unnecessary re-renders
 	const storeData = $derived(page?.data?.store || {})
@@ -97,8 +98,10 @@
 	const footerDescription = $derived(activeThemeName === 'default' ? storeData?.description : themeContent?.description || storeData?.description)
 </script>
 
-<div class="mt-5">
-	{#if activeThemeName === 'lime'}
+<div class={activeThemeName === 'default' ? '' : 'mt-5'}>
+	{#if activeThemeName === 'default'}
+		<DefaultFooter />
+	{:else if activeThemeName === 'lime'}
 		<!-- The store's own name wins over the theme's demo brand name. -->
 		<LimeFooter footer={themeFooter} brandName={storeData?.name || themeContent.brandName} />
 	{:else if activeThemeName === 'noor'}

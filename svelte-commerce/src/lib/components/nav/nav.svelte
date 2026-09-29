@@ -19,6 +19,7 @@
 	import { onDestroy, onMount } from 'svelte'
 	import NoorNav from '$lib/theme/noor/NoorNav.svelte'
 	import LimeNav from '$lib/theme/lime/LimeNav.svelte'
+	import DefaultHeader from '$lib/theme/default/DefaultHeader.svelte'
 	import { resolveThemeContent } from '$lib/theme/index.js'
 	import { dialog } from '$lib/actions/dialog.js'
 
@@ -124,6 +125,14 @@
 	<LimeNav {navModule} {wishlistPlugin} {wishlistState} {userState} {storeData} {themeContent} pathname={page.url.pathname} />
 {:else if activeThemeName === 'noor'}
 	<NoorNav {navModule} {wishlistPlugin} {wishlistState} {userState} {storeData} {themeContent} pathname={page.url.pathname} />
+{:else if activeThemeName === 'default'}
+	<!-- Tempered. Its announcement bar is the theme content's line, on the homepage as before; a
+	     hello-bar plugin with content still wins the slot. -->
+	<DefaultHeader
+		{navModule}
+		announcement={isHomepage && !helloBarHasContent ? themeAnnouncement : ''}
+		announcementHref={themeHeader?.announcementHref || ''}
+	/>
 {:else}
 	<header
 		class:ed={activeThemeName === 'default'}

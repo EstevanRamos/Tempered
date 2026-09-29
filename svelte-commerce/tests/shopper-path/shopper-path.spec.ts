@@ -216,9 +216,10 @@ test('a shopper browses, buys as a guest, then signs up and finds the order in t
 	})
 
 	await test.step('log out, then log in from order history and land back on it', async () => {
-		await page.getByRole('button', { name: 'User Profile' }).click()
+		// The header's Account word: a menu when signed in, the sign-in modal when not.
+		await page.getByRole('button', { name: 'Account menu' }).click()
 		await page.getByRole('menuitem', { name: 'Sign Out' }).click()
-		await expect(page.getByRole('button', { name: 'Login' })).toBeVisible()
+		await expect(page.getByRole('button', { name: 'Account, sign in' })).toBeVisible()
 
 		await visit(page, '/my/orders')
 		const dialog = page.getByRole('dialog')

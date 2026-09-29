@@ -23,14 +23,6 @@ export * as services from './src/lib/core/connectors/active'
 // stranded there.
 import defaults from './src/lib/core/connectors/default-store.json'
 
-// The header lists the Shop's Categories. Each is a Vendure Collection filled from the products'
-// Category Tags, served at its bare slug. The store merge is shallow, so `menu` keeps every other
-// menu (the footer) as it is and replaces only the header's items.
-const categories = [
-	{ id: 'nav-tees', link: '/tees', name: 'Tees' },
-	{ id: 'nav-joggers', link: '/joggers', name: 'Joggers' }
-]
-
 export default {
 	// Tempered's identity (design/assets/Logos): the crowned mark is the header logo and favicon.
 	name: 'Tempered',
@@ -52,7 +44,6 @@ export default {
 	// Tempered's prices include tax (the Vendure channel's pricesIncludeTax), so the price summary
 	// shows the tax inside the total rather than as an extra charge.
 	currency: { ...defaults.currency, includesTax: true },
-	menu: defaults.menu.map((menu) =>
-		menu.menuId === 'header' ? { ...menu, items: [...categories, { id: 'nav-products', link: '/products', name: 'Shop all' }] } : menu
-	)
+	// The header's menu is the Engine's Shop Categories plus Shop all, filled in by the root layout
+	// load (src/lib/theme/default/catalogue-tree.ts); nothing here names a Category.
 }

@@ -10,6 +10,7 @@
 	import { page } from '$app/state'
 	import { onDestroy, onMount } from 'svelte'
 	import { dialog } from '$lib/actions/dialog.js'
+	import { headerWord } from '$lib/theme/default/header-word.js'
 
 	const cartState = getCartState()
 	const storeData = $derived(page.data?.store)
@@ -24,7 +25,8 @@
 	const subtotal = $derived(formatPrice(cartState?.cart?.subtotal ?? cartState?.cart?.total ?? 0, storeData?.currencyCode))
 	const itemCount = $derived(cartState?.cart?.lineItems?.length ?? 0)
 
-	const { onClose, onContinueShopping, onRemoveCartItem } = $props()
+	// `words`: the trigger reads "Cart 0", the count in gold (the default theme's header).
+	const { onClose, onContinueShopping, onRemoveCartItem, words = false } = $props()
 	const modalHistoryKey = '__svelteCommerceCartSidebar'
 	const titleId = $props.id()
 	let ownsHistoryEntry = false
@@ -120,15 +122,20 @@
 	     geometry as every other header action. -->
 	<button
 		data-testid="cart-icon"
-		class="flex h-9 w-9 items-center justify-center rounded-full max-md:h-11 max-md:w-11"
+		class={words ? `${headerWord} gap-2` : 'flex h-9 w-9 items-center justify-center rounded-full max-md:h-11 max-md:w-11'}
 		aria-label="Cart, {cartState?.cart?.qty ?? 0} items"
 		aria-expanded={!!cartState?.isOpen}
 		onclick={() => {
 			if (cartState) cartState.isOpen = !cartState.isOpen
 		}}
 	>
-		<ShoppingBag class="h-5 w-5" />
-		{#if cartState?.cart?.total && cartState.cart?.lineItems?.length > 0}
+		{#if words}
+			<!-- The count is the header's one gold element. -->
+			Cart <span class="tabular-nums text-primary">{cartState?.cart?.qty ?? 0}</span>
+		{:else}
+			<ShoppingBag class="h-5 w-5" />
+		{/if}
+		{#if !words && cartState?.cart?.total && cartState.cart?.lineItems?.length > 0}
 			<span
 				class="absolute right-0 top-0 inline-flex -translate-y-1/2 translate-x-1/2 transform items-center justify-center rounded-full bg-primary px-1.5 py-1 text-xs font-bold leading-none text-primary-foreground"
 			>

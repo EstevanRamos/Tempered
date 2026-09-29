@@ -349,8 +349,9 @@
 	}
 
 	/* Tempered: Cormorant Garamond is loaded at 400/500/600, so headings sit at the design
-	   system's 500 instead of a synthesised 700, tracked like `title`. */
-	[data-theme='default'] :is(h1, h2, h3, h4, h5, h6) {
+	   system's 500 instead of a synthesised 700, tracked like `title`. `:where` keeps this at
+	   element specificity, so a heading's own type utilities (text-eyebrow, tracking-*) still win. */
+	:where([data-theme='default']) :is(h1, h2, h3, h4, h5, h6) {
 		font-weight: 500;
 		letter-spacing: 0.04em;
 	}
