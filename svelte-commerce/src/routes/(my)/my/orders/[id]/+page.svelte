@@ -24,6 +24,7 @@
 	import { page } from '$app/state'
 	import { date, formatPrice } from '$lib/core/utils'
 	import { MyOrdersIdRenderer } from '$lib/core/composables/index.js'
+	import PriceSummary from '$lib/components/checkout/price-summary.svelte'
 
 	let { class: klass = '', data, ...rest } = $props()
 
@@ -33,6 +34,9 @@
 	// number is what says a real order came back; without it the empty state belongs on screen.
 	const orderNumberOf = (order: any) => order?.orderNo ?? order?.orderNumber ?? order?.number ?? ''
 	const isRealOrder = (order: any) => !!orderNumberOf(order)
+	// `couponCode` is added by the Vendure corrections (src/lib/core/connectors/vendure-corrections.ts);
+	// the core Order type predates it.
+	const discountLabelOf = (order: any) => (order?.couponCode ? `Discount (${order.couponCode})` : 'Discount')
 
 	// `formatPrice(undefined, …)` renders the string "$undefined". A money row the backend did not
 	// supply is shown as an em dash instead, the way an unknown value should read.
@@ -89,7 +93,7 @@
 											<StatusCell value={order?.status || 'processing'} />
 										</div>
 										<p class="mt-2 text-sm text-gray-500">
-											Your order is currently {order?.status || 'being processed'}.
+											Your order is currently {order?.status?.toLowerCase() || 'being processed'}.
 										</p>
 										<!-- No connector supplies a shipping rate, so the seven-day fallback that used to sit
 										     here put a delivery promise the merchant never made on every order. The row shows
@@ -287,53 +291,20 @@
 								</div>
 								<div class="p-6">
 									<div class="space-y-2">
-										<div class="flex justify-between text-sm">
-											<span class="text-gray-500">Subtotal</span>
-											{#if money(order?.subtotal)}
-												<span class="font-medium text-gray-900">{money(order?.subtotal)}</span>
-											{:else}
-												<span class="font-medium text-muted-foreground">&mdash;</span>
-											{/if}
-										</div>
-
-										{#if order?.discount > 0}
-											<div class="flex justify-between text-sm text-green-600">
-												<span>Discount</span>
-												<span>-{formatPrice(order?.discount, page?.data?.store?.currency?.code)}</span>
-											</div>
+										<!-- The shared money block, as on the bag and the confirmation: the discount names its
+										     code, and tax already inside the prices is noted, not added. -->
+										{#if typeof order?.total === 'number'}
+											<PriceSummary
+												subtotal={order.subtotal}
+												discount={order.discount}
+												discountLabel={discountLabelOf(order)}
+												shipping={order.shippingCharges}
+												tax={order.tax}
+												total={order.total}
+												{currencyCode}
+												shippingResolved
+											/>
 										{/if}
-
-										{#if order?.coupon?.code}
-											<div class="flex justify-between text-xs font-bold text-primary">
-												<span>Coupon ({order.coupon.code})</span>
-												<span>Applied</span>
-											</div>
-										{/if}
-
-										<div class="flex justify-between text-sm">
-											<span class="text-gray-500">Shipping</span>
-											<span class="font-medium text-gray-900">
-												{order?.shippingCharges > 0 ? formatPrice(order.shippingCharges, page?.data?.store?.currency?.code) : 'FREE'}
-											</span>
-										</div>
-
-										{#if order?.codCharges}
-											<div class="flex justify-between text-sm">
-												<span class="text-gray-500">COD Charges</span>
-												<span class="font-medium text-gray-900">{formatPrice(order.codCharges, page?.data?.store?.currency?.code)}</span>
-											</div>
-										{/if}
-
-										<div class="flex items-baseline justify-between pt-1">
-											<span class="text-base font-bold text-gray-900">Total</span>
-											{#if money(order?.total)}
-												<span class="text-base font-bold text-gray-900">
-													{money(order?.total)}
-												</span>
-											{:else}
-												<span class="text-base font-bold text-muted-foreground">&mdash;</span>
-											{/if}
-										</div>
 
 										<div class="mt-6 flex items-center justify-between gap-2 border-t border-gray-100 pt-6">
 											<div class="flex items-center gap-2">

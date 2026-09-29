@@ -31,6 +31,7 @@ async function hydrated(page: Page) {
 // The worked example: the XXL tee is $38.00, TEMPERED10 takes 10% off the goods (-$3.80) and
 // express shipping adds $10.00, so the shopper pays $44.20. Prices include tax.
 const CODE = 'TEMPERED10'
+const PASSWORD = 'Tempered!2026'
 const EXPECTED = { subtotal: '$38.00', discount: '$3.80', afterDiscount: '$34.20', shipping: '$10.00', total: '$44.20' }
 
 /** The value beside a price-summary label, e.g. summaryRow(page, 'Subtotal') → the "$38.00" cell. */
@@ -47,9 +48,10 @@ const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 /** The first price shown in a block of text, e.g. "$1,558.80". */
 const firstPrice = (text: string) => text.match(/\$[\d,]+\.\d{2}/)?.[0]
 
-test('a shopper browses, buys as a guest and sees their order confirmed', async ({ page }) => {
+test('a shopper browses, buys as a guest, then signs up and finds the order in their history', async ({ page }) => {
 	const bagButton = page.getByRole('button', { name: /^Cart, \d+ items?$/ })
 	let lineName = ''
+	let orderNo = ''
 
 	await test.step('homepage', async () => {
 		await visit(page, '/')
@@ -178,5 +180,54 @@ test('a shopper browses, buys as a guest and sees their order confirmed', async 
 		await expect(summaryRow(page, 'Shipping')).toHaveText(EXPECTED.shipping)
 		await expect(summaryRow(page, /^\s*Total/)).toHaveText(EXPECTED.total)
 		await expect(page.getByText(/incl\. tax/)).toBeVisible()
+	})
+	await test.step("sign up with the guest order's email: logged straight in, no verification asked", async () => {
+		orderNo = (await page.getByText(/Order #[A-Z0-9]{8,}/).innerText()).match(/#([A-Z0-9]+)/)![1]
+		await visit(page, '/auth/signup')
+		await page.getByRole('textbox', { name: 'First name' }).fill(SHOPPER['First Name'])
+		await page.getByRole('textbox', { name: 'Last name' }).fill(SHOPPER['Last Name'])
+		await page.getByRole('textbox', { name: 'Email address' }).fill(SHOPPER.Email)
+		await page.getByRole('textbox', { name: 'Password', exact: true }).fill(PASSWORD)
+		await page.getByRole('textbox', { name: 'Confirm password' }).fill(PASSWORD)
+		await page.getByRole('button', { name: 'Create account' }).click()
+		await expect(page.getByRole('heading', { level: 1, name: /welcome/i })).toBeVisible()
+		await expect(page.getByText(/verify/i)).toHaveCount(0)
+	})
+
+	await test.step('order history lists the guest order: charged total, plain-word status', async () => {
+		await visit(page, '/my/orders')
+		const main = page.locator('main')
+		await expect(main.getByText(`#${orderNo}`)).toBeVisible()
+		// The order's total is what was charged, not the $38.00 the goods cost before the discount.
+		const total = main.getByText('Total', { exact: true }).first().locator('xpath=following-sibling::*[1]')
+		await expect(total).toHaveText(EXPECTED.total)
+		await expect(main.getByText(/^\s*Paid\b/).first()).toBeVisible()
+		await expect(page.locator('main')).not.toContainText(/PaymentSettled|PaymentAuthorized|PAYMENTSETTLED|PAYMENTAUTHORIZED/)
+	})
+
+	await test.step('order detail matches', async () => {
+		await page.getByRole('link', { name: 'View details' }).first().click()
+		await expect(page).toHaveURL(new RegExp(`/my/orders/${orderNo}`))
+		await expect(page.getByText(`#${orderNo}`).first()).toBeVisible()
+		await expect(summaryRow(page, /^\s*Total/)).toHaveText(EXPECTED.total)
+		await expect(summaryRow(page, `Discount (${CODE})`)).toHaveText(new RegExp(`^[−-]\\${EXPECTED.discount}$`))
+		await expect(page.getByText('Paid', { exact: true }).first()).toBeVisible()
+		await expect(page.locator('main')).not.toContainText(/PaymentSettled|PAYMENTSETTLED/)
+	})
+
+	await test.step('log out, then log in from order history and land back on it', async () => {
+		await page.getByRole('button', { name: 'User Profile' }).click()
+		await page.getByRole('menuitem', { name: 'Sign Out' }).click()
+		await expect(page.getByRole('button', { name: 'Login' })).toBeVisible()
+
+		await visit(page, '/my/orders')
+		const dialog = page.getByRole('dialog')
+		await expect(dialog.getByRole('heading', { name: 'Sign in' })).toBeVisible()
+		await dialog.getByRole('textbox', { name: 'Email address' }).fill(SHOPPER.Email)
+		await dialog.getByRole('textbox', { name: 'Password' }).fill(PASSWORD)
+		await dialog.getByRole('button', { name: 'Sign in' }).click()
+		await expect(page).toHaveURL(/\/my\/orders/)
+		await expect(page.locator('main').getByText(`#${orderNo}`)).toBeVisible()
+		await expect(page.locator('main').getByText(EXPECTED.total, { exact: true }).first()).toBeVisible()
 	})
 })

@@ -74,8 +74,12 @@ setup is decided.
 ## The shopper-path test
 
 One Playwright test walks what a shopper does, against the running stack: homepage → a Category
-from the header → search by name → product page (a variant changes the price) → add to bag → the bag survives a reload → guest checkout (address →
-shipping → review → confirm) → the confirmation shows an order number. Every change keeps it green.
+from the header → search by name → product page (a variant changes the price) → add to bag → the
+bag survives a reload → a wrong code is refused, `TEMPERED10` applies, is removed and re-applied →
+guest checkout (address → shipping → review → confirm) with the discount and "incl. tax" on every
+summary → sign up with the same email → order history shows that order at its charged total and a
+plain-word status → order detail → log out → log in from order history and land back on it. Every
+change keeps it green.
 
 ```sh
 cd svelte-commerce && bun run test:shopper

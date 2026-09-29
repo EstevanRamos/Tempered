@@ -12,6 +12,8 @@
 //    `... on ErrorResult`, but that field returns a plain Order, so Vendure rejects the whole
 //    document with a 400.
 // 4. Orders (confirmation, history, detail) carried no discount, coupon or tax figures at all.
+// 5. Order statuses were Vendure's state names ("PaymentSettled"), which the pages printed raw.
+//    They are plain words here ("Paid"), in the vocabulary StatusCell colours.
 //
 // Tax is `totalWithTax - total`: what the total contains, not something added to it when the
 // store's prices include tax (see `currency.includesTax` in kitcommerce.config.ts).
@@ -41,6 +43,40 @@ const ORDER_TOTALS = `
   }
 `
 
+/** Vendure order states as a shopper reads them: where the order is. */
+const ORDER_STATUS: Record<string, string> = {
+	Created: 'Pending',
+	Draft: 'Pending',
+	AddingItems: 'Pending',
+	ArrangingPayment: 'Pending',
+	ArrangingAdditionalPayment: 'Awaiting payment',
+	PaymentAuthorized: 'Authorized',
+	PaymentSettled: 'Paid',
+	PartiallyShipped: 'Partially shipped',
+	Shipped: 'Shipped',
+	PartiallyDelivered: 'Partially delivered',
+	Delivered: 'Delivered',
+	Modifying: 'Being updated',
+	Cancelled: 'Cancelled'
+}
+
+/** The same states, answering only "has it been paid?". */
+const PAYMENT_STATUS: Record<string, string> = {
+	PaymentAuthorized: 'Authorized',
+	PaymentSettled: 'Paid',
+	PartiallyShipped: 'Paid',
+	Shipped: 'Paid',
+	PartiallyDelivered: 'Paid',
+	Delivered: 'Paid',
+	Cancelled: 'Cancelled'
+}
+
+/** A state this file doesn't know yet still reads as words: "SomeNewState" → "Some new state". */
+const words = (state: string) => state.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^(.)(.*)$/, (_, a, b) => a + b.toLowerCase())
+
+export const orderStatus = (state?: string) => (state ? (ORDER_STATUS[state] ?? words(state)) : state)
+export const paymentStatus = (state?: string) => (state ? (PAYMENT_STATUS[state] ?? 'Pending') : state)
+
 const fractionDigits = (currencyCode?: string) => {
 	try {
 		return new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode || 'USD' }).resolvedOptions().maximumFractionDigits ?? 2
@@ -57,7 +93,7 @@ const money = (value: number, currencyCode?: string) => {
 	return Math.round(value * scale) / scale
 }
 
-export function correctVendureTotals(connector: { CartService?: ServiceClass; OrderService?: ServiceClass }) {
+export function correctVendureConnector(connector: { CartService?: ServiceClass; OrderService?: ServiceClass }) {
 	const cart = connector.CartService?.prototype
 	const orders = connector.OrderService?.prototype
 	if (!cart?.mapVendureOrder || !orders?.getOrder) return
@@ -90,8 +126,9 @@ export function correctVendureTotals(connector: { CartService?: ServiceClass; Or
 	}
 
 	// An order's lines keep their undiscounted price (`subtotal`), so the discount follows from the
-	// charged total. The coupon and the tax need one more small query.
-	const withTotals = (order: any, extra?: { couponCodes?: string[]; total?: Minor; totalWithTax?: Minor }) => {
+	// charged total. The coupon and the tax need one more small query. The connector reports the raw
+	// state as both statuses; each gets its own plain words.
+	const corrected = (order: any, extra?: { couponCodes?: string[]; total?: Minor; totalWithTax?: Minor }) => {
 		if (!order?.lineItems) return order
 		const currencyCode = order.currencyCode
 		const goods = money(
@@ -100,7 +137,15 @@ export function correctVendureTotals(connector: { CartService?: ServiceClass; Or
 		)
 		const discount = money(Math.max(0, goods + (Number(order.shippingCharges) || 0) - (Number(order.total) || 0)), currencyCode)
 		const tax = extra ? fromMinor(Number(extra.totalWithTax) - Number(extra.total), currencyCode) : order.tax
-		return { ...order, subtotal: goods, discount, couponCode: extra?.couponCodes?.[0] ?? order.couponCode ?? null, tax }
+		return {
+			...order,
+			subtotal: goods,
+			discount,
+			couponCode: extra?.couponCodes?.[0] ?? order.couponCode ?? null,
+			tax,
+			status: orderStatus(order.status),
+			paymentStatus: paymentStatus(order.paymentStatus)
+		}
 	}
 
 	async function totalsFor(service: any, code?: string) {
@@ -115,20 +160,20 @@ export function correctVendureTotals(connector: { CartService?: ServiceClass; Or
 	const getOrder = orders.getOrder
 	orders.getOrder = async function (orderNo: string) {
 		const order = await getOrder.call(this, orderNo)
-		return withTotals(order, await totalsFor(this, order?.orderNo))
+		return corrected(order, await totalsFor(this, order?.orderNo))
 	}
 
 	const listOrdersByParent = orders.listOrdersByParent
 	orders.listOrdersByParent = async function (params: any) {
 		const res = await listOrdersByParent.call(this, params)
 		if (!res?.data?.length) return res
-		const data = await Promise.all(res.data.map(async (order: any) => withTotals(order, await totalsFor(this, order?.orderNo))))
+		const data = await Promise.all(res.data.map(async (order: any) => corrected(order, await totalsFor(this, order?.orderNo))))
 		return { ...res, data }
 	}
 
 	const list = orders.list
 	orders.list = async function (params: any) {
 		const res = await list.call(this, params)
-		return res?.data ? { ...res, data: res.data.map((order: any) => withTotals(order)) } : res
+		return res?.data ? { ...res, data: res.data.map((order: any) => corrected(order)) } : res
 	}
 }
