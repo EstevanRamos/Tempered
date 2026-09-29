@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { catalogueTree, withShopMenu } from '$lib/theme/default/catalogue-tree'
+import { catalogueTree, withShopMenu, withTileImages } from '$lib/theme/default/catalogue-tree'
 
 // The Engine's collections as the category service maps them: a flat list with parent ids.
 const engine = [
@@ -49,5 +49,27 @@ describe('withShopMenu', () => {
 
 	it('keeps the configured menu when the Engine has no Categories', () => {
 		expect(withShopMenu(menu, [])).toBe(menu)
+	})
+})
+
+describe('withTileImages', () => {
+	const entry = (slug: string, image: string | null) => ({ id: slug, name: slug, slug, link: `/${slug}`, image, description: null })
+
+	it("fills a Collection with no image from its first product's image, and asks only for those", async () => {
+		const asked: string[] = []
+		const firstProductImage = async (slug: string) => {
+			asked.push(slug)
+			return slug === 'war' ? 'war-tee.webp' : null
+		}
+		const tiles = await withTileImages([entry('war', null), entry('dawn', 'dawn.webp'), entry('empty', null)], firstProductImage)
+		expect(tiles.map((t) => t.image)).toEqual(['war-tee.webp', 'dawn.webp', null])
+		expect(asked).toEqual(['war', 'empty'])
+	})
+
+	it('keeps a tile when looking up its product fails', async () => {
+		const tiles = await withTileImages([entry('war', null)], async () => {
+			throw new Error('down')
+		})
+		expect(tiles).toEqual([entry('war', null)])
 	})
 })

@@ -46,8 +46,8 @@
 	// the shopper decides (they moved here from the homepage). Each links to its policy page when
 	// the store publishes one.
 	const isTempered = $derived((data?.theme?.name ?? 'default') === 'default')
-	const assurances = $derived(isTempered ? (resolveThemeContent('default', data?.store)?.editorial?.assurances ?? []) : [])
-	const ASSURANCE_ICONS = { truck: Truck, returns: RotateCcw, shield: ShieldCheck, support: ShieldCheck }
+	const assurances = $derived(isTempered ? (resolveThemeContent('default', data?.store)?.tempered?.assurances ?? []) : [])
+	const ASSURANCE_ICONS = { truck: Truck, returns: RotateCcw, shield: ShieldCheck }
 	const assuranceHref = (icon: string) =>
 		icon === 'truck' && hasShippingPolicy ? '/shipping-policy' : icon === 'returns' && hasRefundPolicy ? '/refund-policy' : ''
 

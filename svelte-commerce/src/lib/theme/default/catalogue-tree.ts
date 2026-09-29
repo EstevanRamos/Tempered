@@ -74,3 +74,24 @@ export function withShopMenu<M extends Menu>(menus: M[], categories: CatalogueEn
 	]
 	return menus.map((menu) => (menu.menuId === 'header' ? { ...menu, items } : menu))
 }
+
+/**
+ * Collections ready for homepage tiles: one with no image of its own takes its first product's
+ * image. `firstProductImage` is asked only for those, and a failed lookup leaves the tile as it was.
+ */
+export async function withTileImages(
+	entries: CatalogueEntry[],
+	firstProductImage: (slug: string) => Promise<string | null | undefined>
+): Promise<CatalogueEntry[]> {
+	return Promise.all(
+		entries.map(async (entry) => {
+			if (entry.image) return entry
+			try {
+				const image = await firstProductImage(entry.slug)
+				return image ? { ...entry, image } : entry
+			} catch {
+				return entry
+			}
+		})
+	)
+}

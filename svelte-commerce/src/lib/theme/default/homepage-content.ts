@@ -2,7 +2,7 @@ import type { ThemeHomepageContent } from '../types.js'
 import { taxonomy } from '$lib/core/connectors/taxonomy'
 
 export const defaultContent: ThemeHomepageContent = {
-  description: "Discover featured products, curated collections, and a smooth shopping experience.",
+  description: "Poker-born apparel for people who treat the table as a discipline. Master yourself before you master the table.",
   hero: {
     badge: "Featured Store",
     titleLead: "Shop",
@@ -53,7 +53,7 @@ export const defaultContent: ThemeHomepageContent = {
   // Announcement bar above the nav; admin overrides merge over this (blank = keep default,
   // hideAnnouncement: true = bar off).
   header: {
-    announcement: "Free shipping on your first order · Easy 7-day returns",
+    announcement: "Take 10% off your order with code TEMPERED10",
     announcementHref: "/products"
   },
   footer: {
@@ -90,56 +90,42 @@ export const defaultContent: ThemeHomepageContent = {
   },
   contact: { label: "Contact", titleLead: "Contact", titleAccent: "Us", text: "", panelTitle: "Let us talk", panelText: "", addressLabel: "Address", phoneLabel: "Phone", emailLabel: "Email", hoursLabel: "Working Hours", address: "", phone: "", email: "", hours: "", cta: "Send Message" },
   defaultHome: { eyebrow: "New season picks", primaryCta: "Shop Products", secondaryCta: `Browse ${taxonomy.many}`, featuredLabel: "Featured", featuredTitle: "Popular products", emptyTitle: "No products available", emptyText: "Products will appear here when they are returned by the API." },
-  editorial: {
+  // Tempered (design/homepage): hero, tiles, featured products, manifesto, quote. The marquee and
+  // lookbook are gone; the assurances live on the product page, beside Add to bag.
+  tempered: {
     hero: {
-      eyebrow: "New Season",
-      titleLead: "Considered goods for",
-      titleAccent: "modern living",
-      text: "A curated edit of pieces made to be kept — thoughtfully sourced, honestly priced, and ready to ship.",
-      primaryCta: "Shop the collection",
-      primaryHref: "/products",
-      secondaryCta: `Explore ${taxonomy.manyLower}`,
-      secondaryHref: "/products",
-      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1400&q=80&auto=format&fit=crop",
-      imageAlt: "Editorial lifestyle photograph",
-      note: "Free shipping on your first order · Easy 7-day returns"
-    },
-    marquee: ["Free shipping on your first order", "7-day easy returns", "Secure checkout", "New arrivals every week"],
-    categories: {
-      eyebrow: "Browse",
-      title: `Shop by ${taxonomy.oneLower}`,
-      viewAll: "View all",
-      viewAllHref: "/products",
-      tiles: [
-        { label: "New Arrivals", href: "/products", image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=80&auto=format&fit=crop" },
-        { label: "Best Sellers", href: "/products", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80&auto=format&fit=crop" },
-        { label: "Essentials", href: "/products", image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800&q=80&auto=format&fit=crop" },
-        { label: "The Edit", href: "/products", image: "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&q=80&auto=format&fit=crop" }
-      ]
-    },
-    featured: { eyebrow: "Handpicked", title: "Featured pieces", viewAll: "View all", viewAllHref: "/products" },
-    banner: {
-      eyebrow: "The Lookbook",
-      title: "Made to be lived in",
-      text: "Pieces designed for the everyday — versatile, durable, and quietly beautiful. Discover the season's edit.",
-      cta: "Discover more",
+      eyebrow: "Discipline builds freedom",
+      title: "Tempered",
+      text: "Master yourself before you master the table.",
+      cta: "Shop now",
       href: "/products",
-      image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1400&q=80&auto=format&fit=crop",
-      imageAlt: "Lifestyle editorial photograph"
+      image: "/tempered/hero-elephant.webp",
+      imageAlt: "An elephant wearing a gold crown",
+      values: ["Poker", "Discipline", "Character", "Purpose", "A higher standard"]
     },
-    // Shown beside Add to bag on the product page, where the shopper decides. Keep them true to
-    // what checkout does: shipping is Standard or Express, priced at checkout.
+    tiles: {
+      shopAll: { title: "Shop all", cta: "Shop", image: "/tempered/tile-apparel.webp" },
+      collection: { cta: "Explore" },
+      story: { title: "Our story", subtitle: "More than a game", cta: "Learn more", href: "/our-story", image: "/tempered/tile-story.webp" }
+    },
+    featured: { title: "Featured collection", viewAll: "View all", viewAllHref: "/products" },
+    manifesto: {
+      eyebrow: "A different breed",
+      title: "More than a game.",
+      text: "Tempered is for those who understand that poker isn't just cards. It's a mirror. It reveals character, tests discipline and demands control. We make apparel for those committed to a higher standard.",
+      cta: "Our philosophy",
+      href: "/our-story",
+      image: "/tempered/story-hand.webp",
+      imageAlt: "A hand resting on a stack of poker chips",
+      values: ["Patience", "Discipline", "Self-mastery", "Control", "Freedom"]
+    },
+    quote: { text: "Master yourself before you master the table.", signoff: "Play with purpose" },
+    // Beside Add to bag on the product page, where the shopper decides. Keep them true to what
+    // checkout does: shipping is Standard or Express, priced at checkout.
     assurances: [
       { icon: "truck", title: "Shipping", text: "Standard or express, priced at checkout." },
       { icon: "returns", title: "Returns", text: "Seven days to send it back." },
       { icon: "shield", title: "Secure payment", text: "Encrypted from bag to receipt." }
-    ],
-    newsletter: {
-      eyebrow: "Stay in the loop",
-      title: "First look, every drop",
-      text: "Join for early access to new arrivals, private offers, and the occasional good idea.",
-      cta: "Subscribe",
-      privacy: "No spam. Unsubscribe anytime."
-    }
+    ]
   }
 }
