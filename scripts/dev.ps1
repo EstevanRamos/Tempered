@@ -64,7 +64,23 @@ if ($Command -eq 'stop') {
       Remove-Item $pidFile
     }
   }
+  # The PID files miss servers whose launcher already exited (orphaned children) or that were started
+  # some other way, so also kill whichever node process still holds the Engine or Storefront port.
+  foreach ($port in 3000, 3001) {
+    $owners = Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue |
+      Select-Object -ExpandProperty OwningProcess -Unique
+    foreach ($owner in $owners) {
+      $proc = Get-Process -Id $owner -ErrorAction SilentlyContinue
+      if ($proc -and $proc.ProcessName -eq 'node') {
+        & taskkill /PID $owner /T /F 2>$null | Out-Null
+        "killed node (PID $owner) on :$port"
+      } elseif ($proc) {
+        "left :$port alone: it is held by $($proc.ProcessName) (PID $owner), not node"
+      }
+    }
+  }
   if ((Test-Path $PgData) -and (Test-Port 5432)) { & "$PgBin\pg_ctl.exe" -D $PgData stop -m fast | Out-Null }
+  foreach ($port in 3000, 3001, 5432) { if (Test-Port $port) { "warning: :$port is still in use" } }
   'stopped'; exit 0
 }
 
