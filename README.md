@@ -19,6 +19,13 @@ scripts/dev.sh          # Postgres + Vendure on :3001 + Storefront on :3000
 scripts/dev.sh stop
 ```
 
+On Windows (PowerShell; downloads a portable Postgres, so no install needed):
+
+```powershell
+scripts\dev.ps1         # start everything
+scripts\dev-stop.ps1    # stop the Storefront, Vendure and Postgres (same as: scripts\dev.ps1 stop)
+```
+
 - Storefront: http://127.0.0.1:3000
 - Vendure dashboard (the owner's admin): http://127.0.0.1:3001/dashboard, signed in as `superadmin` / `superadmin`
 - Shop API: http://127.0.0.1:3001/shop-api (GraphiQL at http://127.0.0.1:3001/graphiql/shop)
