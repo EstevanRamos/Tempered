@@ -80,7 +80,7 @@
 			<div class="flex flex-wrap items-center gap-8">
 				<LinkButton href={story.close.href}>{story.close.cta}</LinkButton>
 				{#each collections as collection (collection.link)}
-					<TextLink href={collection.link}>{collection.name} collection</TextLink>
+					<TextLink href={collection.link}>{collection.name}</TextLink>
 				{/each}
 			</div>
 		</div>
