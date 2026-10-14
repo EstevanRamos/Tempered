@@ -1,0 +1,17 @@
+<!doctype html>
+<html data-theme="night">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Motion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz@6..96&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../components.css">
+<style>body{margin:0;padding:32px;background:var(--ground);color:var(--ink)}.box{width:120px;height:80px;border:1px solid var(--line-strong)}</style></head>
+<body>
+<p class="tp-eyebrow">Hero title glint</p>
+<h1 class="tp-glint" style="margin:16px 0 48px;font:400 96px/1 var(--font-display);letter-spacing:.14em;text-transform:uppercase">Tempered</h1>
+<p class="tp-eyebrow">Crest shimmer</p>
+<span class="tp-quote__crest" aria-hidden="true" style="display:block;width:160px;margin:16px 0 48px"></span>
+<p class="tp-eyebrow">Scroll reveal</p>
+<div style="display:flex;gap:16px;margin-top:16px"><div class="tp-reveal is-in box"></div><div class="tp-reveal box" id="b"></div></div>
+<script>setInterval(()=>document.getElementById('b').classList.toggle('is-in'),1800)</script>
+</body>
+</html>
