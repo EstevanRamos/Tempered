@@ -21,10 +21,14 @@
 	const catalogue = $derived<CatalogueTree>(page.data?.catalogue ?? { categories: [], collections: [] })
 	const publishedCms = $derived(page.data?.cmsPages ?? [])
 
-	const shop = $derived<Link[]>([...catalogue.categories.map((c) => ({ name: c.name, link: c.link })), { name: 'Shop all', link: '/products' }])
+	// Shop: the Categories with something in them, then Shop all. Brand: the story, then each Drop.
+	const shop = $derived<Link[]>([
+		...catalogue.categories.filter((c) => c.count !== 0).map((c) => ({ name: c.name, link: c.link })),
+		{ name: 'Shop all', link: '/products' }
+	])
 	const brand = $derived<Link[]>([
 		{ name: 'Our story', link: '/our-story' },
-		...catalogue.collections.map((c) => ({ name: `${c.name} collection`, link: c.link }))
+		...catalogue.collections.map((c) => ({ name: `${c.name} drop`, link: c.link }))
 	])
 
 	// Help is the store's footer menu, flattened, with the CMS pages this store doesn't publish left

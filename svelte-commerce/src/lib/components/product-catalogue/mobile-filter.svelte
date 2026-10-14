@@ -226,7 +226,10 @@
 								{/each}
 							</div>
 						</div>
-					{:else if filterModule.selectedSection === 'category'}
+					<!-- The built-in pane lists the search's Collections. A backend that reports none but filters by a
+					     `category` Tag (Tempered on Vendure: vendure-corrections.ts) shares the section id, so its
+					     Category values fall through to the general facet pane below. -->
+					{:else if filterModule.selectedSection === 'category' && filterModule.categories?.length}
 						<div class="relative mb-4">
 							<input
 								type="text"

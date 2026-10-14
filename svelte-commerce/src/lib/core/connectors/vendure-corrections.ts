@@ -18,13 +18,49 @@
 //    dropped the product's facets, so a card could show neither "Sold out" nor a New / Limited
 //    badge. The search asks for `inStock` and `facetValueIds` too, and each result gets
 //    `soldOut` and `badge` (its Badge facet value, e.g. Badge:New in the catalogue).
+// 7. Listings could not filter. The search sends only a term and a Collection, and reported every
+//    Collection it touched as one "Collections" list, so Categories and Drops sat together in the
+//    filter panel. Listings now offer the Category and Type Tags as filters (listing-facets.ts),
+//    `?category=Tops&type=Tees` narrows the Engine's search by them, and the Collection list is
+//    kept only as counts (`facets.collectionCounts`), not as a filter.
 //
 // Tax is `totalWithTax - total`: what the total contains, not something added to it when the
 // store's prices include tax (see `currency.includesTax` in kitcommerce.config.ts).
 
+import { facetGroups, facetIds, facetValueFilters, selectedFacets } from './listing-facets'
+
 type Minor = number | null | undefined
 type Query = (path: string, query: string, variables?: Record<string, unknown>) => Promise<any>
 type ServiceClass = { prototype: Record<string, any> }
+
+/** The connector's search document (it isn't exported), for the filtered second search. */
+const SEARCH_DOCUMENT = `
+  query SearchProducts($input: SearchInput!) {
+    search(input: $input) {
+      items {
+        productId
+        productName
+        inStock
+        facetValueIds
+        slug
+        description
+        price {
+          ... on PriceRange { min max }
+          ... on SinglePrice { value }
+        }
+        priceWithTax {
+          ... on PriceRange { min max }
+          ... on SinglePrice { value }
+        }
+        currencyCode
+        productAsset { id preview }
+      }
+      totalItems
+      collections { count collection { id name slug } }
+      facetValues { count facetValue { id name facet { code name } } }
+    }
+  }
+`
 
 const APPLY_COUPON = `
   mutation ApplyCouponCode($couponCode: String!) {
@@ -128,9 +164,51 @@ export function correctVendureConnector(connector: { CartService?: ServiceClass;
 		const mapSearch = search.mapVendureSearchToProductSearchResult
 		search.mapVendureSearchToProductSearchResult = function (result: any) {
 			const mapped = mapSearch.call(this, result)
-			if (!mapped?.data?.length) return mapped
-			const extras = searchExtras(result?.search?.items ?? [], result?.search?.facetValues ?? [])
-			return { ...mapped, data: mapped.data.map((product: any, i: number) => ({ ...product, ...extras[i] })) }
+			const facetValues = result?.search?.facetValues ?? []
+			const facets = mapped?.facets
+				? {
+						...mapped.facets,
+						categories: [],
+						collectionCounts: Object.fromEntries((mapped.facets.categories ?? []).map((c: any) => [c.slug, c.count])),
+						allFilters: facetGroups(facetValues),
+						facetIds: facetIds(facetValues)
+					}
+				: mapped?.facets
+			if (!mapped?.data?.length) return { ...mapped, facets }
+			const extras = searchExtras(result?.search?.items ?? [], facetValues)
+			return { ...mapped, facets, data: mapped.data.map((product: any, i: number) => ({ ...product, ...extras[i] })) }
+		}
+
+		// Category and Type filters. The first search (the connector's own) is unfiltered, so the
+		// panel keeps offering every value in scope; with a selection, a second search returns the
+		// products that match it. The input mirrors the connector's searchWithUrl.
+		const searchWithUrl = search.searchWithUrl
+		if (searchWithUrl) {
+			search.searchWithUrl = async function (url: URL, slug?: string) {
+				const all = await searchWithUrl.call(this, url, slug)
+				const selected = selectedFacets(new URL(url))
+				if (!Object.keys(selected).length || !all?.facets) return all
+				const filters = facetValueFilters(selected, all.facets.facetIds ?? {})
+				if (!filters) return { ...all, data: [], count: 0, totalPages: 0 }
+				const params = new URL(url).searchParams
+				const take = 20
+				const input: Record<string, unknown> = {
+					term: params.get('search') || '',
+					skip: (Number(params.get('page') || 1) - 1) * take,
+					take,
+					groupByProduct: true,
+					facetValueFilters: filters
+				}
+				const collectionSlug = slug || params.get('categories')
+				if (collectionSlug) input.collectionSlug = collectionSlug
+				try {
+					const matching = this.mapVendureSearchToProductSearchResult(await this.query('/shop-api', SEARCH_DOCUMENT, { input }))
+					return { ...matching, facets: all.facets }
+				} catch (error) {
+					console.error(error)
+					return { ...all, data: [], count: 0, totalPages: 0 }
+				}
+			}
 		}
 	}
 

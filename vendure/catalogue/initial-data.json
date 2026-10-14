@@ -112,8 +112,8 @@
       ]
     },
     {
-      "name": "Tees",
-      "slug": "tees",
+      "name": "Tops",
+      "slug": "tops",
       "parentName": "Shop",
       "inheritFilters": false,
       "filters": [
@@ -121,7 +121,7 @@
           "code": "facet-value-filter",
           "args": {
             "facetValueNames": [
-              "Category:Tees"
+              "Category:Tops"
             ],
             "containsAny": false
           }
@@ -132,8 +132,8 @@
       ]
     },
     {
-      "name": "Joggers",
-      "slug": "joggers",
+      "name": "Bottoms",
+      "slug": "bottoms",
       "parentName": "Shop",
       "inheritFilters": false,
       "filters": [
@@ -141,7 +141,7 @@
           "code": "facet-value-filter",
           "args": {
             "facetValueNames": [
-              "Category:Joggers"
+              "Category:Bottoms"
             ],
             "containsAny": false
           }
@@ -150,6 +150,42 @@
       "assetPaths": [
         "product-classic-joggers.webp"
       ]
+    },
+    {
+      "name": "Outerwear",
+      "slug": "outerwear",
+      "parentName": "Shop",
+      "inheritFilters": false,
+      "filters": [
+        {
+          "code": "facet-value-filter",
+          "args": {
+            "facetValueNames": [
+              "Category:Outerwear"
+            ],
+            "containsAny": false
+          }
+        }
+      ],
+      "assetPaths": []
+    },
+    {
+      "name": "Accessories",
+      "slug": "accessories",
+      "parentName": "Shop",
+      "inheritFilters": false,
+      "filters": [
+        {
+          "code": "facet-value-filter",
+          "args": {
+            "facetValueNames": [
+              "Category:Accessories"
+            ],
+            "containsAny": false
+          }
+        }
+      ],
+      "assetPaths": []
     },
     {
       "name": "Drops",
@@ -167,7 +203,7 @@
       "zone": "Asia"
     },
     {
-      "name": "\u00c5land Islands",
+      "name": "Åland Islands",
       "code": "AX",
       "zone": "Europe"
     },
@@ -427,7 +463,7 @@
       "zone": "Americas"
     },
     {
-      "name": "C\u00f4te d'Ivoire",
+      "name": "Côte d'Ivoire",
       "code": "CI",
       "zone": "Africa"
     },
@@ -442,7 +478,7 @@
       "zone": "Americas"
     },
     {
-      "name": "Cura\u00e7ao",
+      "name": "Curaçao",
       "code": "CW",
       "zone": "Americas"
     },
@@ -1062,7 +1098,7 @@
       "zone": "Asia"
     },
     {
-      "name": "R\u00e9union",
+      "name": "Réunion",
       "code": "RE",
       "zone": "Africa"
     },
@@ -1082,7 +1118,7 @@
       "zone": "Africa"
     },
     {
-      "name": "Saint Barth\u00e9lemy",
+      "name": "Saint Barthélemy",
       "code": "BL",
       "zone": "Americas"
     },

@@ -12,7 +12,8 @@
 
 	const sortLabel = $derived(sortOptions.find((option) => option.value === selectedSort)?.name ?? 'Sort')
 
-	// The listing's subject. The Engine sends no category hierarchy for a Collection page, so the
+	// The listing's subject (a Collection is a Drop to shoppers). The Engine sends no category
+	// hierarchy for a Collection page, so the
 	// Category or Collection is found in the layout's catalogue tree by its path; that also names an
 	// empty one, whose page has no products to take a name from.
 	const search = $derived(page.url.searchParams.get('search'))
@@ -24,7 +25,7 @@
 			? `Results for “${search}”`
 			: (category?.name ?? collection?.name ?? data.products?.categoryHierarchy?.at?.(-1)?.name ?? (page.url.pathname === '/products' ? 'Shop all' : 'All products'))
 	)
-	const eyebrow = $derived(search ? 'Search' : category ? 'Category' : collection ? 'Collection' : 'Tempered')
+	const eyebrow = $derived(search ? 'Search' : category ? 'Category' : collection ? 'Drop' : 'Tempered')
 	const count = $derived(Number(data.products?.count ?? 0))
 	const countLabel = $derived(`${count > 999 ? '1000+' : count} ${count === 1 ? 'product' : 'products'}`)
 	const isTempered = $derived((data?.theme?.name ?? 'default') === 'default')

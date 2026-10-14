@@ -24,6 +24,16 @@ describe('catalogueTree', () => {
 		expect(collections[0]).toMatchObject({ link: '/war', description: 'Poker is war' })
 	})
 
+	it('carries each entry product count when the counts are known, and null when not', () => {
+		const tree = catalogueTree(engine, { tees: 3, war: 1 })
+		expect(tree.categories.map((c) => [c.slug, c.count])).toEqual([
+			['tees', 3],
+			['joggers', 0]
+		])
+		expect(tree.collections[0].count).toBe(1)
+		expect(catalogueTree(engine).categories[0].count).toBeNull()
+	})
+
 	it('is empty when the Engine has no Shop or Drops tree', () => {
 		expect(catalogueTree([])).toEqual({ categories: [], collections: [] })
 		expect(catalogueTree(undefined)).toEqual({ categories: [], collections: [] })
@@ -53,7 +63,7 @@ describe('withShopMenu', () => {
 })
 
 describe('withTileImages', () => {
-	const entry = (slug: string, image: string | null) => ({ id: slug, name: slug, slug, link: `/${slug}`, image, description: null })
+	const entry = (slug: string, image: string | null) => ({ id: slug, name: slug, slug, link: `/${slug}`, image, description: null, count: null })
 
 	it("fills a Collection with no image from its first product's image, and asks only for those", async () => {
 		const asked: string[] = []
