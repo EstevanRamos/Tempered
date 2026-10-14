@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { LoaderIcon, Mail, X } from '@lucide/svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import Textbox from '$lib/components/form/textbox.svelte'
@@ -19,9 +20,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Forgot Password</title>
-</svelte:head>
+<PageTitle title="Forgot password" />
 
 <Modal
 	bind:show

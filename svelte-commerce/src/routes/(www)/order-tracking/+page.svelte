@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { page } from '$app/state'
 	import productNonVeg from '$lib/assets/product/non-veg.png'
 	import productVeg from '$lib/assets/product/veg.png'
@@ -14,9 +15,8 @@
 	const orderTrackingModule = new OrderTrackingModule()
 </script>
 
-<svelte:head>
-	<title>Order</title>
-</svelte:head>
+<PageTitle title="Track your order" />
+
 <div>
 	<!-- The page shipped no h1, so nothing named it in the document outline. Visually hidden: the
 	     order number below becomes the visible title once an order resolves. -->

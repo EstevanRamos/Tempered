@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { formatPrice } from '$lib/core/utils/index.js'
 	import { CheckCircle2, MapPin, Package, Truck, ArrowRight, ShoppingBag, Mail, Calendar, SearchX } from '@lucide/svelte'
@@ -87,9 +88,9 @@
 	]
 </script>
 
+<PageTitle title="Order confirmed" />
 <svelte:head>
 	<!-- Order number stays out of the title so it cannot leak through referrers or screenshots. -->
-	<title>Order Confirmed</title>
 </svelte:head>
 
 <div class="min-h-screen bg-muted/20 py-12 md:py-5">

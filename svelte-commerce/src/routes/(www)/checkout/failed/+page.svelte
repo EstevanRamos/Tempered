@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { getCartState } from '$lib/core/stores/index.js'
 	import { Button } from '$lib/components/ui/button/index.js'
 	import { appendOneTimeCartId } from '$lib/core/utils/index.js'
@@ -33,11 +34,10 @@
 	}
 </script>
 
+<PageTitle title="Payment not completed" />
+
 <!-- No SeoHeader here: a checkout failure page must not emit a canonical URL or share cards.
      The checkout layout already marks the whole tree noindex, nofollow. -->
-<svelte:head>
-	<title>Payment not completed - {page?.data?.store?.name || ''}</title>
-</svelte:head>
 
 <!-- Inside the checkout system, on the same rail and the same surface tokens as every other step.
      This page used to be a hand-written stylesheet of raw hex: its own off-white band that stopped

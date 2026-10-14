@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { Button } from '$lib/components/ui/button/index.js'
 	import { goto } from '$app/navigation'
 	import { ChevronRight, LoaderCircle, LockKeyhole, MapPin, Pencil, ShoppingBag, Truck } from '@lucide/svelte'
@@ -147,9 +148,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Address - {page?.data?.store?.name || ''}</title>
-</svelte:head>
+<PageTitle title="Address" />
 
 <div class="min-h-screen py-8 max-sm:pb-[calc(9rem_+_env(safe-area-inset-bottom))]">
 	<div class="container mx-auto px-4">

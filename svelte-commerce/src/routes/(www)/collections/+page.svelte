@@ -15,8 +15,8 @@
 </script>
 
 <SeoHeader
-	metaTitle={storeName ? `Collections | ${storeName}` : 'Collections'}
-	metaDescription="Browse every curated product collection in the store."
+	metaTitle="Drops"
+	metaDescription="Every Tempered drop: limited pieces, designed and released together."
 />
 
 <div class="container mx-auto mt-2 flex h-full min-h-screen flex-col max-md:px-4 md:gap-2">

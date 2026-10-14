@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import LazyImg from '$lib/core/components/image/lazy-img.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import OrderListSkeleton from '../_OrderListSkeleton.svelte'
@@ -41,9 +42,7 @@
 	const money = (value: unknown) => (typeof value === 'number' && Number.isFinite(value) ? formatPrice(value, currencyCode) : null)
 </script>
 
-<svelte:head>
-	<title>Order Details | Svelte Commerce</title>
-</svelte:head>
+<PageTitle title="Order details" />
 
 <MyOrdersIdRenderer>
 	{#snippet content({ loading, order })}

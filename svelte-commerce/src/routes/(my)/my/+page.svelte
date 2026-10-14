@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { Package, ListTree, Tag, User, ArrowRight, Settings, Mail, Phone, Pencil } from '@lucide/svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { getUserState } from '$lib/core/stores/index.js'
@@ -34,9 +35,7 @@
 	]
 </script>
 
-<svelte:head>
-	<title>My Dashboard</title>
-</svelte:head>
+<PageTitle title="My account" />
 
 <div class="mx-auto max-w-7xl px-0 md:py-8 md:py-12">
 	{#if userState?.user}

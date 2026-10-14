@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { ChevronDown, LoaderCircle, LockKeyhole, X } from '@lucide/svelte'
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js'
@@ -61,9 +62,8 @@
 	})
 </script>
 
-<svelte:head>
-	<title>Checkout - Secure Payment</title>
-</svelte:head>
+<PageTitle title="Payment" />
+
 
 <div class="min-h-screen py-8 max-sm:pb-[calc(9rem_+_env(safe-area-inset-bottom))]">
 	<div class="container mx-auto px-4">

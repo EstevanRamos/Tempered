@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { AlertCircle, Check, LockKeyhole, Minus, Plus, ShoppingBag, Tag, Trash2, X } from '@lucide/svelte'
 	import { formatPrice } from '$lib/core/utils'
@@ -130,6 +131,8 @@
 	const cartSubtotal = $derived(formatPrice(cartState.cart?.subtotal, currencyCode))
 </script>
 
+<PageTitle title="Cart" />
+
 <!-- One stepper geometry for the whole storefront: `size="icon"` is 44px on phones and the compact
      36px box from md up, which is what the drawer row uses too. The two surfaces used to disagree
      by half — 22px in the drawer against 40px here — so one shopper got two steppers for one job. -->
@@ -209,9 +212,6 @@
 	<span class="sr-only">Loading your bag</span>
 {/snippet}
 
-<svelte:head>
-	<title>Cart - {page?.data?.store?.name || ''}</title>
-</svelte:head>
 
 <div class="py-8 max-sm:pb-[calc(7rem_+_env(safe-area-inset-bottom))]">
 	<div class="page-width">
