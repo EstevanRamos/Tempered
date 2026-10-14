@@ -29,15 +29,19 @@ Tempered's light colour scheme, reserved for editorial pages. It is not used at 
 _Avoid_: light mode
 
 **Collection**:
-A hand-picked group of products, such as the War collection. Collections drive the homepage tiles.
-_Avoid_: drop, line, category
+A hand-picked group of products released together, such as War. Shoppers see it called a **Drop** (the Drops page, "War drop"); in code and in the Engine it is a Collection, under the Drops parent.
+_Avoid_: line, category; "collection" in shopper-facing copy
 
 **Category**:
-A product type, such as Tees or Hoodies. A product gets its Category from a tag, not by hand-placing it. Categories drive navigation and filters.
+A broad kind of clothing: Tops, Bottoms, Outerwear, Accessories. Exactly one per product, from a Category Tag, never by hand-placing it. Each Category has its own page; Categories fill the footer's Shop column and the homepage tiles, and are a listing filter.
 _Avoid_: collection, department, type
 
+**Type**:
+The specific garment within a Category: Tees and Hoodies (Tops), Joggers (Bottoms), Hats (Accessories). Exactly one per product, from a Type Tag. A listing filter, never a page of its own.
+_Avoid_: category, subcategory, kind
+
 **Tag**:
-A label on a product that says which Category it belongs to, such as Category: Tees.
+A label on a product that places it, such as Category: Tops or Type: Tees.
 _Avoid_: facet (the Engine's word), attribute
 
 **Badge**:

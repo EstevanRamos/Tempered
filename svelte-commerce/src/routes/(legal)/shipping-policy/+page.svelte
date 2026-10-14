@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import CmsPage from '../_cms-page.svelte'
 	import Canonical from '$lib/components/seo/canonical.svelte'
 	import Blocks from '$lib/components/page-blocks/blocks.svelte'
@@ -7,9 +8,7 @@
 	let { data }: PageProps = $props()
 </script>
 
-<svelte:head>
-	<title>Shipping & delivery policy</title>
-</svelte:head>
+<PageTitle title="Shipping & delivery policy" />
 
 <CmsPage title="Shipping & delivery policy" content={data?.page?.content} />
 

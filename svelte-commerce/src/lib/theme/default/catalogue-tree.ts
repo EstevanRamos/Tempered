@@ -22,6 +22,8 @@ export interface CatalogueEntry {
 	link: string
 	image: string | null
 	description: string | null
+	/** How many products it holds, when the counts are known; null when they are not. */
+	count: number | null
 }
 
 export interface CatalogueTree {
@@ -32,7 +34,12 @@ export interface CatalogueTree {
 const SHOP_SLUG = 'shop'
 const DROPS_SLUG = 'drops'
 
-export function catalogueTree(all: EngineCollection[] | null | undefined): CatalogueTree {
+/**
+ * `counts` (product counts by slug, from a search) fills in each entry's `count`; a slug missing
+ * from known counts holds nothing. Empty Categories stay in the tree (their pages exist); the
+ * homepage tiles and the footer leave them out.
+ */
+export function catalogueTree(all: EngineCollection[] | null | undefined, counts?: Record<string, number> | null): CatalogueTree {
 	const list = all ?? []
 	const childrenOf = (slug: string): CatalogueEntry[] => {
 		const parent = list.find((c) => c.slug === slug)
@@ -45,7 +52,8 @@ export function catalogueTree(all: EngineCollection[] | null | undefined): Catal
 				slug: c.slug,
 				link: `/${c.slug}`,
 				image: c.thumbnail ?? null,
-				description: c.description ?? null
+				description: c.description ?? null,
+				count: counts ? (counts[c.slug] ?? 0) : null
 			}))
 	}
 	return { categories: childrenOf(SHOP_SLUG), collections: childrenOf(DROPS_SLUG) }

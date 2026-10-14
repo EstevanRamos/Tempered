@@ -58,22 +58,44 @@ test('a shopper browses, buys as a guest, then signs up and finds the order in t
 		await expect(bagButton).toBeVisible()
 	})
 
-	await test.step('the header leads to Shop, Collections and Our story; a Category page shows only its products', async () => {
+	await test.step('the header reads Shop, Drops, Our story; Drops lists only the Drops and leads to one', async () => {
 		const header = page.getByRole('banner')
-		for (const name of ['Shop', 'Collections', 'Our story']) {
-			await expect(header.getByRole('link', { name, exact: true })).toBeVisible()
+		const nav = header.getByRole('navigation', { name: 'Main navigation' })
+		await expect(nav.getByRole('link')).toHaveText(['Shop', 'Drops', 'Our story'])
+		await header.getByRole('link', { name: 'Drops', exact: true }).click()
+		await expect(page).toHaveURL(/\/collections$/)
+		const main = page.locator('main')
+		await expect(main.getByRole('heading', { level: 1, name: 'Drops' })).toBeVisible()
+		for (const notADrop of [/^Shop\b/, /^Drops\b/, /^Tops\b/, /^Bottoms\b/]) {
+			await expect(main.getByRole('link', { name: notADrop })).toHaveCount(0)
 		}
-		await header.getByRole('link', { name: 'Collections', exact: true }).click()
-		await expect(page).toHaveURL(/#collections$/)
+		await main.getByRole('link', { name: /^War\b/ }).click()
+		await expect(page).toHaveURL(/\/war$/)
+		await expect(page.locator('main').getByRole('link', { name: 'War edition tee', exact: true })).toBeVisible()
+		await expect(page.locator('main').getByRole('link', { name: 'Classic logo tee', exact: true })).toHaveCount(0)
+	})
+
+	await test.step('Choose your seat leads to a Category, which shows only its products', async () => {
+		await visit(page, '/')
 		const seats = page.getByRole('region', { name: 'Choose your seat' })
-		await expect(seats.getByRole('link', { name: /^Joggers\b/ })).toBeVisible()
-		await seats.getByRole('link', { name: /^Tees\b/ }).click()
-		await expect(page).toHaveURL(/\/tees$/)
+		await expect(seats.getByRole('link', { name: /^Bottoms\b/ })).toBeVisible()
+		await seats.getByRole('link', { name: /^Tops\b/ }).click()
+		await expect(page).toHaveURL(/\/tops$/)
 		const main = page.locator('main')
 		for (const tee of ['Classic logo tee', 'Elephant arch tee', 'War edition tee']) {
 			await expect(main.getByRole('link', { name: tee, exact: true })).toBeVisible()
 		}
 		await expect(main.getByRole('link', { name: 'Classic joggers', exact: true })).toHaveCount(0)
+	})
+
+	await test.step('Shop all filters by Type', async () => {
+		await visit(page, '/products')
+		const main = page.locator('main')
+		await expect(main.getByRole('link', { name: 'Classic logo tee', exact: true })).toBeVisible()
+		await main.getByRole('checkbox', { name: 'Joggers' }).first().click()
+		await expect(page).toHaveURL(/[?&]type=Joggers/)
+		await expect(main.getByRole('link', { name: 'Classic joggers', exact: true })).toBeVisible()
+		await expect(main.getByRole('link', { name: 'Classic logo tee', exact: true })).toHaveCount(0)
 	})
 
 	await test.step('search finds products by name', async () => {

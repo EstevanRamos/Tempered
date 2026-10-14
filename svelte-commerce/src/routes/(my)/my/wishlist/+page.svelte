@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { MyWishlistRenderer } from '$lib/core/composables/index.js'
 	import { Heart, ArrowRight, LoaderCircle, Trash2, ShoppingBag } from '@lucide/svelte'
@@ -17,9 +18,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>My Wishlist | Svelte Commerce</title>
-</svelte:head>
+<PageTitle title="My wishlist" />
 
 <MyWishlistRenderer>
 	{#snippet content({ loading, wishlistItems, moveToCart, removeFromWishlist })}

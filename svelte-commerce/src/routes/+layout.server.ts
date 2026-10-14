@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit'
 import { layoutServer } from '$lib/core/load-functions/index.js'
 import { resolveStorefrontTheme } from '$lib/theme/index.js'
 import { publishedCmsSlugs } from '$lib/components/common/cms-pages.js'
-import { categoryService } from '$lib/core/services/index.js'
+import { categoryService, SearchService } from '$lib/core/services/index.js'
 import { catalogueTree, withShopMenu } from '$lib/theme/default/catalogue-tree.js'
 
 export async function load(event: any) {
@@ -10,17 +10,24 @@ export async function load(event: any) {
 	if (event.locals?.storeNotFound) {
 		throw error(404, 'Store not found')
 	}
-	const [data, collections] = await Promise.all([
+	const [data, collections, counts] = await Promise.all([
 		layoutServer(event),
 		// The Engine's Collections, read once per request. A failure leaves the configured menus and
 		// no tiles rather than taking every page down.
 		categoryService
 			.fetchAllCategories()
 			.then((r: { data?: unknown[] } | undefined) => r?.data ?? [])
-			.catch(() => [])
+			.catch(() => []),
+		// How many products each one holds, from one unfiltered search; null where the backend
+		// reports no counts, and then nothing is left out for being empty.
+		new SearchService(event.fetch)
+			.searchWithQuery('')
+			.then((r: { facets?: { collectionCounts?: Record<string, number> } } | undefined) => r?.facets?.collectionCounts ?? null)
+			.catch(() => null)
 	])
-	// Categories (under Shop) drive the header nav; Collections (under Drops) the homepage tiles.
-	const catalogue = catalogueTree(collections as Parameters<typeof catalogueTree>[0])
+	// Categories (under Shop) fill the footer's Shop column and, with the Drops (Collections under
+	// Drops), the homepage's Choose your seat.
+	const catalogue = catalogueTree(collections as Parameters<typeof catalogueTree>[0], counts)
 	const store = data?.store?.menu ? { ...data.store, menu: withShopMenu(data.store.menu, catalogue.categories) } : data?.store
 	return {
 		...data,

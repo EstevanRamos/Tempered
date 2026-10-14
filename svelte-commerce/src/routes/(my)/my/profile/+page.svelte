@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import Input from '$lib/components/form/textbox.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { Save, ArrowLeft, InfoIcon, Loader, User, Mail, Phone, Trash2, AlertCircle } from '@lucide/svelte'
@@ -9,9 +10,7 @@
 	const profileModule = new MyProfileModule()
 </script>
 
-<svelte:head>
-	<title>My Profile | Svelte Commerce</title>
-</svelte:head>
+<PageTitle title="My profile" />
 
 <div class="mx-auto max-w-6xl md:py-8 md:py-12">
 	<div in:fly={{ y: 20, duration: 600 }} class="space-y-10">

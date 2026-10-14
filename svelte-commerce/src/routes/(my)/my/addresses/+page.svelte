@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { LoaderCircle, Plus, Trash2, MapPin, Pencil, Home, Briefcase, Phone, MoreVertical } from '@lucide/svelte'
 	import { Button } from '$lib/components/ui/button'
 	import AddressFormModal from '$lib/components/address/address-form-modal.svelte'
@@ -26,9 +27,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Addresses | Svelte Commerce</title>
-</svelte:head>
+<PageTitle title="Addresses" />
 
 <div class="mx-auto max-w-7xl px-0 md:py-8 md:py-12">
 	<!-- Header -->

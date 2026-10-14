@@ -4,6 +4,8 @@ import {
     ChannelService,
     CollectionService,
     DefaultLogger,
+    FacetService,
+    FacetValueService,
     InitialData,
     JobQueueService,
     LanguageCode,
@@ -17,6 +19,7 @@ import {
     TransactionalConnection,
     User,
 } from '@vendure/core';
+import { normalizeString } from '@vendure/common/lib/normalize-string';
 import { importProductsFromCsv, populateCollections, populateInitialData } from '@vendure/core/cli';
 import { INestApplication } from '@nestjs/common';
 import fs from 'fs';
@@ -29,8 +32,9 @@ import { config } from './vendure-config';
 //   initial-data.json  zones and countries, taxes, shipping and payment methods, and the Shop
 //                      (one Collection per Category, filled from the product's Category Tag) and
 //                      Drops trees
-//   products.csv       the products, their size variants, prices, stock and Category Tags, in
-//                      Vendure's product-import format
+//   products.csv       the products, their size variants, prices, stock, and their Tags: exactly
+//                      one Category (Tops, Bottoms, Outerwear, Accessories) and one Type (Tees,
+//                      Joggers, …) each, plus an optional Badge, in Vendure's product-import format
 //
 // The payment method must stay named "Standard Payment": its code, `standard-payment`, is the one
 // @misiki/vendure-connector pays with. It is Vendure's dummy handler until Stripe replaces it.
@@ -75,6 +79,7 @@ async function main() {
 
     const result = await importProductsFromCsv(app, path.join(CATALOGUE, 'products.csv'), LanguageCode.en);
     if (result.errors?.length) throw new Error(`Product import failed:\n${result.errors.join('\n')}`);
+    await createFilterTags(app, ctx, initialData);
     await populateCollections(app, initialData);
 
     await createHandPickedCollections(app, ctx);
@@ -103,6 +108,29 @@ async function adminContext(app: INestApplication): Promise<RequestContext> {
             relations: { roles: { channels: true } },
         });
     return app.get(RequestContextService).create({ apiType: 'admin', user: superadmin ?? undefined });
+}
+
+/**
+ * Every Tag a Collection filters on, created if no product carries it yet. A Category with no
+ * products (Outerwear, Accessories) still needs its Tag: Vendure drops a filter value it cannot
+ * find, and a Category Collection left with no filter would hold every product. With the Tag in
+ * place, the first product tagged with it appears in that Category with no other change.
+ */
+async function createFilterTags(app: INestApplication, ctx: RequestContext, initialData: InitialData) {
+    const facets = app.get(FacetService);
+    const values = app.get(FacetValueService);
+    const names = initialData.collections.flatMap(c => (c.filters ?? []).flatMap(f => (f.args.facetValueNames as string[] | undefined) ?? []));
+    for (const name of names) {
+        const [facetName, valueName] = name.split(':');
+        if (!valueName) continue;
+        const code = normalizeString(facetName, '-');
+        const facet =
+            (await facets.findByCode(ctx, code, LanguageCode.en)) ??
+            (await facets.create(ctx, { code, isPrivate: false, translations: [{ languageCode: LanguageCode.en, name: facetName }] }));
+        const existing = await values.findByFacetId(ctx, facet.id);
+        if (existing.some(v => v.name === valueName)) continue;
+        await values.create(ctx, facet, { facetId: facet.id, code: normalizeString(valueName, '-'), translations: [{ languageCode: LanguageCode.en, name: valueName }] });
+    }
 }
 
 async function createHandPickedCollections(app: INestApplication, ctx: RequestContext) {

@@ -26,6 +26,9 @@ import defaults from './src/lib/core/connectors/default-store.json'
 export default {
 	// Tempered's identity (design/assets/Logos): the crowned mark is the header logo and favicon.
 	name: 'Tempered',
+	// The store's own meta description: every page without one of its own uses it, so the core
+	// SeoHeader's template line ("Discover the best deals… Free delivery available.") never ships.
+	description: 'Poker-born apparel for people who treat the table as a discipline. Heavyweight, cut to be worn hard.',
 	logo: '/tempered/mark.png',
 	favicon: '/tempered/favicon.png',
 	// Product shots are 4:5 (design/README.md → Imagery); cards, gallery and placeholders read this.

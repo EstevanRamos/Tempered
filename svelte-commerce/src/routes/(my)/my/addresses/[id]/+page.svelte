@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { page } from '$app/state'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { addressService } from '$lib/core/services'
@@ -76,9 +77,8 @@
 	// onMount()
 </script>
 
-<svelte:head>
-	<title>Address Page</title>
-</svelte:head>
+<PageTitle title="Address" />
+
 <div class="flex min-h-screen items-center justify-center">
 	<div class="w-full max-w-4xl transform space-y-6 rounded-xl bg-white p-8 shadow-2xl transition-all dark:bg-gray-800">
 		<div class="space-y-2 text-center">

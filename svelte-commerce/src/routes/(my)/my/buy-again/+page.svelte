@@ -1,4 +1,5 @@
 <script>
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import LazyImg from '$lib/core/components/image/lazy-img.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { getCartState } from '$lib/core/stores/index.js'
@@ -17,9 +18,8 @@
 	})
 </script>
 
-<svelte:head>
-	<title>Buy Again</title>
-</svelte:head>
+<PageTitle title="Buy again" />
+
 <section class="flex flex-col gap-10">
 	<h3 class="capitalize">Orders</h3>
 	<div class="grid grid-cols-1 divide-y lg:grid-cols-2 lg:divide-x lg:divide-y-0">

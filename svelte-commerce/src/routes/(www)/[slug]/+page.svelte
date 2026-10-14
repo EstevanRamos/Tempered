@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SeoHeader from '$lib/components/seo/seo-header.svelte'
+	import { metaText } from '$lib/components/seo/meta-text.js'
 	import { setCategoryFilterState, setDesktopFilterState } from '$lib/core/composables/index.js'
 	import ListingPage from '$lib/components/product-catalogue/listing-page.svelte'
 	import { stripPageOnFilterNavigation } from '$lib/components/product-catalogue/strip-page-on-filter'
@@ -17,6 +18,13 @@
 	// The slug load returns { products } with the category under products.categoryHierarchy
 	// (there is no data.page here); the last entry is the current category.
 	const category = $derived(data?.products?.categoryHierarchy?.at(-1))
+	// The Engine's description for this Category or Collection, from the layout's catalogue tree
+	// (the hierarchy above carries none), as the page's meta description when it has one.
+	const engineDescription = $derived.by(() => {
+		const tree = page.data?.catalogue ?? {}
+		const entry = [...(tree.categories ?? []), ...(tree.collections ?? [])].find((c: { slug: string }) => c.slug === page.params.slug)
+		return metaText(entry?.description || category?.description || '')
+	})
 
 	// Readable fallback derived from the URL slug (e.g. "engagement-rings" -> "Engagement Rings")
 	const slugTitle = $derived(
@@ -41,7 +49,7 @@
 <ListingScehma />
 <SeoHeader
 	metaTitle={category?.metaTitle || category?.name || slugTitle || 'Products'}
-	metaDescription={category?.metaDescription}
+	metaDescription={category?.metaDescription || engineDescription}
 	metaKeywords={category?.metaKeywords}
 	image={category?.banner || data?.store?.logo || ''}
 	{canonicalUrl}

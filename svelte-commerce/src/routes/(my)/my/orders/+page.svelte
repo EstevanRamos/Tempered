@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import LazyImg from '$lib/core/components/image/lazy-img.svelte'
 	import {
@@ -78,9 +79,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>My Orders | Svelte Commerce</title>
-</svelte:head>
+<PageTitle title="My orders" />
 
 <div class="mx-auto max-w-6xl px-0 md:py-12 md:py-8">
 	<!-- Header -->

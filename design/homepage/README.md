@@ -3,9 +3,9 @@
 The reference storefront homepage, as shipped in the September 2026 redesign: every band built from the system's tokens and `tp-` components, top to bottom. Open `index.html` in a browser; `../screenshots/home-night.png` (1440px) and `home-night-390.png` (390px) are renders of it.
 
 1. **Header**: the [FloatingHeader](../components/FloatingHeader/README.md), transparent over the hero, solid with its `line` hairline once the page scrolls. The word "Menu" below 1024px.
-2. **Hero**: the walking elephant, darkened and faded into `ground` on every side. Copy centred-left: `eyebrow` → TEMPERED in `display-xl` with the **title glint** → the tagline in `quote` → `body` in `ink-muted` → two outline Buttons, "Shop now" and "Featured collections". The ValueList stands at the right beside a `line-strong` hairline; on a phone it folds into one line under the buttons. `space-32` of air.
-3. **The collection**: a centred SectionHeader with a `text` lead and no rule, the [ProductSpotlight](../components/ProductSpotlight/README.md), then an outline Button, "Shop this collection".
-4. **Choose your seat**: [ChooseYourSeat](../components/ChooseYourSeat/README.md), one full-height tile per Drop and per Category, a snapping carousel on a phone. Anchor `#collections`.
+2. **Hero**: the walking elephant, darkened and faded into `ground` on every side. Copy centred-left: `eyebrow` → TEMPERED in `display-xl` with the **title glint** → the tagline in `quote` → `body` in `ink-muted` → two outline Buttons, "Shop now" and "Choose your seat". The ValueList stands at the right beside a `line-strong` hairline; on a phone it folds into one line under the buttons. `space-32` of air.
+3. **The collection**: a centred SectionHeader with a `text` lead and no rule, the [ProductSpotlight](../components/ProductSpotlight/README.md), then an outline Button, "Shop all".
+4. **Choose your seat**: [ChooseYourSeat](../components/ChooseYourSeat/README.md), one full-height tile per Drop and per Category with products, a snapping carousel on a phone.
 5. **The Code**: [TheCode](../components/TheCode/README.md), five virtues under outlined Bodoni numerals.
 6. **Manifesto**: a 50/50 split, image left. `eyebrow`, the statement in `display-l`, `body` at most `measure` wide, an outline Button "Our story". No ValueList, no arrow. `space-32` above and below.
 7. **Quote**: the [QuoteBand](../components/QuoteBand/README.md), the crest shimmering in gold foil.

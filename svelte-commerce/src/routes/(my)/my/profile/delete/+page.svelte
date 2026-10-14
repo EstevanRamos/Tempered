@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/seo/page-title.svelte'
 	import { page } from '$app/state'
 	import PolicyLink from '$lib/components/common/policy-link.svelte'
 	import { isCmsPageResolvable } from '$lib/components/common/cms-pages.js'
@@ -12,9 +13,7 @@
 	const deletePrivacyOk = $derived(isCmsPageResolvable('/privacy-policy', page.data?.cmsPages ?? []))
 </script>
 
-<svelte:head>
-	<title>Delete Account | Svelte Commerce</title>
-</svelte:head>
+<PageTitle title="Delete account" />
 
 <div class="mx-auto max-w-3xl py-8 md:py-12">
 	<div class="mb-10">

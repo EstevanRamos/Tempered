@@ -51,15 +51,17 @@ the start of every session, so the stack is already up.
 `vendure/catalogue/` holds the Tempered catalogue as Vendure import files, so it can be reloaded
 and the same format reused for real products:
 
-- `products.csv`: the products, their size variants, tax-inclusive prices, stock, Category Tag
-  (`Category:Tees`) and optional Badge (`Badge:New`, `Badge:Limited`), in Vendure's product-import
-  format. Images come from `design/assets/Imagery`. A variant with no stock shows as a sold-out size;
+- `products.csv`: the products, their size variants, tax-inclusive prices, stock, and Tags: exactly
+  one Category (`Category:Tops`) and one Type (`Type:Tees`) each, plus an optional Badge
+  (`Badge:New`, `Badge:Limited`), in Vendure's product-import format. Images come from `design/assets/Imagery`. A variant with no stock shows as a sold-out size;
   a product with none at all shows "Sold out" on its card.
 - `initial-data.json`: countries and zones, tax rates, shipping (Standard $5, Express $10), the
-  payment method, and the Collection trees. Under **Shop**, one Collection per Category, filled by
-  a Tag filter, so tagging a product is all it takes to put it in a Category. Under **Drops**,
-  hand-picked Collections.
+  payment method, and the Collection trees. Under **Shop**, one Collection per Category (Tops,
+  Bottoms, Outerwear, Accessories), filled by a Tag filter, so tagging a product is all it takes to
+  put it in a Category. Under **Drops**, hand-picked Collections, which shoppers see as Drops.
+  Types are not Collections: they are listing filters (`?type=Tees`), alongside Category.
 - `vendure/src/import-catalogue.ts` loads both, then adds what the import format can't express:
+  the Category Tags no product carries yet (so an empty Category's filter still points somewhere),
   the hand-picked **War** Collection (the War edition tee) and the `TEMPERED10` promotion (10% off
   the order).
 
@@ -67,8 +69,8 @@ and the same format reused for real products:
 cd vendure && npm run catalogue:reload   # wipes the database (orders and customers too) and re-imports
 ```
 
-In the dashboard, the owner edits products, stock and prices; adds a Tag to put a product in a
-Category; and hand-picks products into a Collection under Drops. The tax rates are placeholders until the real tax
+In the dashboard, the owner edits products, stock and prices; adds a Category Tag and a Type Tag to
+place a product (a new Type is just a new Type value); and hand-picks products into a Collection under Drops. The tax rates are placeholders until the real tax
 setup is decided.
 
 ## How the Storefront reaches the Engine

@@ -31,10 +31,10 @@
 	const name = $derived(store?.name || 'Tempered')
 	const userState = $derived(navModule.userState)
 	const signedIn = $derived(!!userState?.user?.role)
-	// Three doors: everything, the homepage's Choose your seat (each drop and Category), the story.
+	// Three doors, and nothing else: Shop all, the Drops (the Collections under Drops), the story.
 	const links: { link: string; name: string }[] = [
 		{ link: '/products', name: 'Shop' },
-		{ link: '/#collections', name: 'Collections' },
+		{ link: '/collections', name: 'Drops' },
 		{ link: '/our-story', name: 'Our story' }
 	]
 	const isCheckout = $derived(page.url.pathname.startsWith('/checkout'))

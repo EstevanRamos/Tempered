@@ -9,7 +9,7 @@
 	import { reveal } from '$lib/actions/reveal.js'
 	import type { ThemeHomepageProps } from '../homepages.js'
 	import type { CatalogueEntry } from './catalogue-tree.js'
-	import Arrow from './Arrow.svelte'
+	import CollectionTile from './CollectionTile.svelte'
 	import LinkButton from './LinkButton.svelte'
 	import ProductSpotlight from './ProductSpotlight.svelte'
 	import QuoteBand from './QuoteBand.svelte'
@@ -25,12 +25,14 @@
 	// Search results carry Badge and sold-out; the featured feed is the fallback.
 	const products = $derived<any[]>((page.data?.homeProducts?.length ? page.data.homeProducts : featuredProducts).slice(0, 4))
 
-	// Choose your seat: the drops first, then the Categories.
+	// Choose your seat: the Drops first, then the Categories, leaving out a Category with nothing in it.
 	const seats = $derived(
 		content
 			? [
 					...drops.map((entry) => ({ entry, cta: content.seats.collectionCta })),
-					...(catalogue.categories as CatalogueEntry[]).map((entry) => ({ entry, cta: content.seats.categoryCta }))
+					...(catalogue.categories as CatalogueEntry[])
+						.filter((entry) => entry.count !== 0)
+						.map((entry) => ({ entry, cta: content.seats.categoryCta }))
 				].map(({ entry, cta }) => {
 					const own = content.seats.tiles[entry.slug] ?? {}
 					return { title: entry.name, subtitle: own.subtitle ?? entry.description ?? '', image: own.image ?? entry.image, href: entry.link, cta }
@@ -131,17 +133,7 @@
 			>
 				{#each seats as seat (seat.href)}
 					<li class="w-full flex-none snap-center" use:reveal>
-						<a href={seat.href} class="seat group gap-2 p-8 lg:gap-3 lg:p-12">
-							{#if seat.image}
-								<img src={seat.image} alt="" class="seat__img" loading="lazy" />
-							{/if}
-							<span class="seat__scrim" aria-hidden="true"></span>
-							<span class="relative font-serif text-title-l uppercase">{seat.title}</span>
-							{#if seat.subtitle}
-								<span class="relative text-eyebrow uppercase text-muted-foreground">{seat.subtitle}</span>
-							{/if}
-							<span class="relative mt-2 inline-flex items-center gap-2 text-label uppercase">{seat.cta}<Arrow /></span>
-						</a>
+						<CollectionTile href={seat.href} title={seat.title} subtitle={seat.subtitle} image={seat.image} cta={seat.cta} />
 					</li>
 				{/each}
 			</ul>
@@ -231,8 +223,7 @@
 		}
 	}
 
-	/* Choose your seat: a photograph under a bottom scrim, the title bottom-left over an arrow line,
-	   the image zooming slowly on hover. Always photographic, so the text is Night's ink. */
+	/* Choose your seat: CollectionTiles in one row from 768px, a snapping carousel on a phone. */
 	.seats {
 		scrollbar-width: none;
 	}
@@ -244,53 +235,6 @@
 	@media (min-width: 768px) {
 		.seats {
 			grid-template-columns: repeat(var(--seat-count), minmax(0, 1fr));
-		}
-	}
-
-	.seat {
-		position: relative;
-		display: flex;
-		height: 560px;
-		flex-direction: column;
-		align-items: flex-start;
-		justify-content: flex-end;
-		overflow: hidden;
-		color: hsl(var(--foreground));
-	}
-
-	@media (min-width: 1024px) {
-		.seat {
-			height: 760px;
-		}
-	}
-
-	.seat__img {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		filter: brightness(0.55) saturate(0.7);
-		transition: transform 0.8s var(--motion-ease);
-	}
-
-	.seat:hover .seat__img {
-		transform: scale(1.04);
-	}
-
-	.seat__scrim {
-		position: absolute;
-		inset: 45% 0 0 0;
-		background: linear-gradient(0deg, hsl(var(--background) / 0.92), hsl(var(--background) / 0));
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.seat__img {
-			transition: none;
-		}
-
-		.seat:hover .seat__img {
-			transform: none;
 		}
 	}
 </style>

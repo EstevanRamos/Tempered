@@ -90,7 +90,7 @@ export const defaultContent: ThemeHomepageContent = {
   },
   contact: { label: "Contact", titleLead: "Contact", titleAccent: "Us", text: "", panelTitle: "Let us talk", panelText: "", addressLabel: "Address", phoneLabel: "Phone", emailLabel: "Email", hoursLabel: "Working Hours", address: "", phone: "", email: "", hours: "", cta: "Send Message" },
   defaultHome: { eyebrow: "New season picks", primaryCta: "Shop Products", secondaryCta: `Browse ${taxonomy.many}`, featuredLabel: "Featured", featuredTitle: "Popular products", emptyTitle: "No products available", emptyText: "Products will appear here when they are returned by the API." },
-  // Tempered (the 2026-09 homepage redesign): hero, the collection spotlight, Choose your seat, The
+  // Tempered (the 2026-09 homepage redesign): hero, the product spotlight, Choose your seat, The
   // Code, the manifesto and the quote. The assurances live on the product page, beside Add to bag.
   tempered: {
     hero: {
@@ -100,7 +100,7 @@ export const defaultContent: ThemeHomepageContent = {
       text: "Heavyweight luxury streetwear for poker players, high-stakes strategists and minds forged in self-control.",
       cta: "Shop now",
       href: "/products",
-      secondaryCta: "Featured collections",
+      secondaryCta: "Choose your seat",
       secondaryHref: "#collections",
       image: "/tempered/hero.webp",
       imageSmall: "/tempered/hero-1000.webp",
@@ -108,11 +108,11 @@ export const defaultContent: ThemeHomepageContent = {
       values: ["Poker", "Discipline", "Character", "Purpose", "A higher standard"]
     },
     collection: {
-      eyebrow: "The collection",
+      eyebrow: "The essentials",
       title: "Built to be worn hard",
       text: "Heavyweight essentials, cut boxy and made to outlast the session.",
       viewPiece: "View piece",
-      cta: "Shop this collection",
+      cta: "Shop all",
       href: "/products",
       notes: {
         "classic-logo-tee": "Washed black · Heavyweight",
@@ -122,15 +122,15 @@ export const defaultContent: ThemeHomepageContent = {
       }
     },
     seats: {
-      eyebrow: "Collections",
+      eyebrow: "The shop",
       title: "Choose your seat",
       // The tile's arrow line: a Collection (a Drop to shoppers) is explored, a Category is shopped.
       collectionCta: "Explore",
       categoryCta: "Shop",
       tiles: {
         war: { subtitle: "Limited edition", image: "/tempered/seat-war.webp" },
-        tees: { subtitle: "Heavyweight cotton", image: "/tempered/seat-tees.webp" },
-        joggers: { subtitle: "Fleece essentials", image: "/tempered/seat-joggers.webp" }
+        tops: { subtitle: "Heavyweight tees", image: "/tempered/seat-tees.webp" },
+        bottoms: { subtitle: "Fleece joggers", image: "/tempered/seat-joggers.webp" }
       }
     },
     code: {
@@ -197,7 +197,7 @@ export const defaultContent: ThemeHomepageContent = {
       ],
       quote: { text: "Master yourself before you master the table.", signoff: "Play with purpose" },
       close: {
-        eyebrow: "The collection",
+        eyebrow: "The shop",
         title: "Wear the standard.",
         text: "Tees, joggers and limited drops, made for the long session.",
         cta: "Shop all",

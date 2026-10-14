@@ -2,6 +2,7 @@
 	import { page } from '$app/state'
 	import ProductCard from '$lib/components/product-catalogue/product-card.svelte'
 	import SeoHeader from '$lib/components/seo/seo-header.svelte'
+	import { metaText } from '$lib/components/seo/meta-text.js'
 
 	// This file was 0 bytes: the loader fetched the collection and the route answered 200 with an
 	// empty document. Render what wwwCollectionsSlugLoad already returns ({ collection, allratings }).
@@ -10,8 +11,8 @@
 </script>
 
 <SeoHeader
-	metaTitle={collection?.title || collection?.name || 'Collection'}
-	metaDescription={collection?.subTitle || collection?.description}
+	metaTitle={collection?.title || collection?.name || 'Drop'}
+	metaDescription={collection?.subTitle || metaText(collection?.description || '')}
 	image={collection?.img || collection?.images?.[0]}
 />
 

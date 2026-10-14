@@ -112,8 +112,8 @@
       ]
     },
     {
-      "name": "Tees",
-      "slug": "tees",
+      "name": "Tops",
+      "slug": "tops",
       "parentName": "Shop",
       "inheritFilters": false,
       "filters": [
@@ -121,7 +121,7 @@
           "code": "facet-value-filter",
           "args": {
             "facetValueNames": [
-              "Category:Tees"
+              "Category:Tops"
             ],
             "containsAny": false
           }
@@ -132,8 +132,8 @@
       ]
     },
     {
-      "name": "Joggers",
-      "slug": "joggers",
+      "name": "Bottoms",
+      "slug": "bottoms",
       "parentName": "Shop",
       "inheritFilters": false,
       "filters": [
@@ -141,7 +141,7 @@
           "code": "facet-value-filter",
           "args": {
             "facetValueNames": [
-              "Category:Joggers"
+              "Category:Bottoms"
             ],
             "containsAny": false
           }
@@ -150,6 +150,42 @@
       "assetPaths": [
         "product-classic-joggers.webp"
       ]
+    },
+    {
+      "name": "Outerwear",
+      "slug": "outerwear",
+      "parentName": "Shop",
+      "inheritFilters": false,
+      "filters": [
+        {
+          "code": "facet-value-filter",
+          "args": {
+            "facetValueNames": [
+              "Category:Outerwear"
+            ],
+            "containsAny": false
+          }
+        }
+      ],
+      "assetPaths": []
+    },
+    {
+      "name": "Accessories",
+      "slug": "accessories",
+      "parentName": "Shop",
+      "inheritFilters": false,
+      "filters": [
+        {
+          "code": "facet-value-filter",
+          "args": {
+            "facetValueNames": [
+              "Category:Accessories"
+            ],
+            "containsAny": false
+          }
+        }
+      ],
+      "assetPaths": []
     },
     {
       "name": "Drops",
