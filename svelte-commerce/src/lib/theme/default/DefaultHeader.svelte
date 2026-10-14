@@ -1,9 +1,10 @@
 <script lang="ts">
 	// Tempered's header (design/components/Header): nav on the left, the gold crest in the centre,
-	// Search / Account / Cart as words on the right. On the homepage it floats over the hero,
-	// transparent on a soft scrim, and turns solid once the page scrolls; everywhere else it is solid
-	// with a `line` hairline beneath. On phones the nav folds behind a two-hairline menu button that
-	// opens a full-screen menu set in the display serif.
+	// Search / Account / Cart as words on the right, `header-height` tall. On the homepage it floats
+	// over the hero, transparent on a soft scrim, and turns solid with its `line` hairline once the
+	// page scrolls (design/components/FloatingHeader); everywhere else it is solid from the start. On
+	// phones the nav folds behind the word "Menu", which opens a full-screen menu set in the display
+	// serif (design/components/MobileMenu).
 	import { page } from '$app/state'
 	import { fade } from 'svelte/transition'
 	import type { NavModule } from '$lib/core/composables/index.js'
@@ -67,10 +68,9 @@
 <svelte:window bind:scrollY />
 
 {#if announcement || announcementHtml}
-	<!-- The announcement bar, for promos: a quiet line on the ground, not gold (the cart count is the
-	     header's one gold element). -->
+	<!-- The announcement bar, for promos: a quiet line on the ground, never gold. -->
 	<div class="bg-background text-center">
-		<p class="page-width py-2.5 text-[12px] leading-4 text-faint-foreground">
+		<p class="page-width py-2 text-small text-faint-foreground">
 			{#if announcementHtml}
 				{@html announcementHtml}
 			{:else if announcementHref}
@@ -83,22 +83,20 @@
 {/if}
 
 <header
-	class="sticky top-0 z-sticky w-full border-b transition-colors duration-panel {isHome ? '-mb-[76px] md:-mb-24' : ''} {overlay
+	class="sticky top-0 z-sticky w-full border-b transition-colors duration-panel {isHome ? '-mb-header' : ''} {overlay
 		? 'header--overlay border-transparent'
 		: 'border-border bg-background'}"
 >
-	<div class="page-width grid grid-cols-[1fr_auto_1fr] items-center gap-4 {isHome ? 'h-[76px] md:h-24' : 'h-14 md:h-[72px]'}">
+	<div class="page-width grid h-header grid-cols-[1fr_auto_1fr] items-center gap-4">
 		<div class="flex items-center">
 			<button
 				type="button"
-				class="-ml-3 flex size-11 flex-col justify-center gap-1.5 px-3 lg:hidden"
-				aria-label="Menu"
+				class="{headerWord} lg:hidden"
 				aria-expanded={menuOpen}
 				aria-controls="tempered-menu"
 				onclick={() => (menuOpen = true)}
 			>
-				<span class="block h-px w-5 bg-foreground"></span>
-				<span class="block h-px w-3.5 bg-foreground"></span>
+				Menu
 			</button>
 			<nav aria-label="Main navigation" class="hidden items-center gap-8 lg:flex">
 				{#each links as item (item.link)}
@@ -116,9 +114,9 @@
 
 		<a href="/" class="flex items-center" aria-label="{name}, home">
 			{#if store?.logo}
-				<img src={store.logo} alt="" class="h-7 w-auto md:h-[34px]" />
+				<img src={store.logo} alt="" class="h-8 w-auto md:h-9" />
 			{:else}
-				<Crest class={isHome ? 'h-11 md:h-[58px]' : 'h-9 md:h-11'} />
+				<Crest class="h-9 md:h-11" />
 			{/if}
 		</a>
 
@@ -156,7 +154,7 @@
 		use:dialog={closeMenu}
 		transition:fade={{ duration: 200 }}
 	>
-		<div class="flex h-[76px] shrink-0 items-center justify-between">
+		<div class="flex h-header shrink-0 items-center justify-between">
 			<a href="/" aria-label="{name}, home" onclick={closeMenu}><Crest class="h-8" /></a>
 			<button type="button" class="{headerWord} -mr-2 px-2 text-foreground" onclick={closeMenu}>Close</button>
 		</div>
@@ -166,7 +164,7 @@
 					<li class="border-b border-border">
 						<a
 							href={item.link}
-							class="flex min-h-[76px] items-center font-serif text-[34px] uppercase leading-none tracking-[0.1em] transition-colors hover:text-primary"
+							class="flex min-h-20 items-center font-serif text-display-l uppercase transition-colors hover:text-muted-foreground"
 							aria-current={isCurrent(item.link) ? 'page' : undefined}
 							onclick={closeMenu}
 						>

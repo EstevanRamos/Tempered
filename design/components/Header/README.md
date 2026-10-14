@@ -1,7 +1,7 @@
 # Header
 
-The storefront header: primary nav on the left, the crowned elephant mark over a small tracked `TEMPERED` wordmark in the centre, Search / Account / Cart on the right, a `line` hairline beneath. Height `header-height`.
+The storefront header: the three doors on the left (Shop, Collections, Our story), the crowned elephant mark alone in the centre, Search / Account / Cart as words on the right, a `line` hairline beneath. Height `header-height` (72px) at every width. There is no wordmark under the mark: the hero says TEMPERED.
 
-The consumer provides `links`, `actions`, `cartCount` and `logoSrc` (the `tempered-mark.png` asset). Keep nav to three or four items; labels are nouns in uppercase `label`. The cart count is the one gold element in the header.
+Nav and actions are uppercase `label` in `ink-muted`, lit to `ink` on hover; the current page's link stays `ink`. The cart reads "Cart 2" with the count in `ink` and tabular numerals. The count is not gold: gold is the page's one moment (see `design/README.md` → Colour), and a header on every view would spend it everywhere. The mark is the brand, not an accent, and does not count against the one-gold rule.
 
-On mobile, collapse `links` into a "Menu" text button on the left and keep the mark centred; do not shrink the mark below 28px tall.
+Below 1024px the nav folds into the word **Menu** on the left (never an icon), which opens the full-screen [MobileMenu](../MobileMenu/README.md); Account moves into the menu below 640px. Keep the mark centred and at least 28px tall. On the homepage the header floats over the hero: see [FloatingHeader](../FloatingHeader/README.md).

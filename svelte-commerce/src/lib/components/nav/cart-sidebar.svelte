@@ -25,7 +25,7 @@
 	const subtotal = $derived(formatPrice(cartState?.cart?.subtotal ?? cartState?.cart?.total ?? 0, storeData?.currencyCode))
 	const itemCount = $derived(cartState?.cart?.lineItems?.length ?? 0)
 
-	// `words`: the trigger reads "Cart 0", the count in gold (the default theme's header).
+	// `words`: the trigger reads "Cart 0", the count lit in ink (the default theme's header).
 	const { onClose, onContinueShopping, onRemoveCartItem, words = false } = $props()
 	const modalHistoryKey = '__svelteCommerceCartSidebar'
 	const titleId = $props.id()
@@ -130,8 +130,8 @@
 		}}
 	>
 		{#if words}
-			<!-- The count is the header's one gold element. -->
-			Cart <span class="tabular-nums text-primary">{cartState?.cart?.qty ?? 0}</span>
+			<!-- The count is lit in ink, not gold: gold is the page's one moment (design/README.md → Colour). -->
+			Cart <span class="tabular-nums text-foreground">{cartState?.cart?.qty ?? 0}</span>
 		{:else}
 			<ShoppingBag class="h-5 w-5" />
 		{/if}

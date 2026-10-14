@@ -1,14 +1,20 @@
 # HomePage
 
-The reference storefront homepage: every band is built from the system's tokens and `tp-` components, top to bottom.
+The reference storefront homepage, as shipped in the September 2026 redesign: every band built from the system's tokens and `tp-` components, top to bottom. Open `index.html` in a browser; `../screenshots/home-night.png` (1440px) and `home-night-390.png` (390px) are renders of it.
 
-1. **Header**: sticky, `line` hairline beneath.
-2. **Hero**: always Night (`data-theme="night"`) because it is photographic. The elephant sits on the right 62% and fades into `ground`. On the left: `eyebrow` → `TEMPERED` in `display-xl` → `body-l` in `ink-muted` → outline Button. A ValueList sits bottom-right.
-3. **Collections**: three CollectionTiles, 420px tall, with a 4px seam.
-4. **Featured collection**: SectionHeader with "View all", then 4 ProductCards at a `space-6` gap. The band has `space-24` above and below.
-5. **Manifesto**: a 7/5 split, image left. The copy column has `eyebrow`, `display-l` and `body-l` at most `measure` wide, then an outline Button, with a ValueList bottom-right.
-6. **Quote**: the gold mark, the manifesto line in `quote` style at 40px, and the "Play with purpose" sign-off in `gold`. It gets `space-32` of air.
-7. **Join the table**: a `surface` band with a heading on the left and the newsletter Input on the right.
-8. **Footer**: lockup, three link columns, a legal line, and a giant `TEMPERED` wordmark bleeding off the bottom.
+1. **Header**: the [FloatingHeader](../components/FloatingHeader/README.md), transparent over the hero, solid with its `line` hairline once the page scrolls. The word "Menu" below 1024px.
+2. **Hero**: the walking elephant, darkened and faded into `ground` on every side. Copy centred-left: `eyebrow` → TEMPERED in `display-xl` with the **title glint** → the tagline in `quote` → `body` in `ink-muted` → two outline Buttons, "Shop now" and "Featured collections". The ValueList stands at the right beside a `line-strong` hairline; on a phone it folds into one line under the buttons. `space-32` of air.
+3. **The collection**: a centred SectionHeader with a `text` lead and no rule, the [ProductSpotlight](../components/ProductSpotlight/README.md), then an outline Button, "Shop this collection".
+4. **Choose your seat**: [ChooseYourSeat](../components/ChooseYourSeat/README.md), one full-height tile per Drop and per Category, a snapping carousel on a phone. Anchor `#collections`.
+5. **The Code**: [TheCode](../components/TheCode/README.md), five virtues under outlined Bodoni numerals.
+6. **Manifesto**: a 50/50 split, image left. `eyebrow`, the statement in `display-l`, `body` at most `measure` wide, an outline Button "Our story". No ValueList, no arrow. `space-32` above and below.
+7. **Quote**: the [QuoteBand](../components/QuoteBand/README.md), the crest shimmering in gold foil.
+8. **Footer**: the [Footer](../components/Footer/README.md): Join the list, three link columns, hairlines above the columns and the legal line, the outlined Bodoni wordmark.
 
-On mobile everything stacks: tiles go 1-up, products 2-up and the manifesto splits into image then copy. Gutters drop to `space-4` and band padding to `space-16`. In Bone, swap the footer lockup for the typographic wordmark, because the white signature disappears on light grounds.
+**Gold**: one element per view. The hero's glint, The Code's numerals and the quote's crest are the page's three gold moments; the manifesto band stands between the last two so they never share a screen. Everything else (Shop now, the spotlight link and thumbnails, the seat dots, the sign-off, the cart count) is ink.
+
+**Spacing**: bands are `space-24` apart (`space-16` on a phone); the hero and the manifesto get `space-32`. Bands reveal on scroll (see [Motion](../components/Motion/README.md)).
+
+On a phone everything stacks: the spotlight becomes image, line, four thumbnails; the seats a carousel; The Code a list; the manifesto image then copy. Gutters drop to `space-4`.
+
+There is no "Join the table" band and no 4-card Featured grid: the spotlight and the footer's Join the list replace them. The reference is Night only; Bone is not used on the homepage.

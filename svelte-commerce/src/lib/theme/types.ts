@@ -313,19 +313,32 @@ export interface ThemeHomepageContent {
 		seats: {
 			eyebrow: string
 			title: string
+			/** The tile's arrow line: a Collection's, then a Category's ("Explore", "Shop"). */
+			collectionCta: string
+			categoryCta: string
 			/** Per Collection or Category slug; the Engine's description and image are the fallback. */
 			tiles: Record<string, { subtitle?: string; image?: string }>
 		}
 		code: { eyebrow: string; link: string; href: string; items: Array<{ numeral: string; title: string; text: string }> }
 		manifesto: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string }
 		quote: { text: string; signoff: string }
-		/** The Our Story page (a Story page, not a product group), band by band. */
+		/** The Our Story page (a Story page, not a product group), band by band. Its virtues are `code`. */
 		story: {
 			seoTitle: string
 			seoDescription: string
-			hero: { eyebrow: string; title: string; text: string; image: string; imageAlt: string }
+			/** The opening: the word defined like a dictionary entry, beside the image. */
+			hero: {
+				eyebrow: string
+				word: string
+				pronunciation: string
+				partOfSpeech: string
+				senses: string[]
+				example: string
+				origin: string
+				image: string
+				imageAlt: string
+			}
 			chapters: Array<{ eyebrow: string; title: string; text: string[]; image: string; imageAlt: string }>
-			values: string[]
 			quote: { text: string; signoff: string }
 			close: { eyebrow: string; title: string; text: string; cta: string; href: string }
 		}

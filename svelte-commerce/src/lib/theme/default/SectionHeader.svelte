@@ -1,7 +1,7 @@
 <script lang="ts">
 	// design/components/SectionHeader: an optional eyebrow, the title in the display serif (uppercase,
-	// tracked), a 32px gold rule beneath unless `rule={false}`, an optional lead line, and an optional
-	// trailing link.
+	// tracked), a 32px gold rule beneath unless `rule={false}` (the homepage's bands drop it: their gold
+	// moments are elsewhere), an optional `text` lead, and an optional trailing link.
 	import type { Snippet } from 'svelte'
 
 	let {
@@ -33,7 +33,7 @@
 		<svelte:element
 			this={as}
 			{id}
-			class="font-serif text-[28px] font-medium uppercase leading-[34px] tracking-[0.08em] text-foreground [text-wrap:balance] md:text-heading"
+			class="font-serif text-heading uppercase text-foreground [text-wrap:balance]"
 		>
 			{title}
 		</svelte:element>
@@ -41,7 +41,7 @@
 			<span class="mt-4 block h-px w-8 bg-primary" aria-hidden="true"></span>
 		{/if}
 		{#if text}
-			<p class="mt-3 max-w-[460px] text-[14px] leading-[1.6] text-muted-foreground md:mt-5 md:text-body">{text}</p>
+			<p class="mt-3 max-w-measure text-body text-muted-foreground md:mt-6">{text}</p>
 		{/if}
 	</div>
 	{@render action?.()}

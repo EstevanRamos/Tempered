@@ -38,7 +38,9 @@ const config: Config = {
 		},
 		extend: {
 			spacing: {
-				page: '8px'
+				page: '8px',
+				// design/tokens.json layout.header-height: the header bar, and the hero's clearance under it.
+				header: 'var(--header-height, 72px)'
 			},
 			borderColor: {
 				DEFAULT: 'hsl(var(--border) / <alpha-value>)'
@@ -158,15 +160,21 @@ const config: Config = {
 				xs: '4px'
 			},
 			// Tempered's type scale (design/tokens.json → type). Size, leading, tracking and weight
-			// travel together; pair `display-*`, `heading`, `title` and `quote` with `font-serif`.
-			// `label` and `eyebrow` are always uppercase: add `uppercase` alongside.
+			// travel together; pair `display-*`, `heading`, `title*` and `quote*` with `font-serif`.
+			// `label` and `eyebrow` are always uppercase: add `uppercase` alongside. The display sizes
+			// are fluid, from their phone size at 390px to their desktop size at 1440px.
 			fontSize: {
 				xxs: '10px',
-				'display-xl': ['112px', { lineHeight: '104px', letterSpacing: '0.14em', fontWeight: '400' }],
-				'display-l': ['64px', { lineHeight: '68px', letterSpacing: '0.1em', fontWeight: '400' }],
-				heading: ['36px', { lineHeight: '42px', letterSpacing: '0.08em', fontWeight: '500' }],
+				'display-xl': ['clamp(56px, 9vw, 128px)', { lineHeight: '1', letterSpacing: '0.14em', fontWeight: '400' }],
+				'display-l': ['clamp(36px, 3.6vw, 52px)', { lineHeight: '1.05', letterSpacing: '0.06em', fontWeight: '400' }],
+				heading: ['clamp(28px, 2.5vw, 36px)', { lineHeight: '1.17', letterSpacing: '0.08em', fontWeight: '500' }],
+				'title-l': ['clamp(32px, 2.8vw, 40px)', { lineHeight: '1.2', letterSpacing: '0.14em', fontWeight: '400' }],
 				title: ['24px', { lineHeight: '30px', letterSpacing: '0.06em', fontWeight: '500' }],
-				quote: ['24px', { lineHeight: '32px', fontWeight: '400' }],
+				'quote-l': ['clamp(28px, 3vw, 44px)', { lineHeight: '1.2', fontWeight: '400' }],
+				quote: ['clamp(21px, 1.8vw, 26px)', { lineHeight: '1.25', fontWeight: '400' }],
+				// The Code's outlined Bodoni numerals: a list on a phone, five columns from 1024px.
+				numeral: ['44px', { lineHeight: '0.9', fontWeight: '400' }],
+				'numeral-l': ['76px', { lineHeight: '0.9', fontWeight: '400' }],
 				'body-l': ['17px', { lineHeight: '28px' }],
 				body: ['15px', { lineHeight: '24px' }],
 				small: ['13px', { lineHeight: '20px' }],

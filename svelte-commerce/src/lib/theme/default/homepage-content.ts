@@ -124,6 +124,9 @@ export const defaultContent: ThemeHomepageContent = {
     seats: {
       eyebrow: "Collections",
       title: "Choose your seat",
+      // The tile's arrow line: a Collection (a Drop to shoppers) is explored, a Category is shopped.
+      collectionCta: "Explore",
+      categoryCta: "Shop",
       tiles: {
         war: { subtitle: "Limited edition", image: "/tempered/seat-war.webp" },
         tees: { subtitle: "Heavyweight cotton", image: "/tempered/seat-tees.webp" },
@@ -155,10 +158,18 @@ export const defaultContent: ThemeHomepageContent = {
     story: {
       seoTitle: "Our story",
       seoDescription: "Tempered is poker-born apparel for people who treat the table as a discipline. More than a game: patience, control and a higher standard.",
+      // The opening: the brand's name, defined like a dictionary entry.
       hero: {
         eyebrow: "Our story",
-        title: "More than a game.",
-        text: "Poker isn't just cards. It's a mirror. It reveals character, tests discipline and demands control.",
+        word: "Tempered",
+        pronunciation: "/ˈtem·pərd/",
+        partOfSpeech: "adjective",
+        senses: [
+          "Of steel: brought to hardness by fire, then cooled with care, so it holds an edge and does not shatter.",
+          "Of a person: steady under pressure. Patient by choice, controlled by habit, sharpened by discipline."
+        ],
+        example: "A tempered mind meets pressure with patience, and masters itself before anything else.",
+        origin: "From Latin temperare: to restrain.",
         image: "/tempered/hero-elephant.webp",
         imageAlt: "An elephant wearing a gold crown"
       },
@@ -184,7 +195,6 @@ export const defaultContent: ThemeHomepageContent = {
           imageAlt: "A spartan warrior in shadow"
         }
       ],
-      values: ["Patience", "Discipline", "Self-mastery", "Control", "Freedom"],
       quote: { text: "Master yourself before you master the table.", signoff: "Play with purpose" },
       close: {
         eyebrow: "The collection",
