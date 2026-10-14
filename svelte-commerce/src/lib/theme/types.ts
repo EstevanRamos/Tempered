@@ -313,8 +313,8 @@ export interface ThemeHomepageContent {
 		seats: {
 			eyebrow: string
 			title: string
-			/** The tile's arrow line: a Drop's, then a Category's ("Explore", "Shop"). */
-			dropCta: string
+			/** The tile's arrow line: a Collection's, then a Category's ("Explore", "Shop"). */
+			collectionCta: string
 			categoryCta: string
 			/** Per Collection or Category slug; the Engine's description and image are the fallback. */
 			tiles: Record<string, { subtitle?: string; image?: string }>

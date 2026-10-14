@@ -124,8 +124,8 @@ export const defaultContent: ThemeHomepageContent = {
     seats: {
       eyebrow: "Collections",
       title: "Choose your seat",
-      // The tile's arrow line: a Drop is explored, a Category is shopped.
-      dropCta: "Explore",
+      // The tile's arrow line: a Collection (a Drop to shoppers) is explored, a Category is shopped.
+      collectionCta: "Explore",
       categoryCta: "Shop",
       tiles: {
         war: { subtitle: "Limited edition", image: "/tempered/seat-war.webp" },

@@ -29,7 +29,7 @@
 	const seats = $derived(
 		content
 			? [
-					...drops.map((entry) => ({ entry, cta: content.seats.dropCta })),
+					...drops.map((entry) => ({ entry, cta: content.seats.collectionCta })),
 					...(catalogue.categories as CatalogueEntry[]).map((entry) => ({ entry, cta: content.seats.categoryCta }))
 				].map(({ entry, cta }) => {
 					const own = content.seats.tiles[entry.slug] ?? {}
