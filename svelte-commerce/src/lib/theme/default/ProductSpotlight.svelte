@@ -1,7 +1,7 @@
 <script lang="ts">
-	// The featured products as one spotlight: a large square image of the chosen piece, its name,
-	// price and a line beneath, a gold-underlined link to it, and a thumbnail per product to choose
-	// another. Phones stack it all; from 1024px the image takes columns 3–7 and the rest sits in a
+	// design/components/ProductSpotlight: a large square image of the chosen piece, its name, price
+	// and a line beneath, an underlined link to it, and a thumbnail per product to choose another
+	// (the chosen one underlined in ink). Phones stack it all; from 1024px the image takes columns 3–7 and the rest sits in a
 	// narrow column at 9–10.
 	import { page } from '$app/state'
 	import { getImageCDNUrl } from '@misiki/kitcommerce-core/utils'
@@ -38,23 +38,23 @@
 		<div class="flex flex-col lg:col-span-2 lg:col-start-9">
 			<div aria-live="polite">
 				<div
-					class="mt-[18px] flex items-baseline justify-between gap-3 border-t border-border pt-4 text-label uppercase tracking-[0.22em] lg:mt-0 lg:pt-[18px]"
+					class="mt-4 flex items-baseline justify-between gap-3 border-t border-border pt-4 text-label uppercase lg:mt-0"
 				>
 					<span>{spot.name}</span>
 					<span class="whitespace-nowrap text-price tabular-nums text-muted-foreground">{spot.price}</span>
 				</div>
-				<div class="mt-2 flex items-baseline justify-between gap-4 lg:mt-2.5 lg:flex-col lg:items-start lg:gap-5">
+				<div class="mt-2 flex items-baseline justify-between gap-4 lg:mt-3 lg:flex-col lg:items-start lg:gap-6">
 					{#if spot.note}<p class="text-small text-faint-foreground">{spot.note}</p>{/if}
 					<TextLink href={spot.href} accent>{viewPiece}<span class="sr-only">: {spot.name}</span></TextLink>
 				</div>
 			</div>
 
-			<div class="mt-6 grid grid-cols-4 gap-2 lg:mt-14 lg:grid-cols-2 lg:gap-3.5" role="group" aria-label="Choose a piece">
+			<div class="mt-6 grid grid-cols-4 gap-2 lg:mt-12 lg:grid-cols-2 lg:gap-3" role="group" aria-label="Choose a piece">
 				{#each items as item, i (item.id)}
 					<button
 						type="button"
 						class="aspect-[3/4] border-b bg-card transition-opacity duration-200 hover:opacity-100 {i === active
-							? 'border-primary'
+							? 'border-foreground'
 							: 'border-transparent opacity-[.45]'}"
 						aria-label={item.name}
 						aria-pressed={i === active}

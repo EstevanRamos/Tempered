@@ -154,6 +154,7 @@
 		--container-max: 1440px; /* container-max */
 		--container-gutter: clamp(16px, 4vw, 32px); /* space-4 on phones to space-8 on desktop */
 		--measure: 56ch;
+		--header-height: 72px; /* header-height */
 		--motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 		--wine-red: hsl(var(--primary));
 		--wine-red-dark: hsl(var(--primary-hover));

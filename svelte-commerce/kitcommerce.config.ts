@@ -44,6 +44,8 @@ export default {
 	// Tempered's prices include tax (the Vendure channel's pricesIncludeTax), so the price summary
 	// shows the tax inside the total rather than as an extra charge.
 	currency: { ...defaults.currency, includesTax: true },
-	// The header's menu is the Engine's Shop Categories plus Shop all, filled in by the root layout
-	// load (src/lib/theme/default/catalogue-tree.ts); nothing here names a Category.
+	// The Tempered header's three doors (Shop, Collections, Our story) are fixed in DefaultHeader.svelte
+	// and read no menu. The store's `header` menu, for anything else that reads it, is the Engine's
+	// Shop Categories plus Shop all, filled in by the root layout load
+	// (src/lib/theme/default/catalogue-tree.ts); nothing here names a Category.
 }
