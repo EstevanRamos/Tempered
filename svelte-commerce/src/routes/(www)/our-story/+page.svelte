@@ -26,17 +26,33 @@
 		canonicalUrl={page.url.origin + page.url.pathname}
 	/>
 
-	<!-- Opening: the statement on the ground, the image beside it (below it on a phone). -->
+	<!-- Opening: the word defined like a dictionary entry on the ground, the image beside it (below it
+	     on a phone). Headword, pronunciation and part of speech, numbered senses between hairlines, a
+	     usage line in the italic serif, the origin in small type. No gold: The Code below is the gold. -->
 	<section class="grid border-b border-border lg:grid-cols-[5fr_7fr]" aria-labelledby="story-title">
 		<div class="page-width flex flex-col justify-center py-16 lg:w-auto lg:py-32 lg:pl-[var(--container-gutter)] lg:pr-16">
 			<p class="text-eyebrow uppercase text-muted-foreground">{story.hero.eyebrow}</p>
-			<h1
-				id="story-title"
-				class="mb-6 mt-4 max-w-[12ch] font-serif text-display-l uppercase text-foreground"
-			>
-				{story.hero.title}
-			</h1>
-			<p class="max-w-measure text-body-l text-muted-foreground">{story.hero.text}</p>
+			<div class="mt-6 max-w-measure">
+				<div>
+					<h1 id="story-title" class="font-serif text-display-l uppercase text-foreground">{story.hero.word}</h1>
+					<p class="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+						<span class="font-serif text-quote italic text-muted-foreground">{story.hero.pronunciation}</span>
+						<span class="text-eyebrow uppercase text-faint-foreground">{story.hero.partOfSpeech}</span>
+					</p>
+				</div>
+				<div class="mt-8">
+					<ol class="border-t border-border">
+						{#each story.hero.senses as sense, i (sense)}
+							<li class="grid grid-cols-[theme(spacing.8)_1fr] border-b border-border py-4">
+								<span class="text-label tabular-nums text-faint-foreground">{i + 1}.</span>
+								<span class="text-body-l text-foreground">{sense}</span>
+							</li>
+						{/each}
+					</ol>
+					<p class="mt-6 font-serif text-quote italic text-muted-foreground">“{story.hero.example}”</p>
+					<p class="mt-4 text-small text-faint-foreground">{story.hero.origin}</p>
+				</div>
+			</div>
 		</div>
 		<img src={story.hero.image} alt={story.hero.imageAlt} class="aspect-[4/3] h-full w-full object-cover object-[50%_20%] lg:aspect-auto lg:min-h-[560px]" />
 	</section>

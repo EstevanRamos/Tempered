@@ -326,7 +326,18 @@ export interface ThemeHomepageContent {
 		story: {
 			seoTitle: string
 			seoDescription: string
-			hero: { eyebrow: string; title: string; text: string; image: string; imageAlt: string }
+			/** The opening: the word defined like a dictionary entry, beside the image. */
+			hero: {
+				eyebrow: string
+				word: string
+				pronunciation: string
+				partOfSpeech: string
+				senses: string[]
+				example: string
+				origin: string
+				image: string
+				imageAlt: string
+			}
 			chapters: Array<{ eyebrow: string; title: string; text: string[]; image: string; imageAlt: string }>
 			quote: { text: string; signoff: string }
 			close: { eyebrow: string; title: string; text: string; cta: string; href: string }

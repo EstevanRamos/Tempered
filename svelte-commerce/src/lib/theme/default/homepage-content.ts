@@ -158,10 +158,18 @@ export const defaultContent: ThemeHomepageContent = {
     story: {
       seoTitle: "Our story",
       seoDescription: "Tempered is poker-born apparel for people who treat the table as a discipline. More than a game: patience, control and a higher standard.",
+      // The opening: the brand's name, defined like a dictionary entry.
       hero: {
         eyebrow: "Our story",
-        title: "More than a game.",
-        text: "Poker isn't just cards. It's a mirror. It reveals character, tests discipline and demands control.",
+        word: "Tempered",
+        pronunciation: "/ˈtem·pərd/",
+        partOfSpeech: "adjective",
+        senses: [
+          "Of steel: brought to hardness by fire, then cooled with care, so it holds an edge and does not shatter.",
+          "Of a person: steady under pressure. Patient by choice, controlled by habit, sharpened by discipline."
+        ],
+        example: "A tempered player folds without regret and acts only when it counts.",
+        origin: "From Latin temperare: to mix in due measure; to restrain.",
         image: "/tempered/hero-elephant.webp",
         imageAlt: "An elephant wearing a gold crown"
       },
