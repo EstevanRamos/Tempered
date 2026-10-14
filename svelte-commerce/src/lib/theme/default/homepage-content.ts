@@ -168,8 +168,8 @@ export const defaultContent: ThemeHomepageContent = {
           "Of steel: brought to hardness by fire, then cooled with care, so it holds an edge and does not shatter.",
           "Of a person: steady under pressure. Patient by choice, controlled by habit, sharpened by discipline."
         ],
-        example: "A tempered player folds without regret and acts only when it counts.",
-        origin: "From Latin temperare: to mix in due measure; to restrain.",
+        example: "A tempered mind meets pressure with patience, and masters itself before anything else.",
+        origin: "From Latin temperare: to restrain.",
         image: "/tempered/hero-elephant.webp",
         imageAlt: "An elephant wearing a gold crown"
       },

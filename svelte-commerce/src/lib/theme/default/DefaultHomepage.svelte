@@ -67,7 +67,7 @@
 				<p class="text-eyebrow uppercase text-muted-foreground">{content.hero.eyebrow}</p>
 				<h1
 					id="home-title"
-					class="hero__title -mr-[0.14em] mb-3 mt-4 whitespace-nowrap font-serif text-display-xl uppercase text-foreground md:mb-6 md:mt-6"
+					class="glint -mr-[0.14em] mb-3 mt-4 whitespace-nowrap font-serif text-display-xl uppercase text-foreground md:mb-6 md:mt-6"
 				>
 					{content.hero.title}
 				</h1>
@@ -231,41 +231,6 @@
 		}
 	}
 
-	/* The wordmark catches the light every so often: a narrow gold glint crosses the ink left to
-	   right, then the title rests for most of the cycle. The gradient is three times the text's
-	   width with the glint in the middle, so both ends of the sweep sit off the letters and the
-	   loop restarts without a visible jump. Without background-clip: text it stays plain ink.
-	   The nowrap title overflows its column on desktop, and clipped text past the box would be
-	   invisible, so the box is sized to the word. */
-	@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-		.hero__title {
-			width: max-content;
-			color: transparent;
-			background: linear-gradient(
-					105deg,
-					hsl(var(--foreground)) 0 43%,
-					hsl(var(--primary-hover)) 47%,
-					hsl(var(--primary)) 50%,
-					hsl(var(--primary-hover)) 53%,
-					hsl(var(--foreground)) 57% 100%
-				)
-				100% 0 / 300% 100%;
-			-webkit-background-clip: text;
-			background-clip: text;
-			animation: hero-glisten 9s ease-in-out 1.2s infinite;
-		}
-	}
-
-	@keyframes hero-glisten {
-		0% {
-			background-position: 100% 0;
-		}
-		22%,
-		100% {
-			background-position: 0% 0;
-		}
-	}
-
 	/* Choose your seat: a photograph under a bottom scrim, the title bottom-left over an arrow line,
 	   the image zooming slowly on hover. Always photographic, so the text is Night's ink. */
 	.seats {
@@ -320,10 +285,6 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero__title {
-			animation: none;
-		}
-
 		.seat__img {
 			transition: none;
 		}

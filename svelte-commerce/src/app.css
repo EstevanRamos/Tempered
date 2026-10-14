@@ -588,6 +588,52 @@
 }
 
 /* ------------------------------------------------------------------ *
+ * Glint (design/components/Motion): the word catches the light every so
+ * often. A narrow gold glint crosses the ink left to right, then the word
+ * rests for most of the cycle. The gradient is three times the text's
+ * width with the glint in the middle, so both ends of the sweep sit off
+ * the letters and the loop restarts without a jump. The box is sized to
+ * the word, since clipped text past it would be invisible. Without
+ * background-clip: text, or with reduced motion, it stays plain ink.
+ * Gold: it is its view's one gold element. Used by the homepage hero
+ * title and Our Story's headword.
+ * ------------------------------------------------------------------ */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+	.glint {
+		width: max-content;
+		color: transparent;
+		background: linear-gradient(
+				105deg,
+				hsl(var(--foreground)) 0 43%,
+				hsl(var(--primary-hover)) 47%,
+				hsl(var(--primary)) 50%,
+				hsl(var(--primary-hover)) 53%,
+				hsl(var(--foreground)) 57% 100%
+			)
+			100% 0 / 300% 100%;
+		-webkit-background-clip: text;
+		background-clip: text;
+		animation: glint 9s ease-in-out 1.2s infinite;
+	}
+}
+
+@keyframes glint {
+	0% {
+		background-position: 100% 0;
+	}
+	22%,
+	100% {
+		background-position: 0% 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html .glint {
+		animation: none;
+	}
+}
+
+/* ------------------------------------------------------------------ *
  * Reduced motion
  *
  * This block used to cover .ed-btn-base and nothing else, and even that at

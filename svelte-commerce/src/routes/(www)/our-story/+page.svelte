@@ -28,13 +28,14 @@
 
 	<!-- Opening: the word defined like a dictionary entry on the ground, the image beside it (below it
 	     on a phone). Headword, pronunciation and part of speech, numbered senses between hairlines, a
-	     usage line in the italic serif, the origin in small type. No gold: The Code below is the gold. -->
+	     usage line in the italic serif, the origin in small type. The headword glints like the homepage
+	     title: the opening's one gold element. -->
 	<section class="grid border-b border-border lg:grid-cols-[5fr_7fr]" aria-labelledby="story-title">
 		<div class="page-width flex flex-col justify-center py-16 lg:w-auto lg:py-32 lg:pl-[var(--container-gutter)] lg:pr-16">
 			<p class="text-eyebrow uppercase text-muted-foreground">{story.hero.eyebrow}</p>
 			<div class="mt-6 max-w-measure">
 				<div>
-					<h1 id="story-title" class="font-serif text-display-l uppercase text-foreground">{story.hero.word}</h1>
+					<h1 id="story-title" class="glint font-serif text-display-l uppercase text-foreground">{story.hero.word}</h1>
 					<p class="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1">
 						<span class="font-serif text-quote italic text-muted-foreground">{story.hero.pronunciation}</span>
 						<span class="text-eyebrow uppercase text-faint-foreground">{story.hero.partOfSpeech}</span>
