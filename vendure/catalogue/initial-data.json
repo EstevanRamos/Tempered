@@ -203,7 +203,7 @@
       "zone": "Asia"
     },
     {
-      "name": "Åland Islands",
+      "name": "\u00c5land Islands",
       "code": "AX",
       "zone": "Europe"
     },
@@ -463,7 +463,7 @@
       "zone": "Americas"
     },
     {
-      "name": "Côte d'Ivoire",
+      "name": "C\u00f4te d'Ivoire",
       "code": "CI",
       "zone": "Africa"
     },
@@ -478,7 +478,7 @@
       "zone": "Americas"
     },
     {
-      "name": "Curaçao",
+      "name": "Cura\u00e7ao",
       "code": "CW",
       "zone": "Americas"
     },
@@ -1098,7 +1098,7 @@
       "zone": "Asia"
     },
     {
-      "name": "Réunion",
+      "name": "R\u00e9union",
       "code": "RE",
       "zone": "Africa"
     },
@@ -1118,7 +1118,7 @@
       "zone": "Africa"
     },
     {
-      "name": "Saint Barthélemy",
+      "name": "Saint Barth\u00e9lemy",
       "code": "BL",
       "zone": "Americas"
     },

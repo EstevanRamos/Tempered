@@ -11,7 +11,7 @@
 </script>
 
 <SeoHeader
-	metaTitle={collection?.title || collection?.name || 'Collection'}
+	metaTitle={collection?.title || collection?.name || 'Drop'}
 	metaDescription={collection?.subTitle || metaText(collection?.description || '')}
 	image={collection?.img || collection?.images?.[0]}
 />

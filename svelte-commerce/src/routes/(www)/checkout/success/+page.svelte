@@ -88,11 +88,8 @@
 	]
 </script>
 
+<!-- Order number stays out of the title so it cannot leak through referrers or screenshots. -->
 <PageTitle title="Order confirmed" />
-<svelte:head>
-	<!-- Order number stays out of the title so it cannot leak through referrers or screenshots. -->
-</svelte:head>
-
 <div class="min-h-screen bg-muted/20 py-12 md:py-5">
 	<div class="page-width max-w-3xl">
 		{#if hasOrderReference}

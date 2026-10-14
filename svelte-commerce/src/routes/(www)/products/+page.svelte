@@ -28,9 +28,9 @@
      catalogue title and description. Derive them from the store instead. -->
 <SeoHeader
 	metaTitle={data.page?.metaTitle ||
-		(data.products?.categoryHierarchy?.length > 0
-			? `${data.products.categoryHierarchy[data.products.categoryHierarchy.length - 1].name} | ${data.store?.name ?? 'Shop'}`
-			: `All products | ${data.store?.name ?? 'Shop'}`)}
+		(page.url.searchParams.get('search')
+			? `Results for “${page.url.searchParams.get('search')}”`
+			: (data.products?.categoryHierarchy?.at?.(-1)?.name ?? 'Shop all'))}
 	metaDescription={data.page?.metaDescription || data.store?.description || ''}
 	metaKeywords={data.page?.metaKeywords ?? ''}
 	image={data.page?.logo || data.store?.logo || ''}

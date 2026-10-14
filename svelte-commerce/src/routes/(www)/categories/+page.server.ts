@@ -1,5 +1,5 @@
 import { wwwCategoriesLoadServer } from '$lib/core/load-functions/index.js'
-import type { ServerLoad } from '@sveltejs/kit'
+import { redirect, type ServerLoad } from '@sveltejs/kit'
 
 // The core loader fills every category's `img` with a *guessed* URL on another company's bucket —
 // `https://s3.ap-south-1.amazonaws.com/litekart.in/categories/<slug>.png` — whenever the category
@@ -9,6 +9,11 @@ import type { ServerLoad } from '@sveltejs/kit'
 const FOREIGN_IMAGE = /s3\.[a-z0-9-]+\.amazonaws\.com\/litekart\.in\//i
 
 export const load: ServerLoad = async (event) => {
+	// Tempered browses its Categories from Shop all (the Category filter) and its Drops from /collections;
+	// this template page listed every Engine collection, Drops included, as "Shop by Collection".
+	const { theme } = (await event.parent()) as { theme?: { name?: string } }
+	if ((theme?.name ?? 'default') === 'default') redirect(308, '/products')
+
 	// Deliberately not re-typed: annotating the return here would narrow the category shape the
 	// page consumes (slug, name, children) down to whatever this file happens to name.
 	const data = await wwwCategoriesLoadServer(event)

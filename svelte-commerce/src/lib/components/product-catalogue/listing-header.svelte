@@ -13,9 +13,9 @@
 	const sortLabel = $derived(sortOptions.find((option) => option.value === selectedSort)?.name ?? 'Sort')
 
 	// The listing's subject (a Collection is a Drop to shoppers). The Engine sends no category
-	// hierarchy for a Collection page, so the
-	// Category or Collection is found in the layout's catalogue tree by its path; that also names an
-	// empty one, whose page has no products to take a name from.
+	// hierarchy for a Collection page, so the Category or Collection is found in the layout's
+	// catalogue tree by its path; that also names an empty one, whose page has no products to take
+	// a name from.
 	const search = $derived(page.url.searchParams.get('search'))
 	const catalogue = $derived(page.data?.catalogue)
 	const category = $derived(catalogue?.categories?.find((c: { link: string }) => c.link === page.url.pathname))
