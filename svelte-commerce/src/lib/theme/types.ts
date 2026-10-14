@@ -322,13 +322,12 @@ export interface ThemeHomepageContent {
 		code: { eyebrow: string; link: string; href: string; items: Array<{ numeral: string; title: string; text: string }> }
 		manifesto: { eyebrow: string; title: string; text: string; cta: string; href: string; image: string; imageAlt: string }
 		quote: { text: string; signoff: string }
-		/** The Our Story page (a Story page, not a product group), band by band. */
+		/** The Our Story page (a Story page, not a product group), band by band. Its virtues are `code`. */
 		story: {
 			seoTitle: string
 			seoDescription: string
 			hero: { eyebrow: string; title: string; text: string; image: string; imageAlt: string }
 			chapters: Array<{ eyebrow: string; title: string; text: string[]; image: string; imageAlt: string }>
-			values: string[]
 			quote: { text: string; signoff: string }
 			close: { eyebrow: string; title: string; text: string; cta: string; href: string }
 		}

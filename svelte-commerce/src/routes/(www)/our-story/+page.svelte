@@ -1,16 +1,19 @@
 <script lang="ts">
 	// The Our Story page: a Story page, not a product group (CONTEXT.md). The homepage's Our Story
 	// tile and the footer link here. Copy is the default theme's content (`tempered.story`), in the
-	// design system's voice; it ends with the way back into the shop.
+	// design system's voice; it ends with the way back into the shop. The virtues and the quote are
+	// the homepage's own bands (TheCode, QuoteBand), so the brand content reads the same on both.
 	import { page } from '$app/state'
 	import SeoHeader from '$lib/components/seo/seo-header.svelte'
 	import { resolveThemeContent } from '$lib/theme/index.js'
 	import SectionHeader from '$lib/theme/default/SectionHeader.svelte'
-	import ValueList from '$lib/theme/default/ValueList.svelte'
+	import TheCode from '$lib/theme/default/TheCode.svelte'
+	import QuoteBand from '$lib/theme/default/QuoteBand.svelte'
 	import TextLink from '$lib/theme/default/TextLink.svelte'
 	import LinkButton from '$lib/theme/default/LinkButton.svelte'
 
-	const story = $derived(resolveThemeContent('default', page.data?.store)?.tempered?.story)
+	const tempered = $derived(resolveThemeContent('default', page.data?.store)?.tempered)
+	const story = $derived(tempered?.story)
 	const storeName = $derived(page.data?.store?.name || 'Tempered')
 	const collections = $derived<{ name: string; link: string }[]>(page.data?.catalogue?.collections ?? [])
 </script>
@@ -29,7 +32,7 @@
 			<p class="text-eyebrow uppercase text-muted-foreground">{story.hero.eyebrow}</p>
 			<h1
 				id="story-title"
-				class="mb-6 mt-4 max-w-[12ch] font-serif text-[40px] font-normal uppercase leading-[44px] tracking-[0.1em] text-foreground lg:text-display-l"
+				class="mb-6 mt-4 max-w-[12ch] font-serif text-display-l uppercase text-foreground"
 			>
 				{story.hero.title}
 			</h1>
@@ -38,9 +41,17 @@
 		<img src={story.hero.image} alt={story.hero.imageAlt} class="aspect-[4/3] h-full w-full object-cover object-[50%_20%] lg:aspect-auto lg:min-h-[560px]" />
 	</section>
 
+	<!-- The virtues, as The Code. The chapters stand between it and the quote, so its numerals and the
+	     quote's crest never share a view (one gold element per view). -->
+	{#if tempered?.code}
+		<section class="page-width py-16 md:py-24" aria-labelledby="story-code">
+			<TheCode id="story-code" eyebrow={tempered.code.eyebrow} items={tempered.code.items} />
+		</section>
+	{/if}
+
 	<!-- Chapters: image and copy side by side, alternating; image then copy on a phone. -->
 	{#each story.chapters as chapter, i (chapter.title)}
-		<section class="grid border-b border-border lg:grid-cols-2" aria-labelledby="story-chapter-{i}">
+		<section class="grid border-t border-border lg:grid-cols-2" aria-labelledby="story-chapter-{i}">
 			<img
 				src={chapter.image}
 				alt={chapter.imageAlt}
@@ -48,7 +59,7 @@
 				class="aspect-[4/3] h-full w-full object-cover lg:aspect-auto lg:min-h-[520px] {i % 2 ? 'lg:order-2' : ''}"
 			/>
 			<div class="flex flex-col justify-center gap-6 px-4 py-16 sm:px-8 lg:px-16 lg:py-24">
-				<SectionHeader id="story-chapter-{i}" eyebrow={chapter.eyebrow} title={chapter.title} />
+				<SectionHeader id="story-chapter-{i}" rule={false} eyebrow={chapter.eyebrow} title={chapter.title} />
 				{#each chapter.text as paragraph (paragraph)}
 					<p class="max-w-measure text-body text-muted-foreground">{paragraph}</p>
 				{/each}
@@ -56,23 +67,14 @@
 		</section>
 	{/each}
 
-	<!-- The virtues and the line they come to. -->
-	<section class="page-width grid items-end gap-12 py-24 md:grid-cols-[1fr_auto] md:py-32" aria-label="Play with purpose">
-		<figure>
-			<img src="/tempered/mark.png" alt="" class="h-[72px] w-auto" loading="lazy" />
-			<blockquote class="mb-4 mt-8 max-w-[720px] font-serif text-[28px] italic leading-[38px] text-foreground md:text-[40px] md:leading-[52px]">
-				“{story.quote.text}”
-			</blockquote>
-			<figcaption class="text-eyebrow uppercase text-primary">{story.quote.signoff}</figcaption>
-		</figure>
-		<ValueList items={story.values} label="The virtues" />
-	</section>
+	<!-- The line the story comes to. -->
+	<QuoteBand text={story.quote.text} signoff={story.quote.signoff} />
 
 	<!-- The way back into the shop. -->
 	<section class="border-t border-border bg-card" aria-labelledby="story-close">
 		<div class="page-width flex flex-col gap-10 py-16 md:flex-row md:items-end md:justify-between md:py-24">
 			<div class="flex flex-col gap-6">
-				<SectionHeader id="story-close" eyebrow={story.close.eyebrow} title={story.close.title} />
+				<SectionHeader id="story-close" rule={false} eyebrow={story.close.eyebrow} title={story.close.title} />
 				<p class="max-w-measure text-body text-muted-foreground">{story.close.text}</p>
 			</div>
 			<div class="flex flex-wrap items-center gap-8">

@@ -187,7 +187,6 @@ export const defaultContent: ThemeHomepageContent = {
           imageAlt: "A spartan warrior in shadow"
         }
       ],
-      values: ["Patience", "Discipline", "Self-mastery", "Control", "Freedom"],
       quote: { text: "Master yourself before you master the table.", signoff: "Play with purpose" },
       close: {
         eyebrow: "The collection",
